@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rental_management.SaleContractDashboard">
+        <div
+            class="o_rental_contract_dashboard container-fluid d-flex flex-column py-4 border-bottom bg-view overflow-x-auto">
+            <div class="d-flex flex-column gap-3">
+                <div class="row g-4">
+                    <div class="col-lg-12 col-xl-6 col-xxl-5">
+                        <div class="bg-gray p-4 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Status</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-3 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-total prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('stage','booked')" title="Booked">
+                                        <h4 class="bg-total mb-1">
+                                            <t t-out="this.state.sale_contract_data.booked_count" />
+                                        </h4>
+                                        <div class="fw-bold">Booked</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-draft prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('stage','sold')" title="Sold">
+                                        <h4 class="bg-draft mb-1">
+                                            <t t-out="this.state.sale_contract_data.sold_count" />
+                                        </h4>
+                                        <div class="fw-bold">Sold</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('stage','refund')" title="Refund">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.sale_contract_data.refund_count" />
+                                        </h4>
+                                        <div class="fw-bold">Refund</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-6 col-xxl-7">
+                        <div class="bg-gray p-4 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Property Types</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-xl-4 g-3">
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center bg-sale custom-sale-card prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('type','land')"
+                                        title="Land Properties Contracts">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.sale_contract_data.land_count" />
+                                        </h4>
+                                        <div class="fw-bold">Land</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-booked prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('type','residential')"
+                                        title="Residential Properties Contracts">
+                                        <h4 class="bg-booked mb-1">
+                                            <t t-out="this.state.sale_contract_data.residential_count" />
+                                        </h4>
+                                        <div class="fw-bold">Residential</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-sold prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('type','commercial')"
+                                        title="Commercial Properties Contracts">
+                                        <h4 class="bg-sold mb-1">
+                                            <t t-out="this.state.sale_contract_data.commercial_count" />
+                                        </h4>
+                                        <div class="fw-bold bg-sold">Commercial</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-sale-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('type','industrial')"
+                                        title="Industrial Properties Contracts">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.sale_contract_data.industrial_count" />
+                                        </h4>
+                                        <div class="fw-bold">Industrial</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

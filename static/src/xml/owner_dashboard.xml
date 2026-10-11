@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="rental_management.OwnerPropertyDashboard" owl="1">
+        <div class="o_owner_dashboard">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap"/>
+
+            <div class="container-fluid">
+
+                <!-- ── Loading ──────────────────────────────────────────────── -->
+                <div t-if="state.loading" class="opd-loading">
+                    <div class="opd-spinner"><i class="fa fa-circle-o-notch fa-spin"/></div>
+                    <p>Loading Executive Dashboard…</p>
+                </div>
+
+                <div t-if="!state.loading">
+
+                    <!-- ── Header ────────────────────────────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-header-inner">
+                                <div>
+                                    <h1 class="opd-title">Executive Dashboard</h1>
+                                    <p class="opd-subtitle">Property Portfolio — Owner View · Sultanate of Oman</p>
+                                </div>
+                                <div class="opd-header-stats">
+                                    <div class="opd-occ-ring">
+                                        <span class="opd-occ-val"><t t-esc="state.occupancy_rate"/>%</span>
+                                        <span class="opd-occ-lbl">Unit Occ.</span>
+                                    </div>
+                                    <div class="opd-occ-ring" style="border-color:rgba(34,197,94,.55)">
+                                        <span class="opd-occ-val" style="color:#bbf7d0"><t t-esc="state.bed_occupancy_rate"/>%</span>
+                                        <span class="opd-occ-lbl">Bed Occ.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Date Filter ────────────────────────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-filter-card">
+                                <div class="row align-items-end g-2">
+                                    <div class="col-lg-2 col-md-4">
+                                        <label class="opd-label">Date From</label>
+                                        <input type="date" class="opd-input" t-model="state.dateFrom"
+                                               t-on-change="(ev) => this.onDateFromChange(ev)"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-4">
+                                        <label class="opd-label">Date To</label>
+                                        <input type="date" class="opd-input" t-model="state.dateTo"
+                                               t-on-change="(ev) => this.onDateToChange(ev)"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-4">
+                                        <button class="opd-btn opd-btn-primary w-100"
+                                                t-on-click="() => this.applyDateFilter()">
+                                            <i class="fa fa-filter"/> Apply
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-2 col-md-4">
+                                        <button class="opd-btn opd-btn-ghost w-100"
+                                                t-on-click="() => this.clearDateFilter()">
+                                            <i class="fa fa-times"/> Clear
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-4 col-md-12">
+                                        <label class="opd-label">Quick Filters</label>
+                                        <div class="opd-qf-wrap">
+                                            <button t-att-class="'opd-qf '+(state.quickFilters.today?'active':'')"
+                                                    t-on-click="() => this.setQuickFilter('today')">Today</button>
+                                            <button t-att-class="'opd-qf '+(state.quickFilters.thisWeek?'active':'')"
+                                                    t-on-click="() => this.setQuickFilter('thisWeek')">Week</button>
+                                            <button t-att-class="'opd-qf '+(state.quickFilters.thisMonth?'active':'')"
+                                                    t-on-click="() => this.setQuickFilter('thisMonth')">Month</button>
+                                            <button t-att-class="'opd-qf '+(state.quickFilters.lastMonth?'active':'')"
+                                                    t-on-click="() => this.setQuickFilter('lastMonth')">Last Mo.</button>
+                                            <button t-att-class="'opd-qf '+(state.quickFilters.thisYear?'active':'')"
+                                                    t-on-click="() => this.setQuickFilter('thisYear')">Year</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div t-if="state.dateFrom or state.dateTo" class="opd-filter-active mt-3">
+                                    <i class="fa fa-info-circle"/>
+                                    <span t-if="state.dateFrom"> From <strong t-esc="state.dateFrom"/></span>
+                                    <span t-if="state.dateTo"> → <strong t-esc="state.dateTo"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Row 1: Building Portfolio KPIs ─────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-navy"
+                                 t-on-click="() => this.openView('property.sub.project','All Buildings')">
+                                <div class="opd-kpi-icon"><i class="fa fa-building"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.total_subprojects"/></div>
+                                <div class="opd-kpi-label">Total Buildings / Compounds</div>
+                                <div class="opd-kpi-sub">
+                                    <t t-esc="state.active_subprojects"/> active buildings
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-sky"
+                                 t-on-click="() => this.openView('property.details','All Units')">
+                                <div class="opd-kpi-icon"><i class="fa fa-home"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.total_units"/></div>
+                                <div class="opd-kpi-label">Total Units / Flats</div>
+                                <div class="opd-kpi-sub">
+                                    <t t-esc="state.available_units"/> available ·
+                                    <t t-esc="state.booked_units"/> booked
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-emerald"
+                                 t-on-click="() => this.openView('property.details','Rented Units',[['stage','=','on_lease']])">
+                                <div class="opd-kpi-icon"><i class="fa fa-key"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.rented_units"/></div>
+                                <div class="opd-kpi-label">Units On Rent</div>
+                                <div class="opd-kpi-sub"><t t-esc="state.occupancy_rate"/>% unit occupancy rate</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-amber"
+                                 t-on-click="() => this.openView('property.details','Available Units',[['stage','=','available']])">
+                                <div class="opd-kpi-icon"><i class="fa fa-unlock"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.available_units"/></div>
+                                <div class="opd-kpi-label">Available Units</div>
+                                <div class="opd-kpi-sub"><t t-esc="state.sold_units"/> units sold</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Row 2: Bed KPIs ─────────────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-teal">
+                                <div class="opd-kpi-icon"><i class="fa fa-bed"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.total_beds"/></div>
+                                <div class="opd-kpi-label">Total Beds</div>
+                                <div class="opd-kpi-sub">Across all bachelor / staff units</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-emerald">
+                                <div class="opd-kpi-icon"><i class="fa fa-check-circle"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.available_beds"/></div>
+                                <div class="opd-kpi-label">Available Beds</div>
+                                <div class="opd-kpi-sub"><t t-esc="state.bed_occupancy_rate"/>% beds occupied</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-rose">
+                                <div class="opd-kpi-icon"><i class="fa fa-moon-o"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.occupied_beds"/></div>
+                                <div class="opd-kpi-label">Occupied Beds</div>
+                                <div class="opd-kpi-sub">Bachelor / employee accommodation</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-violet"
+                                 t-on-click="() => this.openView('tenancy.details','Active Rent Contracts')">
+                                <div class="opd-kpi-icon"><i class="fa fa-file-text"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.active_rent_contracts"/></div>
+                                <div class="opd-kpi-label">Active Rent Contracts</div>
+                                <div class="opd-kpi-sub">
+                                    <t t-esc="state.expiring_soon_count"/> expiring in 30 days
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Row 3: Revenue KPIs ────────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-teal">
+                                <div class="opd-kpi-icon"><i class="fa fa-money"/></div>
+                                <div class="opd-kpi-value">OMR <t t-esc="this.fmt(state.total_rent_revenue)"/></div>
+                                <div class="opd-kpi-label">Total Rent Revenue</div>
+                                <div class="opd-kpi-sub">OMR <t t-esc="this.fmt(state.collected_rent)"/> collected</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-indigo">
+                                <div class="opd-kpi-icon"><i class="fa fa-line-chart"/></div>
+                                <div class="opd-kpi-value">OMR <t t-esc="this.fmt(state.total_sale_revenue)"/></div>
+                                <div class="opd-kpi-label">Sale Revenue</div>
+                                <div class="opd-kpi-sub">From closed sale contracts</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-rose"
+                                 t-on-click="() => this.openView('rent.invoice','Unpaid Invoices',[['payment_state','!=','paid']])">
+                                <div class="opd-kpi-icon"><i class="fa fa-exclamation-circle"/></div>
+                                <div class="opd-kpi-value">OMR <t t-esc="this.fmt(state.outstanding_invoices)"/></div>
+                                <div class="opd-kpi-label">Outstanding Invoices</div>
+                                <div class="opd-kpi-sub">OMR <t t-esc="this.fmt(state.pending_rent)"/> pending rent</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="opd-kpi-card opd-kpi-navy">
+                                <div class="opd-kpi-icon"><i class="fa fa-users"/></div>
+                                <div class="opd-kpi-value"><t t-esc="state.total_customers"/></div>
+                                <div class="opd-kpi-label">Total Customers</div>
+                                <div class="opd-kpi-sub">
+                                    <t t-esc="state.total_landlords"/> landlords ·
+                                    <t t-esc="state.total_brokers"/> brokers
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Summary Stat Cards ─────────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="opd-stat-card opd-bl-navy">
+                                <h6 class="opd-stat-title"><i class="fa fa-bar-chart"/> Revenue Summary</h6>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Rent Revenue</span>
+                                    <span class="opd-stat-val opd-val-navy">OMR <t t-esc="this.fmt(state.total_rent_revenue)"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Sale Revenue</span>
+                                    <span class="opd-stat-val opd-val-sky">OMR <t t-esc="this.fmt(state.total_sale_revenue)"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Collected Rent</span>
+                                    <span class="opd-stat-val opd-val-emerald">OMR <t t-esc="this.fmt(state.collected_rent)"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Outstanding</span>
+                                    <span class="opd-stat-val opd-val-rose">OMR <t t-esc="this.fmt(state.outstanding_invoices)"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Maintenance Cost</span>
+                                    <span class="opd-stat-val opd-val-amber">OMR <t t-esc="this.fmt(state.total_maintenance_cost)"/></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="opd-stat-card opd-bl-sky">
+                                <h6 class="opd-stat-title"><i class="fa fa-file-text-o"/> Contract Overview</h6>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Active Rent</span>
+                                    <span class="opd-stat-val opd-val-sky"><t t-esc="state.active_rent_contracts"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Expiring (30 days)</span>
+                                    <span class="opd-stat-val opd-val-amber"><t t-esc="state.expiring_soon_count"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Expired</span>
+                                    <span class="opd-stat-val opd-val-rose"><t t-esc="state.expired_contracts"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Sale Contracts</span>
+                                    <span class="opd-stat-val opd-val-emerald"><t t-esc="state.active_sale_contracts"/></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="opd-stat-card opd-bl-emerald">
+                                <h6 class="opd-stat-title"><i class="fa fa-bed"/> Bed &amp; Unit Portfolio</h6>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Total Units</span>
+                                    <span class="opd-stat-val opd-val-navy"><t t-esc="state.total_units"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Available Units</span>
+                                    <span class="opd-stat-val opd-val-emerald"><t t-esc="state.available_units"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Total Beds</span>
+                                    <span class="opd-stat-val opd-val-teal"><t t-esc="state.total_beds"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Available Beds</span>
+                                    <span class="opd-stat-val opd-val-emerald"><t t-esc="state.available_beds"/></span>
+                                </div>
+                                <div class="opd-stat-row">
+                                    <span class="opd-stat-key">Occupied Beds</span>
+                                    <span class="opd-stat-val opd-val-rose"><t t-esc="state.occupied_beds"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Oman Map ────────────────────────────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-card">
+                                <div class="opd-card-header opd-hdr-navy">
+                                    <i class="fa fa-map"/> 🇴🇲 Building / Compound Map — Sultanate of Oman
+                                    <span class="opd-map-hint">Click any pin for unit &amp; bed details</span>
+                                </div>
+                                <div class="opd-card-body" style="padding:0;">
+                                    <div class="opd-map-container" id="opdOmanMap">
+                                        <div class="opd-map-legend">
+                                            <div style="font-weight:700;color:#1e293b;margin-bottom:6px;font-size:0.7rem;text-transform:uppercase;letter-spacing:.05em">Pin Color</div>
+                                            <div class="opd-legend-item"><div class="opd-legend-dot" style="background:#22c55e"/>All Available</div>
+                                            <div class="opd-legend-item"><div class="opd-legend-dot" style="background:#f59e0b"/>Partially Rented</div>
+                                            <div class="opd-legend-item"><div class="opd-legend-dot" style="background:#3b82f6"/>Fully Rented</div>
+                                            <div class="opd-legend-item"><div class="opd-legend-dot" style="background:#94a3b8"/>No Units</div>
+                                            <div style="margin-top:8px;font-size:0.68rem;color:#92400e">⚠ Yellow ring = approx. location</div>
+                                            <div style="font-size:0.68rem;color:#475569">Pin size = unit count</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Building Charts Row ────────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-lg-4">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-navy">
+                                    <i class="fa fa-pie-chart"/> Buildings by Status
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartSubStatus"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-sky">
+                                    <i class="fa fa-pie-chart"/> Buildings by Property Type
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartSubType"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-teal">
+                                    <i class="fa fa-bar-chart"/> Buildings by Wilayat / City
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartSubCity"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Unit Status + Revenue ──────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-lg-4">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-emerald">
+                                    <i class="fa fa-pie-chart"/> Units by Status
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartUnitStatus"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-navy">
+                                    <i class="fa fa-line-chart"/> Monthly Revenue (Rent + Sale) — OMR
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartRevMonth"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Occupancy + Contracts ──────────────────────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-lg-6">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-sky">
+                                    <i class="fa fa-bar-chart"/> Unit Occupancy by City (Total / Available / Rented)
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:300px;"><canvas id="opdChartOccCity"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-amber">
+                                    <i class="fa fa-pie-chart"/> Payment Status
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:300px;"><canvas id="opdChartPayment"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-sky">
+                                    <i class="fa fa-pie-chart"/> Contract Status
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:300px;"><canvas id="opdChartContractStatus"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Contracts + Maintenance + Rent vs Sale ─────────────── -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-lg-5">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-navy">
+                                    <i class="fa fa-bar-chart"/> New Contracts by Month
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartNewContracts"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-amber">
+                                    <i class="fa fa-wrench"/> Maintenance Requests by Month
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartMaint"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="opd-card h-100">
+                                <div class="opd-card-header opd-hdr-teal">
+                                    <i class="fa fa-pie-chart"/> Rent vs Sale Revenue
+                                </div>
+                                <div class="opd-card-body">
+                                    <div style="height:280px;"><canvas id="opdChartRentVsSale"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Bed Availability Scrollable Chart ───────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-card">
+                                <div class="opd-card-header opd-hdr-dark">
+                                    <i class="fa fa-bed"/> Bed Availability by Building (Total / Occupied / Available)
+                                </div>
+                                <div class="opd-card-body">
+                                    <div class="opd-scroll-wrap">
+                                        <div class="opd-scroll-inner" id="opdChartBedWrap">
+                                            <canvas id="opdChartBedAvail"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Top Buildings Table ─────────────────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-card">
+                                <div class="opd-card-header opd-hdr-navy">
+                                    <i class="fa fa-building"/> Top Buildings / Compounds — Portfolio Breakdown
+                                </div>
+                                <div class="opd-card-body" style="padding:0 22px 20px;">
+                                    <div style="overflow-x:auto;">
+                                        <table class="opd-region-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Building / Compound</th>
+                                                    <th>Project</th>
+                                                    <th>City</th>
+                                                    <th>Type</th>
+                                                    <th>Total</th>
+                                                    <th>Available</th>
+                                                    <th>Rented</th>
+                                                    <th>Booked</th>
+                                                    <th>Beds Avail.</th>
+                                                    <th style="min-width:130px;">Occupancy</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.top_subprojects" t-as="sub" t-key="sub.id">
+                                                    <tr>
+                                                        <td style="color:#94a3b8;font-weight:700;"><t t-esc="sub_index + 1"/></td>
+                                                        <td class="opd-region-name"><t t-esc="sub.name"/></td>
+                                                        <td style="color:#64748b;font-size:0.8rem;"><t t-esc="sub.project"/></td>
+                                                        <td><span class="opd-badge opd-badge-city"><t t-esc="sub.city"/></span></td>
+                                                        <td><span class="opd-badge opd-badge-type"><t t-esc="sub.type"/></span></td>
+                                                        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1d4ed8;"><t t-esc="sub.total"/></td>
+                                                        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#22c55e;"><t t-esc="sub.available"/></td>
+                                                        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#3b82f6;"><t t-esc="sub.rented"/></td>
+                                                        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#f59e0b;"><t t-esc="sub.booked"/></td>
+                                                        <td>
+                                                            <span t-if="sub.total_beds" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#10b981;">
+                                                                <t t-esc="sub.avail_beds"/>/<t t-esc="sub.total_beds"/>
+                                                            </span>
+                                                            <span t-if="!sub.total_beds" style="color:#cbd5e1;">—</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="opd-rate-bar">
+                                                                <div class="opd-rate-track">
+                                                                    <div class="opd-rate-fill"
+                                                                         t-att-style="'width:'+sub.rate+'%'"/>
+                                                                </div>
+                                                                <span class="opd-rate-label"><t t-esc="sub.rate"/>%</span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="state.top_subprojects.length === 0">
+                                                    <tr><td colspan="11" class="opd-empty-row">No building data found</td></tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Top Landlords Table ─────────────────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="opd-card">
+                                <div class="opd-card-header opd-hdr-teal">
+                                    <i class="fa fa-user"/> Top Landlords by Portfolio Size
+                                </div>
+                                <div class="opd-card-body">
+                                    <table class="opd-region-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Landlord</th>
+                                                <th>Properties</th>
+                                                <th>Buildings</th>
+                                                <th>Rented</th>
+                                                <th style="min-width:140px;">Occupancy</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.top_landlords" t-as="ll" t-key="ll.name">
+                                                <tr>
+                                                    <td style="color:#94a3b8;font-weight:700;"><t t-esc="ll_index + 1"/></td>
+                                                    <td class="opd-region-name"><t t-esc="ll.name"/></td>
+                                                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1d4ed8;"><t t-esc="ll.properties"/></td>
+                                                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#7c3aed;"><t t-esc="ll.subprojects"/></td>
+                                                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#059669;"><t t-esc="ll.rented"/></td>
+                                                    <td>
+                                                        <div class="opd-rate-bar">
+                                                            <div class="opd-rate-track">
+                                                                <div class="opd-rate-fill"
+                                                                     t-att-style="'width:'+(ll.properties ? Math.round(ll.rented/ll.properties*100) : 0)+'%'"/>
+                                                            </div>
+                                                            <span class="opd-rate-label">
+                                                                <t t-esc="ll.properties ? Math.round(ll.rented/ll.properties*100) : 0"/>%
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="state.top_landlords.length === 0">
+                                                <tr><td colspan="6" class="opd-empty-row">No landlord data found</td></tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /t-if not loading -->
+            </div><!-- /container-fluid -->
+        </div><!-- /o_owner_dashboard -->
+    </t>
+</templates>

@@ -1,0 +1,7 @@
+<templates>
+    <t t-name="rental_management.RentalContractListView" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+         <xpath expr="//div/table" position="before">
+            <RentalContractDashboard />
+        </xpath>
+    </t>
+</templates>

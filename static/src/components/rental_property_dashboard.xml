@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rental_management.RentalPropertyDashboard">
+        <div
+            class="o_rental_property_dashboard container-fluid d-flex flex-column py-4 border-bottom bg-view overflow-x-auto gap-4">
+            <div class="d-flex flex-column gap-3">
+                <div class="row g-2">
+                    <div class="col-lg-12 col-xl-6 col-xxl-4">
+                        <div class="bg-gray p-3 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">All Statistics</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-total prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('all')" title="Total Properties">
+                                        <h4 class="bg-total mb-1">
+                                            <t t-out="this.state.property_data.total_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">Total</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class=" property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('all','land')">
+                                            <t t-out="this.state.property_data.total_land_prop_count" />
+                                        </div>
+                                        <div class=" property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('all','residential')">
+                                            <t t-out="this.state.property_data.total_residential_prop_count" />
+                                        </div>
+                                        <div class=" property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('all','commercial')">
+                                            <t t-out="this.state.property_data.total_commercial_prop_count" />
+                                        </div>
+                                        <div class=" property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('all','industrial')">
+                                            <t t-out="this.state.property_data.total_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-draft prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('draft')" title="Draft Properties">
+                                        <h4 class="bg-draft mb-1">
+                                            <t t-out="this.state.property_data.draft_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">Draft</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2" title="Draft Properties">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('draft','land')">
+                                            <t t-out="this.state.property_data.draft_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('draft','residential')">
+                                            <t t-out="this.state.property_data.draft_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('draft','commercial')">
+                                            <t t-out="this.state.property_data.draft_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('draft','industrial')">
+                                            <t t-out="this.state.property_data.draft_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('available')">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.property_data.available_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">Available</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2" title="Available">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('available','land')">
+                                            <t t-out="this.state.property_data.available_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('available','residential')">
+                                            <t t-out="this.state.property_data.available_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('available','commercial')">
+                                            <t t-out="this.state.property_data.available_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('available','industrial')">
+                                            <t t-out="this.state.property_data.available_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-6 col-xxl-4">
+                        <div class="bg-gray p-3 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Rent Statistics</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-sale prop-cursor w-100"
+                                        t-on-click="() => this.viewForRentProperties('all')">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.property_data.total_for_rent_count" />
+                                        </h4>
+                                        <div class="fw-bold">For Rent</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewForRentProperties('land')">
+                                            <t t-out="this.state.property_data.total_for_rent_land_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewForRentProperties('residential')">
+                                            <t t-out="this.state.property_data.total_for_rent_residential_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewForRentProperties('commercial')">
+                                            <t t-out="this.state.property_data.total_for_rent_commercial_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewForRentProperties('industrial')">
+                                            <t t-out="this.state.property_data.total_for_rent_industrial_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('on_lease')">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.property_data.on_lease_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">On Rent</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('on_lease','land')">
+                                            <t t-out="this.state.property_data.on_lease_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('on_lease','residential')">
+                                            <t t-out="this.state.property_data.on_lease_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('on_lease','commercial')">
+                                            <t t-out="this.state.property_data.on_lease_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('on_lease','industrial')">
+                                            <t t-out="this.state.property_data.on_lease_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-12 col-xxl-4">
+                        <div class="bg-gray p-3 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Sale Statistics</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center bg-sale custom-card prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('sale')">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.property_data.sale_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">For Sale</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('sale','land')">
+                                            <t t-out="this.state.property_data.sale_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('sale','residential')">
+                                            <t t-out="this.state.property_data.sale_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('sale','commercial')">
+                                            <t t-out="this.state.property_data.sale_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('sale','industrial')">
+                                            <t t-out="this.state.property_data.sale_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-booked prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('booked')">
+                                        <h4 class="bg-booked mb-1">
+                                            <t t-out="this.state.property_data.booked_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold">Booked</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('booked','land')">
+                                            <t t-out="this.state.property_data.booked_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('booked','residential')">
+                                            <t t-out="this.state.property_data.booked_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('booked','commercial')">
+                                            <t t-out="this.state.property_data.booked_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('booked','industrial')">
+                                            <t t-out="this.state.property_data.booked_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-card bg-sold prop-cursor w-100"
+                                        t-on-click="() => this.viewAllProperties('sold')">
+                                        <h4 class="bg-sold mb-1">
+                                            <t t-out="this.state.property_data.sold_prop_count" />
+                                        </h4>
+                                        <div class="fw-bold bg-sold">Sold</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <div class="property_type_box bg-land prop-cursor" title="Land"
+                                            t-on-click="() => this.viewProperties('sold','land')">
+                                            <t t-out="this.state.property_data.sold_land_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-residential prop-cursor" title="Residential"
+                                            t-on-click="() => this.viewProperties('sold','residential')">
+                                            <t t-out="this.state.property_data.sold_residential_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-commercial prop-cursor" title="Commercial"
+                                            t-on-click="() => this.viewProperties('sold','commercial')">
+                                            <t t-out="this.state.property_data.sold_commercial_prop_count" />
+                                        </div>
+                                        <div class="property_type_box bg-industrial prop-cursor" title="Industrial"
+                                            t-on-click="() => this.viewProperties('sold','industrial')">
+                                            <t t-out="this.state.property_data.sold_industrial_prop_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend Row -->
+            <div class="d-flex">
+                <div class="d-flex justify-content-center w-100">
+                    <div class="d-flex m-1 align-items-center">
+                        <div class="legend_box bg-land"></div>
+                        <span class="px-2 text-center">Land</span>
+                    </div>
+                    <div class="d-flex m-1 align-items-center">
+                        <div class="legend_box bg-residential"></div>
+                        <span class="px-2">Residential</span>
+                    </div>
+                    <div class="d-flex m-1 align-items-center">
+                        <div class="legend_box bg-commercial"></div>
+                        <span class="px-2">Commercial</span>
+                    </div>
+                    <div class="d-flex m-1 align-items-center">
+                        <div class="legend_box bg-industrial"></div>
+                        <span class="px-2">Industrial</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

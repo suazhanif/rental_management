@@ -1,0 +1,96 @@
+.property_type_box {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.custom-card {
+    width: 150px;
+    border-radius: 5px !important;
+    border: transparent;
+}
+
+.legend_box {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+}
+
+.bg-sale {
+    background-color: #e8f7ff !important;
+    color: #4abeff !important;
+}
+
+.bg-booked {
+    background-color: #fef5e5 !important;
+    color: #ffae1f !important;
+}
+
+.bg-sold {
+    background-color: #ffebeb !important;
+    color: #fa6e6e !important;
+}
+
+.bg-draft {
+    background-color: #e1dcfa !important;
+    color: #917df5 !important;
+}
+
+.bg-total {
+    background-color: #f2edce !important;
+    color: #b59d05 !important;
+}
+
+.bg-available {
+    background-color: #e6fffa !important;
+    color: #17deba !important;
+}
+
+.bg-rent {
+    background-color: #fdede8 !important;
+    color: #fa896a !important;
+}
+
+.bg-residential {
+    background-color: #D5F5E3 !important;
+}
+
+.bg-land {
+    background-color: #F9E79F !important;
+}
+
+.bg-industrial {
+    background-color: #D6DBDF !important;
+}
+
+.bg-commercial {
+    background-color: #D6EAF8 !important;
+}
+
+.prop-cursor {
+    cursor: pointer;
+}
+
+/*rent contract css*/
+.section-divider {
+    width: 1px;
+    background-color: #dee2e6;
+    min-height: 100%;
+    align-self: stretch;
+}
+
+.custom-rent-card {
+    width: 130px;
+    border-radius: 5px !important;
+    border: transparent;
+}
+
+.custom-sale-card {
+    width: 180px;
+    border-radius: 5px !important;
+    border: transparent;
+}

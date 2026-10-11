@@ -1,0 +1,21 @@
+@media screen and (max-width:415px) {
+    .remove_colon {
+        display: none !important;
+    }
+}
+
+.c-label {
+    font-size: 0.85rem !important;
+    display: block;
+    margin-bottom: -4px;
+}
+
+.c-value{
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 30px;
+}
+
+.c-field{
+    margin-bottom: 10px;
+}

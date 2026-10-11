@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rental_management.RentalContractDashboard">
+        <div
+            class="o_rental_contract_dashboard container-fluid d-flex flex-column py-4 border-bottom bg-view overflow-x-auto">
+            <div class="d-flex flex-column gap-3">
+                <div class="row g-4">
+                    <div class="col-lg-12 col-xl-6 col-xxl-3">
+                        <div class="bg-gray p-4 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Contracts</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-3 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-total prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('contract_type','new_contract')"
+                                        title="Draft Contracts">
+                                        <h4 class="bg-total mb-1">
+                                            <t t-out="this.state.tenancy_data.new_contract_count" />
+                                        </h4>
+                                        <div class="fw-bold">Draft</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-draft prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('contract_type','running_contract')"
+                                        title="Running Contracts">
+                                        <h4 class="bg-draft mb-1">
+                                            <t t-out="this.state.tenancy_data.running_contract_count" />
+                                        </h4>
+                                        <div class="fw-bold">Running</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('contract_type','expire_contract')"
+                                        title="Expire Contract">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.tenancy_data.expire_contract_count" />
+                                        </h4>
+                                        <div class="fw-bold">Expire</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-6 col-xxl-3">
+                        <div class="bg-gray p-4 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Duration Types</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="d-flex justify-content-between gap-3 w-100">
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center bg-sale custom-rent-card prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('duration_type','by_duration')"
+                                        title="By Duration Contracts">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.tenancy_data.by_duration_count" />
+                                        </h4>
+                                        <div class="fw-bold">By Duration</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 w-100">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-booked prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('duration_type','by_date')"
+                                        title="By Date Contracts">
+                                        <h4 class="bg-booked mb-1">
+                                            <t t-out="this.state.tenancy_data.by_date_count" />
+                                        </h4>
+                                        <div class="fw-bold">By Date</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-12 col-xxl-6">
+                        <div class="bg-gray p-4 d-flex flex-column">
+                            <div class="">
+                                <h5 class="tk-primary">Payment Terms</h5>
+                                <hr class="tk-hr-border" />
+                            </div>
+                            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3">
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center bg-sale custom-rent-card prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','daily')"
+                                        title="Daily Payment Contracts">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.tenancy_data.daily_count" />
+                                        </h4>
+                                        <div class="fw-bold">Daily</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-booked prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','monthly')"
+                                        title="Monthly Payment Contracts">
+                                        <h4 class="bg-booked mb-1">
+                                            <t t-out="this.state.tenancy_data.monthly_count" />
+                                        </h4>
+                                        <div class="fw-bold">Monthly</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-sold prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','quarterly')"
+                                        title="Quarterly Payment Contracts">
+                                        <h4 class="bg-sold mb-1">
+                                            <t t-out="this.state.tenancy_data.quarterly_count" />
+                                        </h4>
+                                        <div class="fw-bold bg-sold">Quarterly</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-booked prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','half_year')"
+                                        title="Half Year Payment Contracts">
+                                        <h4 class="bg-booked mb-1">
+                                            <t t-out="this.state.tenancy_data.half_year_count" />
+                                        </h4>
+                                        <div class="fw-bold bg-booked">Half Year</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-sale prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','year')"
+                                        title="Yearly Payment Contracts">
+                                        <h4 class="bg-sale mb-1">
+                                            <t t-out="this.state.tenancy_data.year_count" />
+                                        </h4>
+                                        <div class="fw-bold">Yearly</div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card py-4 px-2 text-center custom-rent-card bg-available prop-cursor w-100"
+                                        t-on-click="() => this.viewContract('payment_term','full_payment')"
+                                        title="Fully Payment Contracts">
+                                        <h4 class="bg-available mb-1">
+                                            <t t-out="this.state.tenancy_data.full_payment_count" />
+                                        </h4>
+                                        <div class="fw-bold">Full Payment</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
