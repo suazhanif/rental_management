@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard Form View -->
+        <record id="occupy_wizard_form_view" model="ir.ui.view">
+            <field name="name">occupy.wizard.form</field>
+            <field name="model">occupy.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Occupy Wizard">
+                    <sheet>
+                        <!-- Type Selection -->
+                        <group>
+                            <field name="partner_type" widget="radio" options="{'horizontal': true}"
+                                   required="1"/>
+                        </group>
+
+                        <group>
+                            <!-- Property -->
+                            <group string="Property">
+                                <field name="property_id"
+                                       required="1"
+                                       domain="[('stage', '=', 'available'), ('sale_lease', 'in', ['employee_family', 'bachelor'])]"
+                                       options="{'no_create': True, 'no_quick_create': True}"/>
+                                <field name="sale_lease" readonly="1"/>
+                                <field name="bed_id" required="1"
+                                       invisible="sale_lease != 'bachelor'"/>
+                                <field name="utility_water_account_no"/>
+                                <field name="utility_electricity_account_no"/>
+                            </group>
+                        </group>
+
+                        <!-- Employee details (auto-populated if company employee) -->
+                        <group string="Employee Details" invisible="partner_type == 'non_company'">
+                            <field name="employee_id"/>
+                            <field name="employee_code"/>
+                            <field name="department_id"/>
+                        </group>
+
+                        <!-- Occupant Section -->
+                        <group string="Occupant">
+                            <field name="occupant_id"
+                                   required="1"
+                                   options="{'no_create': True, 'no_quick_create': True}"
+                                   domain="[('user_type', '=', 'other')]"/>
+                            <field name="occupant_name"/>
+                            <field name="occupant_phone" widget="phone"/>
+                            <field name="occupant_email" widget="email"/>
+                        </group>
+
+                        <!-- Utility Readings (Only for family accommodation) -->
+                        <group string="Utility Readings" invisible="not is_readings_required">
+                            <group string="Water Readings">
+                                <field name="water_reading" required="is_readings_required"/>
+                                <field name="water_reading_date" required="is_readings_required"/>
+                            </group>
+                            <group string="Electricity Readings">
+                                <field name="electricity_reading" required="is_readings_required"/>
+                                <field name="electricity_reading_date"
+                                       required="is_readings_required"/>
+                            </group>
+                        </group>
+
+                        <!-- Material Hand Over (Only for Company + Family/Bachelor accommodation) -->
+                        <group string="Material Hand Over" invisible="not is_material_handover_applicable">
+                            <field name="is_material_handover_applicable" invisible="1"/>
+                            <field name="material_line_ids" nolabel="1" colspan="2">
+                                <list editable="bottom" delete="1">
+                                    <field name="material_id" options="{'no_create': True}"/>
+                                    <field name="replacement_years" readonly="1"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </group>
+
+                        <!-- Dates -->
+                        <group string="Contract Period">
+                            <group>
+                                <field name="start_date" required="1"/>
+                                <field name="expected_end_date"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <field name="note" placeholder="Add a note..."/>
+                        </group>
+
+                        <!-- Hidden fields -->
+                        <field name="is_readings_required" invisible="1"/>
+                    </sheet>
+                    <footer>
+                        <button string="Book"
+                                type="object"
+                                name="action_book"
+                                class="btn btn-primary"
+                                icon="fa-book"/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="occupy_wizard_action" model="ir.actions.act_window">
+            <field name="name">Accommodation Book</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">occupy.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

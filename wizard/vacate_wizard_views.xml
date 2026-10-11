@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard Form View -->
+        <record id="vacate_wizard_form_view" model="ir.ui.view">
+            <field name="name">vacate.wizard.form</field>
+            <field name="model">vacate.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Vacate Wizard">
+                    <sheet>
+                        <group>
+                            <!-- Property -->
+                            <group string="Property">
+                                <field name="property_id"
+                                    required="1"
+                                    domain="[('stage', '=', 'available'), ('sale_lease', 'in', ['employee_family', 'bachelor'])]"
+                                    options="{'no_create': True, 'no_quick_create': True}" />
+                                <field name="sale_lease" readonly="1" />
+                                <field name="bed_id" required="1"
+                                    invisible="sale_lease != 'bachelor'" />
+                            </group>
+                        </group>
+
+                        <!-- Utility Readings (Only for family accommodation) -->
+                        <group string="Utility Readings" invisible="not is_readings_required">
+                            <group string="Water Readings">
+                                <field name="water_reading" required="is_readings_required" />
+                                <field name="water_reading_date" required="is_readings_required" />
+                            </group>
+                            <group string="Electricity Readings">
+                                <field name="electricity_reading" required="is_readings_required" />
+                                <field name="electricity_reading_date"
+                                    required="is_readings_required" />
+                            </group>
+                        </group>
+
+                        <!-- Dates -->
+                        <group string="Contract Period">
+                            <group>
+                                <field name="end_date" required="1" />
+                            </group>
+                        </group>
+
+                        <!-- Hidden fields -->
+                        <field name="is_readings_required" invisible="1" />
+                    </sheet>
+                    <footer>
+                        <button string="Vacate"
+                            type="object"
+                            name="action_vacate"
+                            class="btn btn-primary"
+                            icon="fa-book" />
+                        <button string="Cancel"
+                            special="cancel"
+                            class="btn btn-secondary" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="vacate_wizard_action" model="ir.actions.act_window">
+            <field name="name">Vacate Accommodation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vacate.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

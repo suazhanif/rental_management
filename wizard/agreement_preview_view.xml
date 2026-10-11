@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="agreement_preview_view_form" model="ir.ui.view">
+            <field name="name">agreement.preview.view.form</field>
+            <field name="model">agreement.preview</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="agreement_id" invisible="1"/>
+                    <field name="body" readonly="1" force_save="1"/>
+                    <footer>
+                        <button string="Close" special="cancel" class="btn btn-outline-primary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="agreement_preview_action" model="ir.actions.act_window">
+            <field name="name">Agreement Preview</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">agreement.preview</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

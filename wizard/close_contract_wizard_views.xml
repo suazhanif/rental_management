@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Close Contract Wizard Form View -->
+        <record id="close_contract_wizard_form_view" model="ir.ui.view">
+            <field name="name">close.contract.wizard.form.view</field>
+            <field name="model">close.contract.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div class="oe_title mb24">
+                        <h1>Close Contract</h1>
+                    </div>
+                    <p class="text-muted">
+                        Please record the final utility readings and optionally request a property
+                        inspection before closing this contract.
+                    </p>
+
+                    <!-- Outstanding Balance Warning -->
+                    <field name="has_outstanding_amount" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not has_outstanding_amount">
+                        <strong>Outstanding payments:</strong>
+                        this contract still has
+                        <field name="outstanding_amount" class="oe_inline" readonly="1"/>
+                        due. You can still close it &#8212; the unpaid invoices stay open and
+                        remain collectible.
+                    </div>
+
+                    <!-- Contract Info -->
+                    <group>
+                        <group string="Contract">
+                            <field name="contract_id" readonly="1" force_save="1"/>
+                            <field name="property_id" readonly="1" force_save="1"/>
+                            <field name="tenant_id" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Final Readings -->
+                    <group string="Final Utility Readings">
+                        <group string="Water">
+                            <field name="water_reading"/>
+                            <field name="water_reading_date"/>
+                        </group>
+                        <group string="Electricity">
+                            <field name="electricity_reading"/>
+                            <field name="electricity_reading_date"/>
+                        </group>
+                    </group>
+
+                    <!-- Closing Settlement -->
+                    <field name="has_deposit_invoice" invisible="1"/>
+                    <group string="Settlement">
+                        <field name="maintenance_line_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="charge_type"/>
+                                <field name="product_id" options="{'no_quick_create': True}"
+                                       invisible="charge_type == 'utility'"/>
+                                <field name="description"/>
+                                <field name="utility_type" invisible="charge_type != 'utility'"/>
+                                <field name="meter_no" invisible="charge_type != 'utility'"/>
+                                <field name="closing_reading" invisible="charge_type != 'utility'"/>
+                                <field name="closing_date" invisible="charge_type != 'utility'"/>
+                                <field name="amount"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                        <group class="oe_subtotal_footer oe_right" style="text-align: right">
+                            <field name="maintenance_amount" readonly="1" force_save="1"/>
+                            <field name="utility_amount" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="deposit_amount"/>
+                        </group>
+                    </group>
+                    <group string="Move Out">
+                        <group>
+                            <field name="termination_type"/>
+                            <field name="move_out_date"/>
+                            <field name="key_handover_date"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert"
+                         invisible="has_deposit_invoice">
+                        No posted security deposit invoice was found for this contract.
+                        The maintenance amount will still be invoiced, but no deposit
+                        credit note or settlement will be created.
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not has_deposit_invoice">
+                        On closing, the maintenance amount is invoiced to the tenant and a
+                        credit note is created for the remaining deposit. The credit note
+                        stays as an open credit &#8212; register the refund payment when
+                        it is paid out.
+                    </div>
+
+                    <!-- Inspection Request -->
+                    <group string="Inspection Request">
+                        <group>
+                            <field name="inspection_name"
+                                   placeholder="e.g. [PROP-001] Inspection Request"/>
+                            <field name="inspection_partner_id" options="{'no_quick_create':True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="inspection_description"
+                               placeholder="Add inspection details or leave empty to auto-generate..."
+                               nolabel="1"
+                               colspan="2"/>
+                    </group>
+
+                    <footer>
+                        <button string="Request Inspection Only"
+                                type="object"
+                                name="action_create_inspection_request"
+                                class="btn btn-outline-info"
+                                icon="fa-search"/>
+                        <button string="Close Contract"
+                                type="object"
+                                name="action_close_contract"
+                                class="btn btn-outline-danger"
+                                icon="fa-times"
+                                confirm="Are you sure you want to close this contract? This will record the final readings and make the property available."/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-outline-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="close_contract_wizard_action" model="ir.actions.act_window">
+            <field name="name">Close Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">close.contract.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

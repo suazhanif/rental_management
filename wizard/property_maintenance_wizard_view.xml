@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maintenance_wizard_form_view" model="ir.ui.view">
+            <field name="name">maintenance.wizard.form.view</field>
+            <field name="model">maintenance.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" placeholder="Request" required="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id" invisible="1" />
+                            <field name="maintenance_type_id" required="1"
+                                options="{'no_quick_create':True}" />
+                        </group>
+                        <group>
+                            <field name="maintenance_team_id" options="{'no_quick_create':True}" required="1" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Request" type="object" class="btn btn-outline-success"
+                            name="maintenance_request" />
+                        <button string="Cancel" special="cancel" class="btn btn-outline-danger" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="maintenance_wizard_action" model="ir.actions.act_window">
+            <field name="name">Maintenance Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">maintenance.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

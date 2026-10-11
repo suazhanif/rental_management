@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard Form View -->
+        <record id="employee_accommodation_search_wizard_form" model="ir.ui.view">
+            <field name="name">employee.accommodation.search.wizard.form</field>
+            <field name="model">employee.accommodation.search.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Employee Accommodation Search">
+                    <sheet>
+                        <group>
+                            <group string="Employee Details">
+                                <field name="employee_id"
+                                    options="{'no_create': True, 'no_create_edit': True}"
+                                    context="{'search_default_employee_code': 1}"
+                                    placeholder="Search by Employee Code..." />
+                                <field name="name" />
+                                <field name="department_id" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Search"
+                            type="object"
+                            name="action_search_properties"
+                            class="btn btn-primary"
+                            icon="fa-search" />
+                        <button string="Cancel"
+                            special="cancel"
+                            class="btn btn-secondary" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="employee_accommodation_search_wizard_action" model="ir.actions.act_window">
+            <field name="name">Accommodation Search Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">employee.accommodation.search.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

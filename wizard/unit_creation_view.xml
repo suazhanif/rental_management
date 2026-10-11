@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="unit_creation_wizard_view_form" model="ir.ui.view">
+            <field name="name">unit_creation_wizard_view_form</field>
+            <field name="model">unit.creation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="floor_start_from" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="total_floors" required="1" />
+                                <field name="units_per_floor" required="1" />
+                            </group>
+                            <group>
+                                <field name="property_code_prefix" required="1" readonly="1"
+                                    force_save="1" />
+                            </group>
+
+                        </group>
+                        <footer>
+                            <button string='Create units' name="action_create_property_unit"
+                                type="object"
+                                class="btn-primary" />
+                            <button string="Discard" class="btn-secondary" special="cancel"
+                                data-hotkey="z" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="unit_creation_action" model="ir.actions.act_window">
+            <field name="name">Create Units</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">unit.creation</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

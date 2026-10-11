@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="landlord_tenancy_sold_xls_report_form_view" model="ir.ui.view">
+            <field name="name">landlord.tenancy.sold.form.view</field>
+            <field name="model">landlord.sale.tenancy</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <label for="landlord_id" />
+                            <div>
+                                <field name="landlord_id" required="1"
+                                    options="{'no_open':True,'no_create':True}" />
+                                <div class="font-italic text-muted" invisible="landlord_id">
+                                </div>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="report_for" required="1" widget="radio"
+                                options="{'horizontal':True}" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Print" type="object" class="btn btn-outline-success"
+                            name="action_tenancy_sold_xls_report" />
+                        <button string="Cancel" special="cancel" class="btn btn-outline-danger" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="landlord_tenancy_sold_xls_wizard_action" model="ir.actions.act_window">
+            <field name="name">Landlord Rent/Sold</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">landlord.sale.tenancy</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

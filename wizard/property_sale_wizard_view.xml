@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_vendor_wizard_form_view" model="ir.ui.view">
+            <field name="name">property.vendor.wizard.form.view</field>
+            <field name="model">property.vendor.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <label for="payment_term"/>
+                            <div>
+                                <field name="payment_term" required="1"/>
+                                <div class="font-italic text-muted" invisible="payment_term != 'quarterly'">
+                                    * 3 Month Quarter
+                                </div>
+                            </div>
+                            <field name="start_date" invisible="payment_term == 'full_payment'" required="payment_term in ['quarterly','monthly']"/>
+                        </group>
+                        <group>
+                            <field name="quarter" invisible="payment_term != 'quarterly'" required="payment_term == 'quarterly'"/>
+                            <field name="duration_id" options="{'no_quick_create':True,'no_create_edit':True}" invisible="payment_term != 'monthly'" required="payment_term == 'monthly'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="property_id" invisible="1" readonly="1" force_save="1"/>
+                            <field name="final_price"/>
+                        </group>
+                        <group>
+                            <field name="customer_id" invisible="1" domain="[('property_id', '=', property_id)]"
+                                   required="1"
+                                   options="{'no_quick_create':True,'no_create_edit':True}" readonly="1"
+                                   force_save="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="installment_item_id" required="1"/>
+                        </group>
+                        <group>
+                            <field name="is_taxes"/>
+                            <field name="taxes_ids" widget="many2many_tags" invisible="not is_taxes" required="is_taxes"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Create Installments" type="object" class="btn btn-outline-success"
+                                name="property_sale_action"/>
+                        <button string="Cancel" special="cancel" class="btn btn-outline-danger"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="property_vendor_wizard_action" model="ir.actions.act_window">
+            <field name="name">Property Sold</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.vendor.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

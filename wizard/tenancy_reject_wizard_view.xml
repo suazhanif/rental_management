@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!--  Rent Contract Approval — Reject Wizard                      -->
+        <!-- ============================================================ -->
+        <record id="tenancy_reject_wizard_form_view" model="ir.ui.view">
+            <field name="name">tenancy.reject.wizard.form</field>
+            <field name="model">tenancy.reject.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reject Rent Contract">
+                    <sheet>
+
+                        <!-- ── Warning banner ── -->
+                        <div class="alert alert-warning o_form_label mb-3"
+                             role="alert"
+                             style="border-left: 4px solid #f0ad4e; padding: 12px 16px;">
+                            <h4 class="mb-1">
+                                <i class="fa fa-exclamation-triangle me-2"/>
+                                Reject Rent Contract
+                            </h4>
+                            <p class="mb-0">
+                                The contract will be returned to the submitter
+                                in <strong>Draft</strong> state and an email
+                                with your reason will be sent.  The reason
+                                below is <strong>required</strong>.
+                            </p>
+                        </div>
+
+                        <!-- ── Read-only context ── -->
+                        <group string="Contract">
+                            <field name="tenancy_seq" readonly="1"/>
+                            <field name="submitted_by" readonly="1"
+                                   widget="many2one_avatar_user"/>
+                        </group>
+
+                        <!-- ── Rejection reason ── -->
+                        <group string="Rejection Reason">
+                            <field name="reason"
+                                   required="1"
+                                   placeholder="Please provide a clear reason for rejecting this contract. The submitter will see this exact text."
+                                   nolabel="1"/>
+                        </group>
+
+                    </sheet>
+
+                    <footer>
+                        <button string="Confirm Rejection"
+                                type="object"
+                                name="action_confirm_rejection"
+                                class="btn btn-danger"
+                                icon="fa-times-circle"
+                                confirm="Are you sure you want to reject this contract? The submitter will be notified by email."/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

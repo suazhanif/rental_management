@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!--  Dual Accommodation Chairman Approval Wizard — Form View     -->
+        <!-- ============================================================ -->
+        <record id="dual_accommodation_approval_wizard_form_view"
+                model="ir.ui.view">
+            <field name="name">dual.accommodation.approval.wizard.form</field>
+            <field name="model">dual.accommodation.approval.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Chairman Approval — Dual Accommodation">
+                    <sheet>
+
+                        <!-- ── Warning banner ── -->
+                        <div class="alert alert-warning o_form_label mb-3"
+                             role="alert"
+                             style="border-left: 4px solid #f0ad4e; padding: 12px 16px;">
+                            <h4 class="mb-1">
+                                <i class="fa fa-exclamation-triangle me-2"/>
+                                Dual Accommodation Detected
+                            </h4>
+                            <p class="mb-0">
+                                This employee already holds a running accommodation
+                                contract (shown below).  To assign an additional bed,
+                                please obtain <strong>Chairman approval</strong> and
+                                enter the approval number along with any supporting
+                                documents before confirming.
+                            </p>
+                        </div>
+
+                        <!-- ── Existing contract summary (read-only) ── -->
+                        <group string="Existing Accommodation Contract">
+                            <field name="existing_occupy_id" readonly="1"
+                                   options="{'no_open': False}"/>
+                            <field name="existing_property_id" readonly="1"/>
+                            <field name="existing_bed_id"      readonly="1"/>
+                            <field name="existing_start_date"  readonly="1"/>
+                        </group>
+
+                        <!-- ── New booking summary (read-only) ── -->
+                        <group string="New Booking Details">
+                            <group>
+                                <field name="property_id"   readonly="1"/>
+                                <field name="sale_lease"    readonly="1"/>
+                                <field name="bed_id"        readonly="1"
+                                       invisible="sale_lease != 'bachelor'"/>
+                            </group>
+                            <group>
+                                <field name="occupant_id"      readonly="1"/>
+                                <field name="employee_id"      readonly="1"
+                                       invisible="partner_type == 'non_company'"/>
+                                <field name="start_date"       readonly="1"/>
+                                <field name="expected_end_date" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- ── Chairman Approval ── -->
+                        <group string="Chairman Approval">
+                            <field name="approval_number"
+                                   placeholder="e.g. CHR-2025-00123"
+                                   required="1"/>
+                            <field name="approval_notes"
+                                   placeholder="Optional remarks…"
+                                   widget="text"/>
+                        </group>
+
+                        <!-- ── Supporting Documents ── -->
+                        <group string="Supporting Documents">
+                            <field name="approval_document_ids"
+                                   widget="many2many_binary"
+                                   string="Attachments"
+                                   colspan="2"/>
+                        </group>
+
+                        <!-- Hidden helper fields -->
+                        <field name="partner_type"           invisible="1"/>
+                        <field name="is_readings_required"   invisible="1"/>
+                        <field name="water_reading"          invisible="1"/>
+                        <field name="water_reading_date"     invisible="1"/>
+                        <field name="electricity_reading"    invisible="1"/>
+                        <field name="electricity_reading_date" invisible="1"/>
+
+                    </sheet>
+
+                    <footer>
+                        <button string="Confirm Dual Accommodation"
+                                type="object"
+                                name="action_confirm_dual_accommodation"
+                                class="btn btn-primary"
+                                icon="fa-check-circle"
+                                confirm="Are you sure you want to proceed with dual accommodation using the provided chairman approval?"/>
+                        <button string="Cancel"
+                                special="cancel"
+                                class="btn btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

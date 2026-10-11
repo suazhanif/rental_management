@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="contract_wizard_form_view" model="ir.ui.view">
+            <field name="name">contract.wizard.form.view</field>
+            <field name="model">contract.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <!-- Lead Details -->
+                    <group string="Lead Details">
+                        <group>
+                            <field name="from_inquiry" />
+                        </group>
+                        <group>
+                            <field name="lead_id" required="from_inquiry"
+                                invisible="not from_inquiry" options="{'no_create':True}"
+                                readonly="is_contract_extend" />
+                        </group>
+                    </group>
+                    <!-- Customer &amp; Property Details -->
+                    <group>
+                        <group string="Customer Details">
+                            <field name="customer_id" required="1" readonly="is_contract_extend"
+                                options="{'no_quick_create':True}" />
+                            <field name="customer_phone" widget="phone" />
+                            <field name="customer_email" widget="email" />
+                        </group>
+                        <group string="Property Details">
+                            <field name="is_contract_extend" invisible="1" />
+                            <field name="company_id" invisible="1" />
+                            <field name="currency_id" invisible="1" />
+                            <field name="is_extra_service" invisible="1" />
+                            <field name="is_any_maintenance" invisible="1" />
+                            <field name="is_contract_available" invisible="1" />
+                            <field name="contract_desc" invisible="1" />
+                            <field name="property_id" readonly="1" force_save="1" />
+                            <label for="total_rent" string="Rent" />
+                            <div>
+                                <field name="total_rent" required="1" class="oe_inline" /> / <field
+                                    name="rent_unit" class="oe_inline" required="1"
+                                    readonly="duration_type == 'by_date'" force_save="1" />
+                                <div
+                                    class="font-italic text-muted"
+                                    invisible="duration_type != 'by_date'">
+                                    * Rent unit must be a "Day" when the duration type is "By Date".
+                                </div>
+                            </div>
+                        </group>
+                    </group>
+                    <!-- Water/Electricity Readings -->
+                    <group>
+                        <group string="Water Readings">
+                            <field name="utility_water_account_no" readonly="1" force_save="1" />
+                            <field name="water_reading" />
+                            <field name="water_reading_date" />
+                        </group>
+                        <group string="Electricity Readings">
+                            <field name="utility_electricity_account_no" readonly="1" force_save="1" />
+                            <field name="electricity_reading" />
+                            <field name="electricity_reading_date" />
+                        </group>
+                    </group>
+                    <!-- Contract Details -->
+                    <group string="Contract Details">
+                        <group>
+                            <field name="duration_type" widget="radio" options="{'horizontal':True}"
+                                required="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="start_date" required="1" />
+                            <label for="payment_term" />
+                            <div>
+                                <field name="payment_term" required="1"
+                                    force_save="1" />
+                                <div class="font-italic text-muted"
+                                    invisible="payment_term != 'quarterly'">
+                                    * 3 Month Quarter
+                                </div>
+                                <div class="font-italic text-muted"
+                                    invisible="payment_term != 'bi_monthly'">
+                                    * 2 Month Bi-Monthly
+                                </div>
+                                <div class="font-italic text-muted"
+                                    invisible="not available_payment_term">
+                                    <field name="available_payment_term" />
+                                </div>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="end_date" required="1"
+                                invisible="duration_type != 'by_duration' or not duration_id" />
+                            <field name="duration_end_date" required="duration_type == 'by_date'"
+                                string="End Date" invisible="duration_type != 'by_date'" />
+                            <field name="total_days" invisible="duration_type != 'by_date'" />
+                            <field name="duration_ids" invisible="1" />
+                            <field name="duration_id" required="duration_type == 'by_duration'"
+                                invisible="duration_type != 'by_duration' or not payment_term"
+                                options="{'no_create':True,'no_create_edit':True,'no_open':True}" />
+                        </group>
+                    </group>
+                    <!-- Contract Period Notification -->
+                    <div class="alert alert-warning text-center mb-0" role="alert"
+                        invisible="not is_contract_available or not contract_desc">
+                        <span class="fw-bold">Selected contract period is available.</span>
+                        <br />
+                        <span invisible="not contract_desc">with following draft contract</span>
+                        <field name="contract_desc" invisible="not contract_desc" readonly="1"
+                            force_save="1" />
+                    </div>
+                    <div class="alert alert-success text-center mb-0" role="alert"
+                        invisible="not is_contract_available or contract_desc">
+                        Selected contract time period is available.
+                    </div>
+                    <div class="alert alert-danger text-center" role="alert"
+                        invisible="is_contract_available or not start_date or not end_date">
+                        Selected contract time period is not available.
+                    </div>
+                    <!-- Rent Increment when extend contract -->
+                    <group string="Rent Increment" invisible="not is_contract_extend">
+                        <group>
+                            <field name="is_rent_increment" />
+                        </group>
+                    </group>
+                    <group invisible="not is_rent_increment or not is_contract_extend">
+                        <group string="Current Rent">
+                            <label for="current_rent_type" />
+                            <div>
+                                <field name="current_rent_type" widget="radio"
+                                    options="{'horizontal':True}" />
+                                <div class="font-italic text-muted"
+                                    invisible="current_rent_type != 'area_wise'">
+                                    In area-wise pricing types, the incremental rent is calculated
+                                    based on the rent per
+                                    area.
+                                </div>
+                            </div>
+                            <label for="current_area" class="mt-1" />
+                            <div name="current_area">
+                                <field name="current_area" class="oe_inline" force_save="1" /> / <field
+                                    name="measure_unit" class="oe_inline" />
+                            </div>
+                            <field name="price_per_area"
+                                invisible="current_rent_type != 'area_wise'" />
+                            <label for="total_rent" string="Rent" />
+                            <div>
+                                <field name="total_rent" required="1" class="oe_inline" />/ <field
+                                    name="rent_unit" class="oe_inline" required="1" />
+                            </div>
+                        </group>
+                        <group string="Increment Rent">
+                            <field name="rent_increment_type" widget="radio"
+                                options="{'horizontal':True}" />
+                            <field name="increment_percentage"
+                                invisible="rent_increment_type != 'percentage'" />
+                            <field name="increment_amount" invisible="rent_increment_type != 'fix'" />
+                            <field name="incremented_rent_area"
+                                invisible="current_rent_type != 'area_wise'" />
+                            <label for="incremented_rent" string="Final Rent" />
+                            <div>
+                                <field name="incremented_rent" required="1" class="oe_inline" />/ <field
+                                    name="rent_unit" class="oe_inline" />
+                            </div>
+                        </group>
+                    </group>
+                    <!-- Deposit -->
+                    <group string="Security Deposit">
+                        <group>
+                            <field name="is_any_deposit" />
+                        </group>
+                        <group>
+                            <field name="deposit_amount" invisible="not is_any_deposit"
+                                required="is_any_deposit" />
+                        </group>
+                    </group>
+                    <group invisible="not is_extra_service and not is_any_maintenance">
+                        <group invisible="not is_extra_service" string="Utility Services">
+                            <field name="is_extra_service" invisible="1" string="Utility Services" />
+                            <field name="extra_service_invoice"
+                                widget="radio" string="Invoice" options="{'horizontal':True}" />
+                            <field name="extra_service_ids" nolabel="1" colspan="2">
+                                <list>
+                                    <field name="service_id" />
+                                    <field name="service_type" />
+                                    <field name="price" />
+                                </list>
+                            </field>
+                        </group>
+                        <group invisible="not is_any_maintenance" string="Maintenance">
+                            <field name="maintenance_service_invoice"
+                                widget="radio" string="Invoice" options="{'horizontal':True}" />
+                            <field name="maintenance_rent_type" />
+                            <field name="total_maintenance" />
+                        </group>
+                    </group>
+                    <group string="Extra Services">
+                        <group>
+                            <field name="is_added_services" string="Extra Service ?" />
+                            <field name="added_service_invoice" invisible="not is_added_services"
+                                widget="radio" string="Invoice" />
+                        </group>
+                        <group invisible="not is_added_services">
+                            <field name="added_service_ids" nolabel="1" colspan="2">
+                                <list editable="bottom">
+                                    <field name="service_id" required="1"
+                                        options="{'no_quick_create':True}" />
+                                    <field name="price" />
+                                    <field name="company_id" column_invisible="1" />
+                                    <field name="currency_id" column_invisible="1" />
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                    <group string="Broker Details">
+                        <group>
+                            <field name="is_any_broker" />
+                        </group>
+                    </group>
+                    <group invisible="not is_any_broker">
+                        <group>
+                            <field name="broker_id" required="is_any_broker"
+                                options="{'no_create':True,'no_create_edit':True}" />
+                            <field name="commission_from" widget="radio"
+                                options="{'horizontal': true}" required="is_any_broker" />
+                            <field name="rent_type" required="is_any_broker"
+                                widget="radio"
+                                options="{'horizontal': true}" />
+                        </group>
+                        <group>
+                            <field name="commission_type" required="is_any_broker"
+                                widget="radio" options="{'horizontal': true}" />
+                            <field name="broker_commission_percentage"
+                                invisible="commission_type != 'p'"
+                                required="commission_type == 'p'" />
+                            <field name="broker_commission" widget="monetary"
+                                invisible="commission_type != 'f'"
+                                required="commission_type == 'f'" />
+                        </group>
+                    </group>
+                    <group string="Taxes">
+                        <group>
+                            <field name="instalment_tax" />
+                            <field name="deposit_tax" invisible="not is_any_deposit" />
+                            <field name="service_tax" invisible="not is_extra_service" />
+                        </group>
+                        <group
+                            invisible="not instalment_tax and not deposit_tax and not service_tax">
+                            <field name="tax_ids" widget="many2many_tags"
+                                required="instalment_tax or deposit_tax or service_tax" />
+                        </group>
+                    </group>
+                    <group string="Penalty Details" invisible="not is_penalty_visible">
+                        <group>
+                            <field name="is_penalty_visible" invisible="1" />
+                            <field name="is_penalty_applied" />
+                            <field name="penalty_percentage" invisible="not is_penalty_applied"
+                                required="is_penalty_applied" />
+                        </group>
+                        <group>
+                            <field name="penalty_days_after_due" invisible="not is_penalty_applied"
+                                required="is_penalty_applied" />
+                        </group>
+                    </group>
+                    <group string="Installment Item">
+                        <group>
+                            <field name="installment_item_id" required="1" />
+                            <field name="deposit_item_id" invisible="not is_any_deposit"
+                                required="is_any_deposit" />
+                        </group>
+                        <group>
+                            <field name="broker_item_id" invisible="not is_any_broker"
+                                required="is_any_broker" />
+                            <field name="maintenance_item_id" invisible="not is_any_maintenance"
+                                required="is_any_maintenance" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lead Note" invisible="not lead_id">
+                            <field name="note" widget="html" readonly="1" placeholder="Lead Notes" />
+                        </page>
+                        <page string="Agreement">
+                            <group string="Template">
+                                <group>
+                                    <field name="agreement_template_id" />
+                                </group>
+                            </group>
+                            <field name="agreement" placeholder="Rental Agreement." />
+                        </page>
+                        <page string="Terms &amp; Conditions">
+                            <field name="term_condition" placeholder="Terms &amp; Conditions"
+                                widget="html" />
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button string="Create Contract" type="object"
+                            class="btn btn-outline-success"
+                            name="contract_action"
+                            invisible="payment_term == 'full_payment' or not is_contract_available" />
+                        <button string="Create Invoice" type="object"
+                            class="btn btn-outline-success"
+                            name="contract_action"
+                            invisible="payment_term != 'full_payment' or not is_contract_available" />
+                        <button string="Cancel" special="cancel" class="btn btn-outline-danger" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="contract_wizard_action" model="ir.actions.act_window">
+            <field name="name">Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contract.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
