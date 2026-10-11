@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="property_invoice_form_inherit" model="ir.ui.view">
+            <field name="name">property.invoice.form.inherit.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_reference']" position="before">
+                    <field name="tenancy_id" invisible="not tenancy_id" />
+                    <field name="tenancy_property_id" invisible="not tenancy_id" />
+                    <field name="sold_id" invisible="not sold_id" />
+                    <field name="sold_property_id" invisible="not sold_id" />
+                    <field name="maintenance_request_id" readonly="1" force_save="1"
+                        invisible="not maintenance_request_id" />
+                    <field name="penalty_id" invisible="not penalty_id" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

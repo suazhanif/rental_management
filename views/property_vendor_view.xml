@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_vendor_form_view" model="ir.ui.view">
+            <field name="name">property.vendor.form.view</field>
+            <field name="model">property.vendor</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <header>
+                        <field name="stage" widget="statusbar" statusbar_visible="booked"
+                            nolabel="1" />
+                        <button name="action_refund_amount"
+                            type="object"
+                            string="Refund"
+                            icon="fa-undo"
+                            class="btn btn-outline-dark"
+                            invisible="stage not in ['booked'] or sale_invoice_ids"
+                            confirm="Are you sure you want to cancel your booking and receive a refund ?" />
+                        <button name="%(property_vendor_wizard_action)d"
+                            type="action"
+                            icon="fa-plus"
+                            string="Create Installments"
+                            class="btn btn-primary"
+                            invisible="stage not in ['booked'] or sale_invoice_ids" />
+                        <button name="action_reset_installments"
+                            type="object"
+                            icon="fa-refresh"
+                            string="Reset Installments"
+                            class="btn btn-outline-danger"
+                            invisible="stage not in ['booked'] or not sale_invoice_ids" />
+                        <button name="action_confirm_sale"
+                            type="object"
+                            string="Confirm Sale"
+                            class="btn btn-info"
+                            icon="fa-chevron-circle-right"
+                            invisible="stage not in ['booked'] or not sale_invoice_ids" />
+                        <button name="%(maintenance_wizard_action)d" type='action'
+                            context="{'is_selling_contract_maintenance': True}"
+                            icon="fa-wrench"
+                            string="Maintenance Request" class="btn btn-warning"
+                            invisible="stage not in ['sold', 'locked']" />
+                        <button name="action_cancel_contract"
+                            type="object"
+                            string="Cancel"
+                            class="btn btn-danger"
+                            icon="fa-times"
+                            invisible="stage in ['locked','cancel']"
+                            confirm="Are you sure you want to cancel your contract?" />
+                        <button name="action_locked_contract"
+                            type="object"
+                            string="Locked"
+                            icon="fa-lock"
+                            class="btn btn-danger"
+                            invisible="stage != 'sold'"
+                            confirm="Are you sure? , After lock contract can not able to cancel." />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object"
+                                name="action_maintenance_request" icon="fa-wrench">
+                                <field name="maintenance_request_count" string="Maintenances"
+                                    widget="statinfo" />
+                            </button>
+                        </div>
+                        <h1>
+                            <field name="sold_seq" />
+                        </h1>
+                        <br />
+                        <group string="Selling Details">
+                            <group>
+                                <field name="date" readonly="stage != 'booked'"
+                                    force_save="1" />
+                                <field name="currency_id" invisible="1" />
+                                <field name="file_name" invisible="1" />
+                                <field name="sold_document" filename="file_name" widget="binary"
+                                    string="Sold Contract" force_save="1" />
+                            </group>
+                            <group>
+                                <field name="company_id"
+                                    options="{'no_quick_create':True,'no_create_edit':True}" />
+                            </group>
+                        </group>
+                        <group string="Property Details">
+                            <group>
+                                <field name="property_id" readonly="1" force_save="1" />
+                                <label for="type" class="mt-1" />
+                                <div name="type">
+                                    <field name="type" class="oe_inline"
+                                        force_save="1" /> / <field name="property_subtype_id"
+                                        options="{'no_open':True}"
+                                        class="oe_inline" />
+                                </div>
+                                <span class="o_form_label o_td_label" name="address_name">
+                                    <b>Address</b>
+                                </span>
+                                <div class="o_address_format">
+                                    <field name="street" placeholder="Street..."
+                                        class="o_address_street" />
+                                    <field name="street2" placeholder="Street 2..."
+                                        class="o_address_street" />
+                                    <field name="city_id" placeholder="City" class="o_address_city" />
+                                    <field name="state_id" class="o_address_state"
+                                        placeholder="State" />
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip" />
+                                    <field name="country_id" placeholder="Country"
+                                        class="o_address_country" />
+                                </div>
+                            </group>
+                            <group>
+                                <field name="price" />
+                                <field name="region_id" />
+                                <field name="property_project_id" readonly="1" force_save="1"
+                                    invisible="not property_project_id" />
+                                <field name="subproject_id" readonly="1" force_save="1"
+                                    invisible="not subproject_id" />
+                            </group>
+                        </group>
+                        <hr class="mb-3 mt-4" />
+                        <div class="row">
+                            <div class="col-2">
+                                <strong>
+                                    Total Area
+                                </strong>
+                            </div>
+                            <div class="col-4">
+                                <div name="total_area">
+                                    <span>
+                                        <field name="total_area" class="oe_inline"
+                                            force_save="1" />/ <field name="measure_unit"
+                                            class="oe_inline" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <strong>
+                                    Usable Area
+                                </strong>
+                            </div>
+                            <div class="col-4">
+                                <div name="usable_area">
+                                    <span>
+                                        <field name="usable_area" class="oe_inline"
+                                            force_save="1" />/ <field name="measure_unit"
+                                            class="oe_inline" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-4 mt-3" />
+                        <group>
+                            <group string="Customer Details">
+                                <field name="customer_id" required="1"
+                                    readonly="stage != 'booked'"
+                                    force_save="1"
+                                    options="{'no_quick_create':True,'no_create_edit':True}" />
+                                <field name="customer_phone" widget="phone" />
+                                <field name="customer_email" widget="email" />
+                            </group>
+                            <group string="Landlord Details">
+                                <field name="landlord_id" />
+                                <field name="landlord_phone" widget="phone" string="Phone" />
+                                <field name="landlord_email" widget="email" string="Email" />
+                            </group>
+                        </group>
+                        <group string="Broker Details">
+                            <group>
+                                <field name="is_any_broker"
+                                    readonly="stage != 'booked'"
+                                    force_save="1" />
+                            </group>
+                        </group>
+                        <group string="Penalty Details" invisible="not is_penalty_applied">
+                            <group>
+                                <field name="is_penalty_applied" readonly="stage != 'booked'" />
+                                <field name="penalty_percentage" readonly="stage != 'booked'" />
+                            </group>
+                            <group>
+                                <field name="penalty_days_after_due" readonly="stage != 'booked'" />
+                            </group>
+                        </group>
+                        <group invisible="not is_any_broker">
+                            <group>
+                                <field name="broker_id"
+                                    readonly="stage != 'booked'"
+                                    options="{'no_quick_create':True,'no_create_edit':True}" />
+                                <field name="commission_from"
+                                    readonly="stage != 'booked'" />
+                                <field name="commission_type"
+                                    readonly="stage != 'booked'" />
+                            </group>
+                            <group>
+                                <field name="broker_commission_percentage"
+                                    invisible="commission_type == 'f'" readonly="stage != 'booked'" />
+                                <field name="broker_commission" invisible="commission_type != 'f'"
+                                    readonly="stage != 'booked'" />
+                                <field name="broker_final_commission"
+                                    invisible="commission_type == 'f'" />
+                                <label for="broker_bill_id" class="mt-1"
+                                    invisible="not broker_bill_id" />
+                                <div name="broker_bill_id" invisible="not broker_bill_id">
+                                    <field name="broker_bill_id" readonly="1" class="oe_inline"
+                                        force_save="1"
+                                        style="width:35%;" />
+                                    <field name="broker_bill_payment_state" widget="badge"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="broker_bill_payment_state=='paid'"
+                                        decoration-danger="broker_bill_payment_state=='not_paid'"
+                                        decoration-info="broker_bill_payment_state=='in_payment'"
+                                        decoration-primary="broker_bill_payment_state=='partial'"
+                                        decoration-warning="broker_bill_payment_state=='reversed'"
+                                    />
+                                </div>
+                                <label for="broker_invoice_id" class="mt-1"
+                                    string="Landlord Brokerage Invoice"
+                                    invisible="commission_from != 'landlord' or not broker_invoice_id" />
+                                <label for="broker_invoice_id" class="mt-1"
+                                    string="Customer Brokerage Invoice"
+                                    invisible="commission_from != 'customer' or not broker_invoice_id" />
+                                <div name="broker_invoice_id" invisible="not broker_invoice_id">
+                                    <field name="broker_invoice_id" readonly="1" class="oe_inline"
+                                        force_save="1"
+                                        style="width:35%;" />
+                                    <field name="broker_invoice_payment_state" widget="badge"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="broker_bill_payment_state=='paid'"
+                                        decoration-danger="broker_bill_payment_state=='not_paid'"
+                                        decoration-info="broker_bill_payment_state=='in_payment'"
+                                        decoration-primary="broker_bill_payment_state=='partial'"
+                                        decoration-warning="broker_bill_payment_state=='reversed'"
+                                    />
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Sale Item &amp; Taxes">
+                            <group>
+                                <field name="booking_item_id" readonly="1" force_save="1" />
+                                <field name="installment_item_id" required="1" force_save="1"
+                                    readonly="stage != 'booked'" />
+                                <field name="broker_item_id" force_save="1"
+                                    invisible="not is_any_broker" required="is_any_broker"
+                                    readonly="stage != 'booked'" />
+                            </group>
+                            <group>
+                                <field name="is_taxes"
+                                    readonly="stage != 'booked'" force_save="1" />
+                                <field name="taxes_ids" widget="many2many_tags" force_save="1"
+                                    readonly="stage != 'booked'" invisible="not is_taxes"
+                                    requried="is_taxes" />
+                            </group>
+                        </group>
+                        <group string="Payment Details">
+                            <group>
+                                <field name="payment_term" readonly="1" force_save="1" />
+                                <field name="ask_price" required="1"
+                                    readonly="stage != 'booked'"
+                                    force_save="1" />
+                                <field name="sale_price" required="1" force_save="1" readonly="1" />
+                                <field name="is_any_maintenance" invisible="1" />
+                                <field name="total_maintenance" invisible="not is_any_maintenance" />
+                                <field name="is_utility_service" invisible="1" />
+                                <field name="total_service" invisible="not is_utility_service" />
+                            </group>
+                            <group>
+                                <field name="total_sell_amount" />
+                                <label for="book_price" class="mt-1" invisible="book_price == 0" />
+                                <div name="book_invoice_id"
+                                    invisible="book_price == 0">
+                                    <field name="book_price" required="1" class="oe_inline"
+                                        readonly="1" force_save="1" />
+                                    <br />
+                                    <strong invisible="not book_invoice_id">
+                                        Invoice :
+                                    </strong>
+                                    <field name="book_invoice_id" readonly="1" class="oe_inline"
+                                        invisible="not book_invoice_id"
+                                        force_save="1"
+                                        style="width:35%;" />
+                                    <field name="book_invoice_payment_state" widget="badge"
+                                        invisible="not book_invoice_id"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="book_invoice_payment_state=='paid'"
+                                        decoration-danger="book_invoice_payment_state=='not_paid'"
+                                        decoration-info="book_invoice_payment_state=='in_payment'"
+                                        decoration-primary="book_invoice_payment_state=='partial'"
+                                        decoration-warning="book_invoice_payment_state=='reversed'" />
+                                </div>
+                                <field name="payable_amount" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Invoices" name="sold_invoice"
+                                invisible="not sale_invoice_ids">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <field name="remain_check" invisible="1" />
+                                        <button name="action_receive_remaining" type="object"
+                                            confirm="Are you sure? After this action can not able to regenerate or reset installment."
+                                            string="Receive Remaining Payment"
+                                            class="btn btn-primary"
+                                            invisible="remain_check or stage != 'sold'" />
+                                    </div>
+                                </div>
+                                <br />
+                                <field name="sale_invoice_ids">
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="name" readonly="1" force_save="1" />
+                                                <field name="desc" />
+                                                <field name="invoice_id" readonly="1" force_save="1"
+                                                    invisible="not invoice_id" widget="many2one" />
+                                                <field name="payment_state" widget="badge"
+                                                    decoration-success="payment_state=='paid'"
+                                                    decoration-danger="payment_state=='not_paid'"
+                                                    decoration-info="payment_state=='in_payment'"
+                                                    decoration-primary="payment_state=='partial'"
+                                                    decoration-warning="payment_state=='reversed'" />
+                                            </group>
+                                            <group>
+                                                <field name="invoice_date" readonly="1"
+                                                    force_save="1" />
+                                                <field name="tax_ids" widget="many2many_tags"
+                                                    options="{'no_open': True, 'no_quick_create': True}"
+                                                    readonly="1" force_save="1" />
+                                                <field name="amount" readonly="1" force_save="1" />
+                                                <field name="tax_amount" />
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <list editable="bottom" delete="false" create="false">
+                                        <field name="name" required="1" readonly="1" force_save="1" />
+                                        <field name="desc" readonly="invoice_id"
+                                            force_save="1" optional="hide" />
+                                        <field name="invoice_date" required="1"
+                                            readonly="invoice_id"
+                                            force_save="1" />
+                                        <field name="amount" required="1" readonly="1"
+                                            force_save="1" />
+                                        <field name="tax_ids" widget="many2many_tags"
+                                            readonly="invoice_id"
+                                            force_save="1" />
+                                        <field name="tax_amount" optional="hide" />
+                                        <field name="total_amount" string="Total Amount"
+                                            help="Taxed" optional="hide" invisible="not invoice_id" />
+                                        <field name="paid_amount" string="Paid Amount"
+                                            optional="hide" invisible="not invoice_id" />
+                                        <field name="remaining_amount" string="Due Amount"
+                                            optional="hide" invisible="not invoice_id" />
+                                        <field name="currency_id" column_invisible="1" />
+                                        <field name="invoice_created" column_invisible="1" />
+                                        <field name="invoice_id" readonly="1"
+                                            force_save="1"/>
+                                        <field name="payment_state" widget="badge"
+                                            decoration-success="payment_state=='paid'"
+                                            decoration-danger="payment_state=='not_paid'"
+                                            decoration-info="payment_state=='in_payment'"
+                                            decoration-primary="payment_state=='partial'"
+                                            decoration-warning="payment_state=='reversed'" />
+                                        <button name="action_create_invoice" type="object"
+                                            string="Create Invoice"
+                                            class="btn btn-info"
+                                            column_invisible="parent.stage != 'sold'"
+                                            invisible="invoice_created" />
+                                    </list>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" string="Calculation"
+                                    style="text-align: right">
+                                    <field name="total_untaxed_amount" />
+                                    <field name="tax_amount" />
+                                    <field name="total_amount" class="oe_subtotal_footer_separator" />
+                                    <field name="paid_amount" />
+                                    <field name="remaining_amount"
+                                        class="oe_subtotal_footer_separator" />
+                                </group>
+                            </page>
+                            <page string="Penalty Invoices" name="penalty_invoices"
+                                invisible="not penalty_invoice_ids">
+                                <field name="penalty_invoice_ids" readonly="1">
+                                    <list>
+                                        <field name="invoice_date" />
+                                        <field name="description" />
+                                        <field name="currency_id" column_invisible="1" />
+                                        <field name="amount" widget="monetary"
+                                            options="{'currency_field': 'currency_id'}" />
+                                        <field name="penalty_invoice_id" widget="many2one" />
+                                        <field name="payment_state" widget="badge"
+                                            decoration-success="payment_state=='paid'"
+                                            decoration-danger="payment_state=='not_paid'"
+                                            decoration-info="payment_state=='in_payment'"
+                                            decoration-primary="payment_state=='partial'"
+                                            decoration-warning="payment_state=='reversed'" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Terms &amp; Conditions">
+                                <field name="term_condition" placeholder="Terms &amp; Conditions"
+                                    widget="html" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter />
+                </form>
+            </field>
+        </record>
+        <record id="property_vendor_list_view" model="ir.ui.view">
+            <field name="name">property.vendor.list.view</field>
+            <field name="model">property.vendor</field>
+            <field name="arch" type="xml">
+                <list string="Property Sold Details" js_class="sale_contract_dashboard_list" create="false">
+                    <field name="sold_seq" />
+                    <field name="property_id" />
+                    <field name="type" />
+                    <field name="price" />
+                    <field name="customer_id" />
+                    <field name="landlord_id" />
+                    <field name="total_area" />
+                    <field name="measure_unit" nolabel="1" />
+                    <field name="currency_id" column_invisible="1" />
+                    <field name="total_sell_amount" string="Sell Amount"/>
+                    <field name="book_price" string="Book Price" optional="hide" />
+                    <field name="total_untaxed_amount" string="Untaxed Amount" optional="hide" />
+                    <field name="tax_amount" string="Taxed Amount" optional="hide" />
+                    <field name="total_amount" string="Total Amount" />
+                    <field name="remaining_amount" string="Due Amount" optional="hide" />
+                    <field name="paid_amount" string="Paid Amount" optional="hide" />
+                    <field name="activity_ids" widget="list_activity" />
+                    <field name="stage" widget="badge" string="Status"
+                        decoration-success="stage=='sold'"
+                        decoration-info="stage=='refund'"
+                        decoration-primary="stage=='booked'"
+                        decoration-danger="stage=='cancel'"
+                        decoration-warning="stage=='locked'" />
+                </list>
+            </field>
+        </record>
+        <record id="property_vendor_search_view" model="ir.ui.view">
+            <field name="name">property.vendor.search.view</field>
+            <field name="model">property.vendor</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="sold_seq" />
+                    <field name="property_id" />
+                    <field name="customer_id" />
+                    <field name="broker_id" />
+                    <field name="landlord_id" />
+                    <field name="type" />
+                    <field name="property_subtype_id" />
+                    <separator />
+                    <separator />
+                    <filter string="Company" name="group_by_company" domain="[]"
+                        context="{'group_by':'company_id'}" />
+                    <filter string="Property" name="property" domain="[]"
+                        context="{'group_by':'property_id'}" />
+                    <filter string="Property Type" name="property_type" domain="[]"
+                        context="{'group_by':'type'}" />
+                    <filter string="Property Sub Type" name="property_sub_type" domain="[]"
+                        context="{'group_by':'property_subtype_id'}" />
+                    <separator />
+                    <filter string="Tenant" name="customer" domain="[]"
+                        context="{'group_by':'customer_id'}" />
+                    <filter string="Landlord" name="landlord" domain="[]"
+                        context="{'group_by':'landlord_id'}" />
+                    <separator />
+                    <filter string="Broker" name="broker" domain="[]"
+                        context="{'group_by':'broker_id'}" />
+                    <filter string="Status" name="group_by_status" domain="[]"
+                        context="{'group_by':'stage'}" />
+                    <searchpanel>
+                        <field name="stage" string="Status" enable_counters="1" select="multi" />
+                        <field name="payment_term" string="Payment Term" enable_counters="1"
+                            select="multi" />
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+        <record id="property_vendor_pivot_view" model="ir.ui.view">
+            <field name="name">property,vendor.pivot.view</field>
+            <field name="model">property.vendor</field>
+            <field name="arch" type="xml">
+                <pivot string="Statistic">
+                    <field name="ask_price" type="measure" />
+                    <field name="sold_seq" type="row" />
+                    <field name="sale_price" type="measure" />
+                </pivot>
+            </field>
+        </record>
+        <record id="property_vendor_action" model="ir.actions.act_window">
+            <field name="name">Contracts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.vendor</field>
+            <field name="view_mode">list,form,search,pivot,activity</field>
+        </record>
+
+        <!-- Sale Invoice -->
+        <record id="sale_invoice_view_form" model="ir.ui.view">
+            <field name="name">sale.invoice.view.form</field>
+            <field name="model">sale.invoice</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="invoice_date" />
+                                <field name="amount" />
+                            </group>
+                            <group>
+                                <field name="tax_ids" widget="many2many_tags" />
+                                <field name="tax_amount" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <label for="invoice_id" class="mt-1"
+                                    invisible="not invoice_id" />
+                                <div name="invoice_id" invisible="not invoice_id">
+                                    <field name="invoice_id" readonly="1" class="oe_inline"
+                                        force_save="1"
+                                        style="width:35%;" />
+                                    <field name="payment_state" widget="badge"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="payment_state=='paid'"
+                                        decoration-danger="payment_state=='not_paid'"
+                                        decoration-info="payment_state=='in_payment'"
+                                        decoration-primary="payment_state=='partial'"
+                                        decoration-warning="payment_state=='reversed'"
+                                    />
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

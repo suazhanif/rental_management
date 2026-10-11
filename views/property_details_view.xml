@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_details_form_view" model="ir.ui.view">
+            <field name="name">property.details.form.view</field>
+            <field name="model">property.details</field>
+            <field name="arch" type="xml">
+                <form string="Property">
+                    <header>
+                        <field name="sold_booking_id" invisible="1"/>
+                        <field name="stage" widget="statusbar" statusbar_visible="draft,available"
+                               nolabel="1"/>
+                        <button name="%(contract_wizard_action)d" type='action'
+                                string="Create Contract" class="btn btn-success" icon="fa-money"
+                                invisible="stage not in ['available','on_lease'] or sale_lease != 'for_tenancy'"/>
+                        <button name="%(booking_wizard_action)d" type='action'
+                                string="Create Booking" class="btn btn-success"
+                                invisible="stage not in ['sale'] or sold_booking_id"/>
+                        <button name="action_occupy_wizard"
+                                string="Occupy"
+                                type="object"
+                                class="btn btn-primary"
+                                invisible="stage != 'available' or sale_lease not in ['employee_family', 'bachelor']"
+                                groups="rental_management.property_rental_manager,rental_management.property_rental_officer"/>
+                        <button name="action_in_available" type="object" string="Available"
+                                class="btn-info"
+                                invisible="stage not in ['draft']"/>
+                        <button name="action_in_sale" type="object" string="Sale" class="btn-info"
+                                invisible="stage != 'available' or sale_lease != 'for_sale'"/>
+                        <button name="%(maintenance_wizard_action)d" type='action'
+                                context="{'is_property_maintenance': True}"
+                                string="Maintenance Request" class="btn btn-warning"
+                                invisible="stage == 'draft'"/>
+                        <button name="action_draft_property" type="object" string="Draft"
+                                class="btn btn-primary" invisible="stage not in ['available','sale']"/>
+                        <button name="action_generate_beds" type="object" string="Generate Beds"
+                                class="btn btn-primary" invisible="sale_lease != 'bachelor'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_sale_booking"
+                                    icon="fa-folder"
+                                    invisible="stage not in ['booked'] or not sold_booking_id">
+                                <field name="booking_count" string='Booking' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_gmap_location"
+                                    icon="fa-map-marker" string="Map Location"
+                                    invisible="not longitude and not latitude">
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_maintenance_request" icon="fa-wrench">
+                                <field name="request_count" string='Maintenances' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_crm_lead"
+                                    icon="fa-users">
+                                <field name="lead_count" string='Leads' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_property_sale_broker"
+                                    icon="fa-th-list"
+                                    invisible="stage in ['draft'] or sale_lease != 'for_sale'">
+                                <field name="sale_broker_count" string='Broker History'
+                                       widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_property_tenancy_broker"
+                                    icon="fa-th-list"
+                                    invisible="stage in ['draft'] or sale_lease != 'for_tenancy'">
+                                <field name="tenancy_broker_count" string='Broker History'
+                                       widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_contract"
+                                    icon="fa-book"
+                                    invisible="stage in ['draft'] or tenancy_count == 0">
+                                <field name="tenancy_count" string='Contract' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_occupy"
+                                    icon="fa-book"
+                                    invisible="stage in ['draft'] or occupy_count == 0">
+                                <field name="occupy_count" string='Occupy' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_sell_contract"
+                                    icon="fa-book"
+                                    invisible="stage in ['draft'] or vendor_count == 0">
+                                <field name="vendor_count" string='Contract' widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_increment_history"
+                                    icon="fa-book" invisible="increment_history_count == 0">
+                                <field name="increment_history_count"
+                                       string='Rent Increment History'
+                                       widget="statinfo"/>
+                            </button>
+                        </div>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <div class="oe_title mb24">
+                            <h1>
+                                <field class="text-break" name="name" default_focus="1"
+                                       placeholder="e.g. Silver Height"/>
+                            </h1>
+                            <h3>
+                                <field name="property_seq" required="0" placeholder="Code"/>
+                            </h3>
+                        </div>
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <group>
+                            <group>
+                                <field name="type" widget="radio" options="{'horizontal': true}"
+                                       readonly="stage not in ['draft','available']"/>
+                                <label for="property_subtype_id" string="Land Type"
+                                       invisible="type != 'land'"/>
+                                <label for="property_subtype_id" string="Residential Type"
+                                       invisible="type != 'residential'"/>
+                                <label for="property_subtype_id" string="Commercial Type"
+                                       invisible="type != 'commercial'"/>
+                                <label for="property_subtype_id" string="Industrial Type"
+                                       invisible="type != 'industrial'"/>
+                                <div class="property_subtype_id">
+                                    <field name="property_subtype_id" required="1"
+                                           invisible="not type"
+                                           class="oe_inline"
+                                           options="{'no_open':True,'no_create':True,'no_create_edit':True}"/>
+                                </div>
+                                <field name="ownership_type_id"
+                                       options="{'no_open':True,'no_create':True,'no_create_edit':True}"/>
+                                <field name="company_id"
+                                       options="{'no_quick_create':True,'no_create_edit':True}"/>
+                            </group>
+                            <group>
+                                <field name="sale_lease" widget="radio"
+                                       options="{'horizontal':True}" force_save="1"
+                                       readonly="stage not in ['draft','available']"/>
+                                <field name="property_project_id" readonly="1" force_save="1"
+                                       invisible="not property_project_id"/>
+                                <field name="property_project_id__project_sequence" readonly="1"
+                                       invisible="not property_project_id"/>
+                                <field name="subproject_id" readonly="1" force_save="1"
+                                       invisible="not subproject_id"/>
+                                <field name="subproject_id__project_sequence" readonly="1"
+                                       invisible="not subproject_id"/>
+                                <field name="bachelor_bed" invisible="sale_lease != 'bachelor'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Address Details">
+                                <span class="o_form_label o_td_label" name="address_name">
+                                    <b>Address</b>
+                                </span>
+                                <div class="o_address_format">
+                                    <field name="region_id" placeholder="Region"
+                                           options="{'no_quick_create':True,'no_create_edit':True}"
+                                           class="o_address_street"/>
+                                    <field name="street" placeholder="Street No."
+                                           class="o_address_street"/>
+                                    <field name="street2" placeholder="Way No."
+                                           class="o_address_street"/>
+                                    <field name="building_no" placeholder="Building No."
+                                           class="o_address_street"/>
+                                    <field name="city_id"
+                                           options="{'no_open': True, 'no_quick_create': True}"
+                                           placeholder="City" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state"
+                                           placeholder="State"
+                                           options="{'no_open': True, 'no_quick_create': True}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="country_id" placeholder="Country"
+                                           class="o_address_country"
+                                           options="{'no_open': True, 'no_quick_create': True}"/>
+                                </div>
+                            </group>
+                            <group string="Owner Details">
+                                <field name="landlord_id"
+                                       options="{'no_quick_create':True,'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="landlord_phone"/>
+                                <field name="landlord_email"/>
+                                <field name="website" widget="url"/>
+                            </group>
+                        </group>
+                        <hr class="mb-3 mt-4"/>
+                        <div class="row">
+                            <div class="col-1">
+                                <strong>
+                                    Latitude
+                                </strong>
+                            </div>
+                            <div class="col-5">
+                                <field name="latitude" placeholder="-90.00000000"/>
+                            </div>
+                            <div class="col-1">
+                                <strong>
+                                    Longitude
+                                </strong>
+                            </div>
+                            <div class="col-5">
+                                <field name="longitude" placeholder="-180.00000000"/>
+                            </div>
+                        </div>
+                        <hr class="mb-4 mt-3"/>
+                        <group string="Tags Details">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color'}"/>
+                        </group>
+                        <div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                            Availabilities
+                        </div>
+                        <span class="d-flex">
+                            <field name="amenities"/>
+                            <label for="amenities"/>
+                            <field name="is_floor_plan"/>
+                            <label for="is_floor_plan"/>
+                            <field name="is_images"/>
+                            <label for="is_images"/>
+                            <field name="is_facilities"/>
+                            <label for="is_facilities"/>
+                            <field name="nearby_connectivity"/>
+                            <label for="nearby_connectivity"/>
+                        </span>
+                        <notebook>
+                            <page string="Area Measurements" name="area_measurement">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="me-2">
+                                            <strong>
+                                                Is section-wise detailed area measurment ?
+                                            </strong>
+                                        </span>
+                                        <span>
+                                            <field name="is_section_measurement"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <field name="room_measurement_ids"
+                                       invisible="not is_section_measurement">
+                                    <list editable="bottom">
+                                        <field name="section_id" required="1"
+                                               options="{'no_create': true}"/>
+                                        <field name="type_room" column_invisible="1"/>
+                                        <field name="no_of_unit"/>
+                                        <field name="length"/>
+                                        <field name="width"/>
+                                        <field name="height"
+                                               column_invisible="parent.measure_unit not in ['cu_ft','cu_m']"/>
+                                        <field name="carpet_area"/>
+                                        <field name="sq_ft" column_invisible="1"/>
+                                        <field name="sq_m" column_invisible="1"/>
+                                        <field name="sq_yd" column_invisible="1"/>
+                                        <field name="cu_ft" column_invisible="1"/>
+                                        <field name="cu_m" column_invisible="1"/>
+                                        <field name="measure" nolabel="1" column_invisible="1"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <group string="Area Calculations">
+                                        <label for="total_area" class="mt-1"/>
+                                        <div name="total_area">
+                                            <field name="total_area" class="oe_inline"
+                                                   force_save="1"/>
+                                            /
+                                            <field name="measure_unit"
+                                                   class="oe_inline"/>
+                                        </div>
+                                        <label for="usable_area" class="mt-1"/>
+                                        <div name="usable_area">
+                                            <field name="usable_area" class="oe_inline"
+                                                   force_save="1"/>
+                                            /
+                                            <field name="measure_unit"
+                                                   class="oe_inline" readonly="1" force_save="1"/>
+                                        </div>
+                                    </group>
+                                    <group string="Property Details"
+                                           class="oe_subtotal_footer oe_right"
+                                           style="text-align: right"
+                                           invisible="type in ['land']">
+                                        <field name="total_floor"
+                                               invisible="type in ['land']"/>
+                                        <field name="floor"
+                                               invisible="type in ['land','industrial']"/>
+                                        <field name="bed"
+                                               invisible="type in ['land','industrial','commercial']"/>
+                                        <field name="bathroom"
+                                               invisible="type in ['land','industrial']"/>
+                                        <field name="parking"
+                                               invisible="type in ['land']"/>
+                                        <field name="facing"
+                                               invisible="type in ['land']"/>
+                                        <field name="furnishing_id"
+                                               options="{'no_quick_create':True,'no_create_edit':True}"
+                                               invisible="type in ['land','industrial']"/>
+                                        <label for="unit_type" class="mt-1" string="BHK"
+                                               invisible="type in ['land','industrial','commercial']"/>
+                                        <div name="unit_type"
+                                             invisible="type in ['land','industrial','commercial']">
+                                            <field name="unit_type" class="oe_inline"
+                                                   force_save="1"/>
+                                            BHK
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pricing Details" name="pricing_details">
+                                <div class="alert alert-info text-center" role="alert"
+                                     style="font-size: 15px;" invisible="pricing_type != 'area_wise'">
+                                    <span class="me-1">Total Area
+                                        <strong>
+                                            <field name="total_area" readonly="1"
+                                                   force_save="1"/>
+                                        </strong>
+                                    </span>
+                                    <spna>
+                                        <strong>
+                                            <field
+                                                    name="measure_unit" class="oe_inline"
+                                                    readonly="1" force_save="1"/>
+                                        </strong>
+                                    </spna>
+                                </div>
+                                <group>
+                                    <group string="Pricing Calculations">
+                                        <field name="sale_lease" readonly="1" force_save="1"/>
+                                        <field name="pricing_type" widget="radio"
+                                               options="{'horizontal':True}" force_save="1"
+                                               readonly="stage not in ['draft','available']"/>
+                                        <label for="price_per_area" class="mt-1"
+                                               invisible="pricing_type != 'area_wise'"/>
+                                        <div name="price_per_area"
+                                             invisible="pricing_type != 'area_wise'">
+                                            <field name="price_per_area" class="oe_inline"
+                                                   readonly="stage not in ['draft','available']"
+                                                   force_save="1"/>
+                                            /
+                                            <field name="measure_unit"
+                                                   class="oe_inline" readonly="1" force_save="1"/>
+                                        </div>
+                                        <label for="price" string="Rent"
+                                               invisible="sale_lease != 'for_tenancy'"/>
+                                        <div
+                                                invisible="sale_lease != 'for_tenancy'">
+                                            <field name="price" required="1" class="oe_inline"
+                                                   readonly="stage not in ['draft','available']"/>
+                                            /
+                                            <field
+                                                    name="rent_unit" class="oe_inline"
+                                                    required="sale_lease == 'for_tenancy'"
+                                                    readonly="stage not in ['draft','available']"/>
+                                        </div>
+                                        <label for="price" string="Sale Price"
+                                               invisible="sale_lease != 'for_sale'"/>
+                                        <div invisible="sale_lease != 'for_sale'">
+                                            <field name="price" required="1" class="oe_inline"
+                                                   readonly="stage not in ['draft','available']"/>
+                                        </div>
+                                    </group>
+                                    <group string="Maintenance Details">
+                                        <field name="is_maintenance_service"/>
+                                        <field name="maintenance_rent_type" widget="radio"
+                                               options="{'horizontal':True}"
+                                               invisible="sale_lease != 'for_tenancy' or not is_maintenance_service"/>
+                                        <field name="maintenance_type" widget="radio"
+                                               options="{'horizontal':True}"
+                                               invisible="not is_maintenance_service"
+                                               required="is_maintenance_service"/>
+                                        <label for="per_area_maintenance" class="mt-1"
+                                               invisible="not is_maintenance_service or maintenance_type != 'area_wise'"/>
+                                        <div name="per_area_maintenance"
+                                             invisible="not is_maintenance_service or maintenance_type != 'area_wise'">
+                                            <field name="per_area_maintenance" class="oe_inline"
+                                                   force_save="1"/>
+                                            /
+                                            <field name="measure_unit"
+                                                   class="oe_inline" readonly="1" force_save="1"/>
+                                        </div>
+                                        <field name="total_maintenance"
+                                               invisible="not maintenance_type or not is_maintenance_service"/>
+                                    </group>
+                                </group>
+                                <group string="Utility Services">
+                                    <group>
+                                        <field name="is_extra_service"/>
+                                    </group>
+                                    <group invisible="not is_extra_service">
+                                        <field name="extra_service_ids" string="Services"
+                                               required="is_extra_service">
+                                            <list editable="bottom">
+                                                <field name="service_id"
+                                                       options="{'no_open': True, 'no_quick_create': True}"
+                                                       required="1"/>
+                                                <field name="service_type"
+                                                       required="parent.sale_lease == 'for_tenancy'"
+                                                       column_invisible="parent.sale_lease != 'for_tenancy'"
+                                                       force_save="1"/>
+                                                <field name="price"/>
+                                            </list>
+                                        </field>
+                                    </group>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right" string="Total"
+                                       style="text-align: right">
+                                    <field name="price" readonly="1" force_save="1"/>
+                                    <field name="total_maintenance" readonly="1" force_save="1"
+                                           invisible="not is_maintenance_service"/>
+                                    <field name="extra_service_cost"
+                                           invisible="not is_extra_service"/>
+                                </group>
+                            </page>
+                            <page string="Documents" name="property_documents">
+                                <field name="document_ids">
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="doc_type" required="1"/>
+                                                <field name="file_name" invisible="1"/>
+                                                <field name="document" required="1"
+                                                       filename="file_name"/>
+                                            </group>
+                                            <group>
+                                                <field name="document_date" required="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <kanban>
+                                        <field name="id"/>
+                                        <field name="doc_type"/>
+                                        <field name="document"/>
+                                        <field name="document_date"/>
+                                        <templates>
+                                            <t t-name="card">
+                                                <div
+                                                        class="d-flex align-items-center justify-content-between mb-0">
+                                                    <h5>
+                                                        <strong>
+                                                            <field name="doc_type"/>
+                                                        </strong>
+                                                    </h5>
+                                                    <field name="document_date"
+                                                           widget="badge"
+                                                           decoration-info="document_date"/>
+                                                </div>
+                                                <div>
+                                                    <h6>
+                                                        <field name="file_name"
+                                                               invisible="1"/>
+                                                        <field name="document"
+                                                               widget="binary"
+                                                               filename="file_name"/>
+                                                    </h6>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Amenities" name="property_amenities"
+                                  invisible="not amenities">
+                                <field name="amenities_ids">
+                                    <kanban create="0" edit="0">
+                                        <field name="id"/>
+                                        <field name="image"/>
+                                        <field name="title"/>
+                                        <templates>
+                                            <t t-name="card" class="p-0 border border-0">
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <div
+                                                            style="width:5rem; height:5rem; margin-bottom: 10px;">
+                                                        <t t-if="record.image.raw_value">
+                                                            <field name="image" widget="image"
+                                                                   style="width:5rem; height:5rem;"
+                                                                   options="{'img_class': 'object-fit-cover rounded-circle h-100 w-100'}"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <img
+                                                                    class="rounded-circle"
+                                                                    style="width:5rem; height:5rem; object-fit: cover;"
+                                                                    alt="Image"
+                                                                    src="/rental_management/static/src/img/amenity.jpeg"/>
+                                                        </t>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <field name="title"/>
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Floor Plans" name="floor_plan"
+                                  invisible="not is_floor_plan">
+                                <field name="floreplan_ids">
+                                    <form string="Property Images">
+                                        <field name="sequence" invisible="1"/>
+                                        <div class="row o_website_sale_image_modal">
+                                            <div class="col-md-6 col-xl-5">
+                                                <label for="title" string="Image Name"/>
+                                                <h2>
+                                                    <field name="title" placeholder="Image Name"/>
+                                                </h2>
+                                            </div>
+                                            <div
+                                                    class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <field name="image" widget="image"
+                                                               required="1"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <kanban string="Property Images" default_order="sequence">
+                                        <field name="id"/>
+                                        <field name="title"/>
+                                        <field name="image"/>
+                                        <field name="sequence" widget="handle"/>
+                                        <templates>
+                                            <t t-name="card" class="border border-0 p-0">
+                                                <div
+                                                        class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <strong>
+                                                            <field name="title"/>
+                                                        </strong>
+                                                    </div>
+                                                    <div>
+                                                        <t
+                                                                t-if="record.image.raw_value.length &lt; 100*1000">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-success'"/>
+                                                            <t t-set="message">Acceptable file
+                                                                size
+                                                            </t>
+                                                        </t>
+                                                        <!-- below 1000 Kb: decent -->
+                                                        <t
+                                                                t-elif="record.image.raw_value.length &lt; 1000*1000">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-warning'"/>
+                                                            <t t-set="message">Huge file size.
+                                                                The image
+                                                                should be optimized/reduced.
+                                                            </t>
+                                                        </t>
+                                                        <!-- above 1000 Kb: bad -->
+                                                        <t t-else="1">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-danger'"/>
+                                                            <t t-set="message">Optimization
+                                                                required!
+                                                                Reduce the image size or
+                                                                increase your
+                                                                compression settings.
+                                                            </t>
+                                                        </t>
+                                                        <span
+                                                                t-attf-class="badge #{size_status} o_product_image_size"
+                                                                t-esc="record.image.value"
+                                                                t-att-title="message"/>
+                                                    </div>
+                                                </div>
+                                                <hr class="mb-1 mt-1"/>
+                                                <div style="height:223px;">
+                                                    <field name="image" widget="image"
+                                                           style="height:223px;"
+                                                           options="{'img_class': 'object-fit-cover h-100 w-100'}"/>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Images" name="property_images" invisible="not is_images">
+                                <field name="property_images_ids">
+                                    <kanban string="Property Images" default_order="sequence">
+                                        <field name="id"/>
+                                        <field name="title"/>
+                                        <field name="image"/>
+                                        <field name="sequence" widget="handle"/>
+                                        <templates>
+                                            <t t-name="card" class="border border-0 p-0">
+                                                <div
+                                                        class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <strong>
+                                                            <field name="title"/>
+                                                        </strong>
+                                                    </div>
+                                                    <div>
+                                                        <t
+                                                                t-if="record.image.raw_value.length &lt; 100*1000">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-success'"/>
+                                                            <t t-set="message">Acceptable file
+                                                                size
+                                                            </t>
+                                                        </t>
+                                                        <!-- below 1000 Kb: decent -->
+                                                        <t
+                                                                t-elif="record.image.raw_value.length &lt; 1000*1000">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-warning'"/>
+                                                            <t t-set="message">Huge file size.
+                                                                The image
+                                                                should be optimized/reduced.
+                                                            </t>
+                                                        </t>
+                                                        <!-- above 1000 Kb: bad -->
+                                                        <t t-else="1">
+                                                            <t t-set="size_status"
+                                                               t-value="'text-bg-danger'"/>
+                                                            <t t-set="message">Optimization
+                                                                required!
+                                                                Reduce the image size or
+                                                                increase your
+                                                                compression settings.
+                                                            </t>
+                                                        </t>
+                                                        <span
+                                                                t-attf-class="badge #{size_status} o_product_image_size"
+                                                                t-esc="record.image.value"
+                                                                t-att-title="message"/>
+                                                    </div>
+                                                </div>
+                                                <hr class="mb-1 mt-1"/>
+                                                <div style="height:223px;">
+                                                    <field name="image" widget="image"
+                                                           style="height:223px;"
+                                                           options="{'img_class': 'object-fit-cover h-100 w-100'}"/>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Specifications" name="property_facilities"
+                                  invisible="not is_facilities">
+                                <field name="property_specification_ids">
+                                    <kanban create="0" edit="0">
+                                        <field name="id"/>
+                                        <field name="title"/>
+                                        <field name="description"/>
+                                        <field name="image"/>
+                                        <templates>
+                                            <t t-name="card" class="border border-0 p-0">
+                                                <div class="d-flex align-items-center">
+                                                    <div style="width: 6rem; height: 6rem;">
+                                                        <p
+                                                                style="margin:0; width: 6rem; height: 6rem;">
+                                                            <t t-if="record.image.raw_value">
+                                                                <field name="image" widget="image"
+                                                                       style="width: 6rem; height: 6rem;"
+                                                                       options="{'img_class': 'rounded-circle object-fit-cover w-100 h-100'}"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <img class="rounded-circle"
+                                                                     style="width: 6rem; height: 6rem; object-fit: cover;"
+                                                                     alt="Image"
+                                                                     src="/rental_management/static/src/img/specifications.jpeg"/>
+                                                            </t>
+                                                        </p>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div
+                                                                class="row text-center my-2 justify-content-center w-100"
+                                                                style="margin:0;">
+                                                            <div class="col-11 lead fw-bold">
+                                                                <field name="title"/>
+                                                            </div>
+                                                            <div class="col-11 my-2">
+                                                                <field name="description"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Nearby Connectivities" name="nearby_connectivity"
+                                  invisible="not nearby_connectivity">
+                                <h3 style="text-align:center;color:#714B67;">
+                                    <strong>Nearby Connectivity</strong>
+                                </h3>
+                                <field name="connectivity_ids">
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="connectivity_id"
+                                                       options="{'no_open': True, 'no_quick_create': True}"
+                                                       required="1"/>
+                                                <field name="distance" required="1"/>
+                                            </group>
+                                            <group>
+                                                <field name="name"
+                                                       placeholder="Delhi Internation Airport.."/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <kanban>
+                                        <field name="id"/>
+                                        <field name="distance"/>
+                                        <field name="image"/>
+                                        <field name="connectivity_id"/>
+                                        <templates>
+                                            <t t-name="card" class="border border-0 p-0">
+                                                <div
+                                                        style="text-align:center; width:100%; height:50px;">
+                                                    <field name="image"
+                                                           style="width:100%; height:50px;"
+                                                           widget="image"
+                                                           options="{'img_class': 'w-100 h-100', 'size': [50, 50]}"/>
+                                                </div>
+                                                <br/>
+
+                                                <div style="text-align:center;">
+                                                    <h6>
+                                                        <field name="connectivity_id"/>
+                                                    </h6>
+                                                    <h5 style="color:#00A09D;">
+                                                        <field name="name"/>
+                                                    </h5>
+                                                    <h2 style="color:#00A09D;">
+                                                        <strong>
+                                                            <field name="distance"/>
+                                                        </strong>
+                                                    </h2>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+
+                            <page string="Bed list" invisible="sale_lease != 'bachelor'">
+                                <field name="bed_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="bed_type"/>
+                                        <field name="state" widget="badge"
+                                               decoration-success="state == 'available'"
+                                               decoration-danger="state == 'occupied'"/>
+                                        <field name="active"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="Water Readings">
+                                <group>
+                                    <field name="utility_water_account_no"/>
+                                </group>
+                                <group string="Readings">
+                                    <field name="water_readings_ids">
+                                        <list editable="bottom" default_order="reading_date desc">
+                                            <field name="reference" readonly="1"
+                                                   width="100px"/>
+                                            <field name="reading_date"/>
+                                            <field name="name"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+
+                            <page string="Electricity Readings">
+                                <group>
+                                    <field name="utility_electricity_account_no"/>
+                                </group>
+                                <group string="Readings">
+                                    <field name="electricity_readings_ids">
+                                        <list editable="bottom" default_order="reading_date desc">
+                                            <field name="reference" readonly="1"
+                                                   width="100px"/>
+                                            <field name="reading_date"/>
+                                            <field name="name"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record id="property_details_list_view" model="ir.ui.view">
+            <field name="name">property.details.list.view</field>
+            <field name="model">property.details</field>
+            <field name="arch" type="xml">
+                <list string="Property" js_class="rental_property_dashboard_list">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="property_subtype_id"/>
+                    <field name="ownership_type_id" optional="hide"/>
+                    <field name="landlord_id"/>
+                    <field name="sale_lease" widget="badge"
+                           decoration-info="sale_lease == 'for_sale'"
+                           decoration-warning="sale_lease == 'for_tenancy'"/>
+                    <field name="price"/>
+                    <field name="company_id"/>
+                    <field name="city_id"/>
+                    <field name="country_id"/>
+                    <field name="activity_ids" widget="list_activity"/>
+                    <field name="stage"
+                           widget="badge"
+                           decoration-info="stage == 'booked'"
+                           decoration-primary="stage == 'available'"
+                           decoration-success="stage=='sold'"
+                           decoration-warning="stage in ['on_lease','sale']"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="property_details_kanban_view" model="ir.ui.view">
+            <field name="name">property.details.kanban.view</field>
+            <field name="model">property.details</field>
+            <field name="arch" type="xml">
+                <kanban class="o_res_partner_kanban" default_order='stage'
+                        group_create="false" quick_create="false" records_draggable="false" sample="1">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="image"/>
+                    <field name="sale_lease"/>
+                    <field name="tag_ids"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="card" class="p-0">
+                            <div class="oe_kanban_global_click" style="padding:0px;">
+                                <div class="text-center">
+                                    <t t-if="record.image.raw_value">
+                                        <field name="image" widget="image"
+                                               style="width:100%;height:16rem;"
+                                               options="{'img_class': 'object-fit-cover w-100 h-100'}"/>
+                                    </t>
+                                    <t t-else="">
+                                        <img
+                                                style="width:100%;height:16rem;object-fit: cover;"
+                                                alt="Image"
+                                                src="/rental_management/static/src/img/property-placeholder.jpg"/>
+                                    </t>
+                                </div>
+                                <div class="ps-3 pe-3" style="margin-top:15px;">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h4>
+                                                <field name="type"/>
+                                            </h4>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <span class="badge text-bg-warning fw-bold">
+                                                <field name="property_subtype_id"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ps-3 pe-3 pb-2">
+                                    <hr class="m-2"/>
+                                    <div class="row">
+                                        <div class="col-8" style="vertical-align:middle">
+                                            <h3 class="text-primary mb-0">
+                                                <field name="name"/>
+                                            </h3>
+                                        </div>
+                                        <div class="col-4 text-end" style="vertical-align:middle">
+                                            <span class="badge text-bg-light">
+                                                <field name="sale_lease"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <hr class="m-2"/>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <field name="currency_id" invisible="1"/>
+                                            <t t-if="record.sale_lease.raw_value=='for_tenancy'">
+                                                <h6 class="text-primary mb-0 mt-1">
+                                                    Rent Details
+                                                </h6>
+                                                Rent:
+                                                <strong>
+                                                    <field name="price"/>
+                                                    /
+                                                    <field name="rent_unit"/>
+                                                </strong>
+                                            </t>
+                                            <t t-if="record.sale_lease.raw_value=='for_sale'">
+                                                <h6 class="text-primary mb-0 mt-1">
+                                                    Sale Details
+                                                </h6>
+                                                Sale Price:
+                                                <strong>
+                                                    <field name="price"/>
+                                                </strong>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <hr class="m-2"/>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <strong>
+                                                Landlord :
+                                            </strong>
+                                            <field name="landlord_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <strong>
+                                                Address :
+                                            </strong>
+                                            <field
+                                                    name="city_id"/>
+                                            ,
+                                            <field name="state_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <t t-if="record.tag_ids.raw_value">
+                                                <field name="tag_ids" widget="many2many_tags"
+                                                       options="{'color_field': 'color'}"/>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <hr class="m-2"/>
+                                    <div class="row">
+                                        <div class="col-3 text-center">
+                                            <button name="action_crm_lead" type="object" help="Lead"
+                                                    string=" " class="btn btn-outline-dark border-0">
+                                                <i class="fa fa-sitemap" role="lead"
+                                                   aria-label="Lead" title="Lead"/>
+                                            </button>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <button name="action_gmap_location" type="object"
+                                                    help="Location" string=" "
+                                                    class="btn btn-outline-dark border-0">
+                                                <i class="fa fa-location-arrow" role="location"
+                                                   aria-label="Location" title="Location"/>
+                                            </button>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <button name="action_property_document" type="object"
+                                                    help="Documents" string=" "
+                                                    class="btn btn-outline-dark border-0">
+                                                <i class="fa fa-file" role="documents"
+                                                   aria-label="Documets" title="Document"/>
+                                            </button>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <button name="action_maintenance_request" type="object"
+                                                    help="Maintenance" string=" "
+                                                    class="btn btn-outline-dark border-0">
+                                                <i class="fa fa-wrench" role="maintenance"
+                                                   aria-label="Maintenance" title="Maintenance"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="property_details_search_view" model="ir.ui.view">
+            <field name="name">property.details.search.view</field>
+            <field name="model">property.details</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="property_seq"/>
+                    <field name="city_id"/>
+                    <field name="landlord_id"/>
+                    <separator/>
+                    <filter string="Company" name="group_by_company" domain="[]"
+                            context="{'group_by':'company_id'}"/>
+                    <filter string="Project" name="group_by_project" domain="[]"
+                            context="{'group_by':'property_project_id'}"/>
+                    <filter string="Sub Project" name="group_by_subproject" domain="[]"
+                            context="{'group_by':'subproject_id'}"/>
+                    <separator/>
+                    <filter string="Property Type" name="property_type" domain="[]"
+                            context="{'group_by':'type'}"/>
+                    <filter string="Property Sub Type" name="property_sub_type" domain="[]"
+                            context="{'group_by':'property_subtype_id'}"/>
+                    <filter string="Property For" name="property_for" domain="[]"
+                            context="{'group_by':'sale_lease'}"/>
+                    <separator/>
+                    <filter string="Landlord" name="landlord" domain="[]"
+                            context="{'group_by':'landlord_id'}"/>
+                    <separator/>
+                    <filter string="Country" name="country" domain="[]"
+                            context="{'group_by':'country_id'}"/>
+                    <filter string="State" name="state" domain="[]"
+                            context="{'group_by':'state_id'}"/>
+                    <filter string="City" name="group_by_city" domain="[]"
+                            context="{'group_by':'city_id'}"/>
+                    <separator/>
+                    <filter string="Tag" name="filter_property_tag" domain="[]"
+                            context="{'group_by':'tag_ids'}"/>
+                    <separator/>
+                    <filter string="Status" name="filter_property_status" domain="[]"
+                            context="{'group_by':'stage'}"/>
+                    <searchpanel>
+                        <field name="type" enable_counters="1" select="multi"/>
+                        <field name="stage" string="Status" enable_counters="1" select="multi"/>
+                        <field name="sale_lease" string="Rent/Sale" enable_counters="1"
+                               select="multi"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+        <record id="property_details_pivot_view" model="ir.ui.view">
+            <field name="name">property.details.pivot.view</field>
+            <field name="model">property.details</field>
+            <field name="arch" type="xml">
+                <pivot string="Statistic">
+                    <field name="name" type="row"/>
+                    <field name="type" type="col"/>
+                    <field name="stage" type="col"/>
+                </pivot>
+            </field>
+        </record>
+        <record id="property_details_action" model="ir.actions.act_window">
+            <field name="name">Properties</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.details</field>
+            <field name="view_mode">list,kanban,form,pivot,activity</field>
+        </record>
+
+        <!-- Property Details Server Action -->
+        <record id="ir_actions_avalaible_property" model="ir.actions.server">
+            <field name="name">Update property status to Available</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_property_details"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                action = records.action_available_property()
+            </field>
+            <field name="binding_model_id" ref="rental_management.model_property_details"/>
+            <field name="binding_view_types">list</field>
+        </record>
+
+
+        <!--Tenancy
+        Inquiry-->
+        <record id="tenancy_inquiry_view_form" model="ir.ui.view">
+            <field name="name">tenancy.inquiry.view.form</field>
+            <field name="model">tenancy.inquiry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="customer_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       required="1"/>
+                                <field name="property_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="lead_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       readonly="1"
+                                       force_save="1"
+                                       widget="many2one"/>
+                            </group>
+                            <group>
+                                <field name="duration_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       required="1"/>
+                                <field name="note" widget="html"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!--Sale
+        Inquiry-->
+        <record id="sale_inquiry_view_form" model="ir.ui.view">
+            <field name="name">sale.inquiry.view.form</field>
+            <field name="model">sale.inquiry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="customer_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="property_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="lead_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="ask_price"/>
+                                <field name="note" widget="html"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Property Room Measurement -->
+        <record id="property_room_measurement_view_form" model="ir.ui.view">
+            <field name="name">property.room.measurement.view.form</field>
+            <field name="model">property.room.measurement</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="section_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="no_of_unit"/>
+                            </group>
+                        </group>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="length"/>
+                                        <field name="length"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="width"/>
+                                        <field name="width"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="carpet_area"/>
+                                <field name="carpet_area"/>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Extra Service Line -->
+        <record id="extra_service_line_view_form" model="ir.ui.view">
+            <field name="name">extra.service.line.view.form</field>
+            <field name="model">extra.service.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="service_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="price"/>
+                            </group>
+                            <group>
+                                <field name="service_type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

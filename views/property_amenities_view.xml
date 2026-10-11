@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_amenities_form_view" model="ir.ui.view">
+            <field name="name">property.amenities.form.view</field>
+            <field name="model">property.amenities</field>
+            <field name="arch" type="xml">
+                <form duplicate="false">
+                    <sheet>
+                        <field name="image" widget="image" class="oe_avatar" />
+                        <div class="oe_title">
+                            <label for="title" />
+                            <h1>
+                                <field name="title" required="1" placeholder="Title" />
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="property_amenities_list_view" model="ir.ui.view">
+            <field name="name">property.amenities.list.view</field>
+            <field name="model">property.amenities</field>
+            <field name="arch" type="xml">
+                <list duplicate="false">
+                    <field name="sequence" widget="handle" />
+                    <field name="title" />
+                </list>
+            </field>
+        </record>
+        <record id="property_amenities_kanban_view" model="ir.ui.view">
+            <field name="name">property.amenities.kanban.view</field>
+            <field name="model">property.amenities</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="id" />
+                    <field name="title" />
+                    <field name="image" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="d-flex gap-1" style="height: 100px;">
+                                <div class="h-100">
+                                    <t t-if="record.image.raw_value">
+                                        <field name="image" widget="image" class="h-100"
+                                            options="{'size': [100, 100], 'img_class': 'object-fit-cover h-100 w-100'}" />
+                                    </t>
+                                    <t t-else="">
+                                        <img style="width:100px;height:100px;object-fit: cover;" alt="Image"
+                                            src="/rental_management/static/src/img/category-placeholder.png" />
+                                    </t>
+                                </div>
+                                <div class="h-100">
+                                    <strong class="o_kanban_record_title oe_partner_heading">
+                                        <h3 style="color:#714B67;">
+                                            <field name="title" />
+                                        </h3>
+                                    </strong>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="property_amenities_action" model="ir.actions.act_window">
+            <field name="name">Property Amenities</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.amenities</field>
+            <field name="view_mode">kanban,list,form</field>
+        </record>
+    </data>
+</odoo>

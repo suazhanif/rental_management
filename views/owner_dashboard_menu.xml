@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Owner Executive Dashboard — menu entry.
+        sequence=1 puts it right after Statistics (sequence=0).
+        Restricted to property_rental_manager only.
+    -->
+    <menuitem id="menu_owner_executive_dashboard"
+              name="Executive Dashboard"
+              sequence="0"
+              action="action_owner_property_dashboard"
+              parent="main_menu_rental_management"
+              groups="rental_management.property_rental_owner,rental_management.property_rental_manager"/>
+</odoo>

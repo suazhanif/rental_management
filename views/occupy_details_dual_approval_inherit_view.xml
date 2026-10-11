@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="occupy_details_dual_approval_inherit_form"
+                model="ir.ui.view">
+            <field name="name">occupy.details.dual.approval.inherit</field>
+            <field name="model">occupy.details</field>
+            <field name="inherit_id"
+                   ref="rental_management.occupy_details_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet" position="inside">
+                    <div invisible="not is_dual_accommodation">
+                        <field name="is_dual_accommodation" invisible="1"/>
+
+                        <separator string="Chairman Dual Accommodation Approval"/>
+
+                        <group>
+                            <group>
+                                <field name="dual_accommodation_approval_number"
+                                       readonly="1"/>
+                                <field name="dual_accommodation_notes"
+                                       readonly="1"
+                                       widget="text"/>
+                            </group>
+                        </group>
+
+                        <group string="Approval Supporting Documents">
+                            <field name="dual_accommodation_document_ids"
+                                   widget="many2many_binary"
+                                   readonly="1"
+                                   colspan="2"
+                                   nolabel="1"/>
+                        </group>
+
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

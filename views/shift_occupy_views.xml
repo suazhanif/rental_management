@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="shift_occupy_tree_view" model="ir.ui.view">
+            <field name="name">shift.occupy.tree</field>
+            <field name="model">shift.occupy</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="shift_seq" />
+                    <field name="shift_date" />
+                    <field name="state" widget="badge"
+                        decoration-success="state == 'done'"
+                        decoration-muted="state == 'cancel'"
+                        decoration-info="state == 'draft'" />
+                    <field name="occupy_id" />
+                    <field name="employee_id" optional="show" />
+                    <field name="occupant_id" />
+                    <field name="from_property_id" />
+                    <field name="from_bed_id" optional="hide" />
+                    <field name="to_property_id" />
+                    <field name="to_bed_id" optional="hide" />
+                    <field name="new_occupy_id" optional="show" />
+                    <field name="shift_reason" optional="hide" />
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="shift_occupy_form_view" model="ir.ui.view">
+            <field name="name">shift.occupy.form</field>
+            <field name="model">shift.occupy</field>
+            <field name="arch" type="xml">
+                <form string="Shift Occupy">
+                    <header>
+                        <button string="Execute Shift"
+                            type="object"
+                            name="action_shift"
+                            class="btn btn-primary"
+                            icon="fa-exchange"
+                            invisible="state != 'draft'" />
+                        <button string="Cancel"
+                            type="object"
+                            name="action_cancel"
+                            class="btn btn-secondary"
+                            invisible="state != 'draft'" />
+                        <button string="Reset to Draft"
+                            type="object"
+                            name="action_reset_draft"
+                            class="btn btn-warning"
+                            invisible="state != 'cancel'"
+                            groups="rental_management.property_rental_manager" />
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="shift_seq" readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Current Occupation">
+                                <field name="employee_search_id" readonly="state != 'draft'"
+                                    options="{'no_create': True}" />
+                                <field name="occupy_id" readonly="1" />
+                                <field name="occupant_id" readonly="1" />
+                                <field name="employee_id" readonly="1" invisible="not employee_id" />
+                            </group>
+                            <group string="Shift Details">
+                                <field name="shift_date" readonly="state != 'draft'" />
+                                <field name="shift_reason" readonly="state != 'draft'" />
+                            </group>
+                        </group>
+
+                        <group string="Shift From">
+                            <group>
+                                <field name="from_property_id" readonly="1" />
+                                <field name="from_sale_lease" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="from_bed_id" readonly="1"
+                                    invisible="from_sale_lease != 'bachelor'" />
+                            </group>
+                        </group>
+
+                        <group string="Shift To">
+                            <group>
+                                <field name="to_property_id"
+                                    readonly="state != 'draft'"
+                                    domain="[('stage', '=', 'available'), ('sale_lease', 'in', ['employee_family', 'bachelor'])]"
+                                    options="{'no_create': True, 'no_quick_create': True}" />
+                                <field name="to_sale_lease" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="to_bed_id"
+                                    readonly="state != 'draft'"
+                                    required="to_sale_lease == 'bachelor'"
+                                    invisible="to_sale_lease != 'bachelor'"
+                                    domain="[('property_id', '=', to_property_id), ('state', '=', 'available')]"
+                                    options="{'no_create': True, 'no_quick_create': True}" />
+                            </group>
+                        </group>
+
+                        <group string="Final Readings (Old Property)"
+                            invisible="not is_readings_required">
+                            <group string="Water">
+                                <field name="water_reading" readonly="state != 'draft'"
+                                    required="is_readings_required" />
+                                <field name="water_reading_date" readonly="state != 'draft'"
+                                    required="is_readings_required" />
+                            </group>
+                            <group string="Electricity">
+                                <field name="electricity_reading" readonly="state != 'draft'"
+                                    required="is_readings_required" />
+                                <field name="electricity_reading_date" readonly="state != 'draft'"
+                                    required="is_readings_required" />
+                            </group>
+                        </group>
+
+                        <group string="Result" invisible="state != 'done'">
+                            <field name="new_occupy_id" readonly="1" />
+                        </group>
+
+                        <field name="is_readings_required" invisible="1" />
+                    </sheet>
+                    <chatter />
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="shift_occupy_search_view" model="ir.ui.view">
+            <field name="name">shift.occupy.search</field>
+            <field name="model">shift.occupy</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="shift_seq" />
+                    <field name="occupy_id" />
+                    <field name="employee_id" />
+                    <field name="occupant_id" />
+                    <field name="from_property_id" />
+                    <field name="to_property_id" />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Done" name="done" domain="[('state', '=', 'done')]" />
+                    <filter string="Cancelled" name="cancel" domain="[('state', '=', 'cancel')]" />
+                    <group>
+                        <filter string="Status" name="group_by_state"
+                            context="{'group_by': 'state'}" />
+                        <filter string="Shift Date" name="group_by_date"
+                            context="{'group_by': 'shift_date'}" />
+                        <filter string="From Property" name="group_by_from"
+                            context="{'group_by': 'from_property_id'}" />
+                        <filter string="To Property" name="group_by_to"
+                            context="{'group_by': 'to_property_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Window Action -->
+        <record id="shift_occupy_action" model="ir.actions.act_window">
+            <field name="name">Shift Occupy</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">shift.occupy</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="shift_occupy_search_view" />
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Shift Occupy record
+                </p>
+                <p>
+                    Shift occupants between accommodations while maintaining full audit history.
+                </p>
+            </field>
+        </record>
+
+        <!-- Wizard Action (for quick shift from occupy form) -->
+        <record id="shift_occupy_wizard_action" model="ir.actions.act_window">
+            <field name="name">Shift Occupy</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">shift.occupy</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="shift_occupy_form_view" />
+            <field name="target">new</field>
+            <field name="context">{'default_occupy_id': active_id}</field>
+        </record>
+    </data>
+</odoo>

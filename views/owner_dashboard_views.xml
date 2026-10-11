@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Client action — registers the OWL component tag -->
+    <record id="action_owner_property_dashboard" model="ir.actions.client">
+        <field name="name">Executive Dashboard</field>
+        <field name="tag">owner_property_dashboard</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Minimal form view (not really used but required for the model) -->
+    <record id="view_owner_property_dashboard_form" model="ir.ui.view">
+        <field name="name">owner.property.dashboard.form</field>
+        <field name="model">owner.property.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Owner Executive Dashboard" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Owner Executive Dashboard</h1>
+                            <p>Use the Dashboard menu to view the interactive executive dashboard.</p>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_connectivity_form_view" model="ir.ui.view">
+            <field name="name">property.connectivity.form.view</field>
+            <field name="model">property.connectivity</field>
+            <field name="arch" type="xml">
+                <form duplicate="false">
+                    <sheet>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" required="1" placeholder="Title"/>
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="property_connectivity_list_view" model="ir.ui.view">
+            <field name="name">property.connectivity.form.view</field>
+            <field name="model">property.connectivity</field>
+            <field name="arch" type="xml">
+                <list duplicate="false">
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="property_connectivity_action" model="ir.actions.act_window">
+            <field name="name">Nearby Connectivities</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.connectivity</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Create new Nearby Connectivity
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

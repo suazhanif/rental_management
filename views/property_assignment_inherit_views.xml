@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        3.4.0 — Property Assignment: view-inheritance additions.
+
+        A NEW file that uses Odoo's standard view-inheritance pattern
+        (``<record id="..." model="ir.ui.view">`` with
+        ``<field name="inherit_id" ref="rental_management.*"/>``) to
+        add the ``user_ids`` M2M widget to all 3 property forms.
+
+        No direct edit of the 3 original view files is required —
+        this file is registered AFTER them in the manifest and applies
+        on top via the inherit_id mechanism.
+    -->
+    <data>
+        <!-- Compound form: add user_ids to the second column of "Project Details" -->
+        <record id="view_property_project_assignment_inherit" model="ir.ui.view">
+            <field name="name">property.project.form.assignment.inherit</field>
+            <field name="model">property.project</field>
+            <field name="inherit_id" ref="rental_management.property_project_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='project_details']/group[2]"
+                       position="inside">
+                    <field name="user_ids" widget="many2many_tags"
+                           groups="rental_management.property_rental_manager"
+                           placeholder="Assign officers (manager only)"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Building form: add user_ids to the second column of "Project Details" -->
+        <record id="view_property_sub_project_assignment_inherit" model="ir.ui.view">
+            <field name="name">property.sub.project.form.assignment.inherit</field>
+            <field name="model">property.sub.project</field>
+            <field name="inherit_id" ref="rental_management.property_sub_project_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='project_details']/group[2]"
+                       position="inside">
+                    <field name="user_ids" widget="many2many_tags"
+                           groups="rental_management.property_rental_manager"
+                           placeholder="Assign officers (manager only)"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Property form: add user_ids to the second column of the first group -->
+        <record id="view_property_details_assignment_inherit" model="ir.ui.view">
+            <field name="name">property.details.form.assignment.inherit</field>
+            <field name="model">property.details</field>
+            <field name="inherit_id" ref="rental_management.property_details_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group[1]/group[2]"
+                       position="inside">
+                    <field name="user_ids" widget="many2many_tags"
+                           groups="rental_management.property_rental_manager"
+                           placeholder="Assign officers (manager only)"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

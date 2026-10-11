@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_rental" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.rental</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="40"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Real Estate" string="Real Estate"
+                         name="rental_management">
+                        <block title="Reminder Days">
+                            <setting help="Reminder days for Creating Tenancy Invoice">
+                                <field name="reminder_days" required="1"/>
+                            </setting>
+                            <setting help="Reminder days for Creating Invoice">
+                                <field name="sale_reminder_days"/>
+                            </setting>
+                        </block>
+                        <block title="Default Duration Days for Month, Quarter and Year">
+                            <setting help="Month Days">
+                                <field name="month_days"/>
+                            </setting>
+                            <setting help="Quarter Days">
+                                <field name="quarter_days"/>
+                            </setting>
+                            <setting help="Year Days">
+                                <field name="year_days"/>
+                            </setting>
+                            <setting help="Half Year Days">
+                                <field name="half_year_days"/>
+                            </setting>
+                        </block>
+                        <block title="Invoice Post Type">
+                            <setting help="Invoice Post Type">
+                                <field name="invoice_post_type" widget="radio"
+                                       options="{'horizontal':True}"
+                                       required="1"/>
+                            </setting>
+                        </block>
+                        <block title="Default Items">
+                            <setting help="Installment Default Item">
+                                <field name="installment_item_id" required="1"/>
+                            </setting>
+                            <setting help="Deposit Default Item">
+                                <field name="deposit_item_id" required="1"/>
+                            </setting>
+                            <setting help="Broker Default Item">
+                                <field name="broker_item_id" required="1"/>
+                            </setting>
+                            <setting help="Maintenance Default Item">
+                                <field name="maintenance_item_id" required="1"/>
+                            </setting>
+                            <setting help="Contract Penalty Default Item">
+                                <field name="contract_penalty_item_id" required="1"/>
+                            </setting>
+                        </block>
+                        <block title="Penalty Configurations">
+                            <setting help="Is penalty applicable on contracts ?">
+                                <field name="is_penalty_applied"/>
+                            </setting>
+                            <block title="For Rent Contract" invisible="not is_penalty_applied">
+                                <setting help="Number of extra days allowed after the due date before applying a penalty.">
+                                    <field name="penalty_days_after_due_for_rent_contract"/>
+                                    <span>Days</span>
+                                </setting>
+                                <setting help="Penalty Percentage">
+                                    <field name="penalty_percentage_for_rent_contract"/>
+                                    <span>%</span>
+                                </setting>
+                            </block>
+                            <block title="For Sale Contract" invisible="not is_penalty_applied">
+                                <setting help="Number of extra days allowed after the due date before applying a penalty.">
+                                    <field name="penalty_days_after_due_for_sale_contract"/>
+                                    <span>Days</span>
+                                </setting>
+                                <setting help="Penalty Percentage">
+                                    <field name="penalty_percentage_for_sale_contract"/>
+                                    <span>%</span>
+                                </setting>
+                            </block>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

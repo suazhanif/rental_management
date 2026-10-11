@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Property Area Type -->
+    <record id="property_area_type_view_list" model="ir.ui.view">
+        <field name="name">property.area.type.view.list</field>
+        <field name="model">property.area.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" duplicate="false">
+                <field name="name" required="1"/>
+                <field name="type" required="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="property_area_type_action" model="ir.actions.act_window">
+        <field name="name">Area Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.area.type</field>
+        <field name="view_mode">list</field>
+    </record>
+    <!-- Property Sub Type -->
+    <record id="property_sub_type_view_list" model="ir.ui.view">
+        <field name="name">property.sub.type.view.list</field>
+        <field name="model">property.sub.type</field>
+        <field name="arch" type="xml">
+            <list duplicate="false">
+                <field name="sequence" widget="handle"/>
+                <field name="name" required="1"/>
+                <field name="type" required="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="property_sub_type_view_form" model="ir.ui.view">
+        <field name="name">property.sub.type.view.form</field>
+        <field name="model">property.sub.type</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="type" required="1" widget="radio"
+                                   options="{'horizontal':True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="property_sub_type_action" model="ir.actions.act_window">
+        <field name="name">Property Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.sub.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!-- Property Furnishing -->
+    <record id="property_furnishing_view_list" model="ir.ui.view">
+        <field name="name">property.furnishing.view.list</field>
+        <field name="model">property.furnishing</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" duplicate="false">
+                <field name="name" required="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="property_furnishing_action" model="ir.actions.act_window">
+        <field name="name">Furnishing Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.furnishing</field>
+        <field name="view_mode">list</field>
+    </record>
+    <!-- Property Ownership Type -->
+    <record id="property_ownership_type_view_list" model="ir.ui.view">
+        <field name="name">property.ownership.type.view.list</field>
+        <field name="model">property.ownership.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" duplicate="false">
+                <field name="name" required="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="property_ownership_type_action" model="ir.actions.act_window">
+        <field name="name">Ownership Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.ownership.type</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Property Images -->
+    <record id="view_property_image_form" model="ir.ui.view">
+        <field name="name">property.image.view.form</field>
+        <field name="model">property.images</field>
+        <field name="arch" type="xml">
+            <form string="Property Images" duplicate="false">
+                <field name="sequence" invisible="1"/>
+                <div class="row o_website_sale_image_modal">
+                    <div class="col-md-6 col-xl-5">
+                        <label for="title" string="Image Name"/>
+                        <h2>
+                            <field name="title" placeholder="Image Name"/>
+                        </h2>
+                    </div>
+                    <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
+                        <div class="row">
+                            <div class="col">
+                                <field name="image" widget="image" required="1"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="property_image_action" model="ir.actions.act_window">
+        <field name="name">Property Images</field>
+        <field name="res_model">property.images</field>
+        <field name="view_mode">form</field>
+    </record>
+
+
+    <!-- Project Document -->
+    <record id="project_document_form_view" model="ir.ui.view">
+        <field name="name">project.document.view.form</field>
+        <field name="model">project.document.line</field>
+        <field name="arch" type="xml">
+            <form string="Document" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name of Document"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+
+                            <field name="document_name" invisible="1"/>
+                            <field name="document_file" filename="document_name" widget="binary"/>
+                            <field name="user_id" options="{'no_quick_create':True,'no_create_edit':True}"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="project_document_kanban_view" model="ir.ui.view">
+        <field name="name">project.document.kanban.view</field>
+        <field name="model">project.document.line</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <strong class="o_kanban_title fw-bold lead">
+                                <field name="name"/>
+                            </strong>
+                            <field name="create_date" widget="badge"
+                                   decoration-info="create_date"/>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <field name="document_name" invisible="1"/>
+                                <field name="document_file" filename="document_name"
+                                       widget="binary"/>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                                <field name="user_id" widget="many2one_avatar_user"
+                                       domain="[('share', '=', False)]"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="project_document_list_view" model="ir.ui.view">
+        <field name="name">project.document.view.list</field>
+        <field name="model">project.document.line</field>
+        <field name="arch" type="xml">
+            <list string="Documents" duplicate="false">
+                <field name="name"/>
+                <field name="create_date" widget="date" string="Uploaded on"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_project_document" model="ir.actions.act_window">
+        <field name="name">Documents</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.document.line</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add Documents for Projects
+            </p>
+        </field>
+    </record>
+
+    <!-- Sub    Project Documents -->
+    <record id="subproject_document_form_view" model="ir.ui.view">
+        <field name="name">subproject.document.view.form</field>
+        <field name="model">subproject.document</field>
+        <field name="arch" type="xml">
+            <form string="Document" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name of Document"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+
+                            <field name="document_name" invisible="1"/>
+                            <field name="document_file" filename="document_name" widget="binary"/>
+                            <field name="user_id" options="{'no_quick_create':True,'no_create_edit':True}"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="subproject_document_kanban_view" model="ir.ui.view">
+        <field name="name">subproject.document.kanban.view</field>
+        <field name="model">subproject.document</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <strong class="o_kanban_title fw-bold lead">
+                                <field name="name"/>
+                            </strong>
+                            <field name="create_date" widget="badge"
+                                   decoration-info="create_date"/>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <field name="document_name" invisible="1"/>
+                                <field name="document_file" filename="document_name"
+                                       widget="binary"/>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                                <field name="user_id" widget="many2one_avatar_user"
+                                       domain="[('share', '=', False)]"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="subproject_document_list_view" model="ir.ui.view">
+        <field name="name">subproject.document.view.list</field>
+        <field name="model">subproject.document</field>
+        <field name="arch" type="xml">
+            <list string="Documents" duplicate="false">
+                <field name="name"/>
+                <field name="create_date" widget="date" string="Uploaded on"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_subproject_document" model="ir.actions.act_window">
+        <field name="name">Sub Documents</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">subproject.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add Documents for Sub Projects
+            </p>
+        </field>
+    </record>
+
+    <!--Increment History -->
+    <record id="increment_history_view_list" model="ir.ui.view">
+        <field name="name">increment.history.view.list</field>
+        <field name="model">increment.history</field>
+        <field name="arch" type="xml">
+            <list edit="0" duplicate="false">
+                <field name="date"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="contract_ref"/>
+                <field name="rent_type"/>
+                <field name="rent_increment_type"/>
+                <field name="previous_rent"/>
+                <field name="increment_percentage" invisible="rent_increment_type != 'percentage'"/>
+                <field name="increment_amount" invisible="rent_increment_type != 'fix'"/>
+                <field name="incremented_rent"/>
+            </list>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="penalty_invoice_form_view" model="ir.ui.view">
+            <field name="name">penalty.invoice.form.view</field>
+            <field name="model">penalty.invoice</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <field name="company_id" invisible="1" />
+                    <field name="currency_id" invisible="1" />
+                    <sheet>
+                        <div class="oe_title" invisible="not rent_contract_id">
+                            <label for="rent_contract_id" />
+                            <h1>
+                                <field name="rent_contract_id" readonly="1" options="{'no_create': True}" />
+                            </h1>
+                        </div>
+                        <div class="oe_title" invisible="not sale_contract_id">
+                            <label for="sale_contract_id" />
+                            <h1>
+                                <field name="sale_contract_id" readonly="1" options="{'no_create': True}" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" required="1" readonly="1"
+                                    options="{'no_create': True}" />
+                                <field name="landlord_id" invisible="1" force_save="1" />
+                            </group>
+                            <group>
+                                <label for="penalty_invoice_id" class="mt-1" />
+                                <div name="penalty_invoice_id">
+                                    <field name="penalty_invoice_id" readonly="1" class="oe_inline"
+                                        force_save="1"
+                                        style="width:auto;" />
+                                    <field name="payment_state" widget="badge"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="payment_state=='paid'"
+                                        decoration-danger="payment_state=='not_paid'"
+                                        decoration-info="payment_state=='in_payment'"
+                                        decoration-primary="payment_state=='partial'"
+                                        decoration-warning="payment_state=='reversed'"
+                                    />
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Payment Information">
+                            <group>
+                                <field name="rent_contract_invoice_id" readonly="1" invisible="not rent_contract_invoice_id" />
+                                <field name="sale_contract_invoice_id" readonly="1" invisible="not sale_contract_invoice_id" />
+                                <field name="amount" widget="monetary" required="1" readonly="1" force_save="1" />
+                            </group>
+                            <group>
+                                <field name="invoice_date" required="1" readonly="1" force_save="1" />
+                                <field name="description" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter />
+                </form>
+            </field>
+        </record>
+
+        <record id="rent_penalty_invoice_tree_view" model="ir.ui.view">
+            <field name="name">penalty.invoice.rent.tree.view</field>
+            <field name="model">penalty.invoice</field>
+            <field name="arch" type="xml">
+                <list string="Rent Invoice" create="false">
+                    <field name="rent_contract_id" />
+                    <field name="customer_id" />
+                    <field name="invoice_date" />
+                    <field name="description" />
+                    <field name="currency_id" column_invisible="1" />
+                    <field name="amount" />
+                    <field name="penalty_invoice_id" widget="many2one" />
+                    <field name="payment_state" widget="badge"
+                        decoration-success="payment_state=='paid'"
+                        decoration-danger="payment_state=='not_paid'"
+                        decoration-info="payment_state=='in_payment'"
+                        decoration-primary="payment_state=='partial'"
+                        decoration-warning="payment_state=='reversed'"
+                    />
+                </list>
+            </field>
+        </record>
+        <record id="sale_penalty_invoice_tree_view" model="ir.ui.view">
+            <field name="name">penalty.invoice.sale.tree.view</field>
+            <field name="model">penalty.invoice</field>
+            <field name="arch" type="xml">
+                <list string="Rent Invoice" create="false">
+                    <field name="sale_contract_id" />
+                    <field name="customer_id" />
+                    <field name="invoice_date" />
+                    <field name="description" />
+                    <field name="currency_id" column_invisible="1" />
+                    <field name="amount" />
+                    <field name="penalty_invoice_id" widget="many2one" />
+                    <field name="payment_state" widget="badge"
+                        decoration-success="payment_state=='paid'"
+                        decoration-danger="payment_state=='not_paid'"
+                        decoration-info="payment_state=='in_payment'"
+                        decoration-primary="payment_state=='partial'"
+                        decoration-warning="payment_state=='reversed'"
+                    />
+                </list>
+            </field>
+        </record>
+
+        <record id="penalty_invoice_search_view" model="ir.ui.view">
+            <field name="name">penalty.invoice.search.view</field>
+            <field name="model">penalty.invoice</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="customer_id" />
+                    <filter string="Company" name="group_by_company" domain="[]"
+                        context="{'group_by':'company_id'}" />
+                    <separator />
+                    <filter string="Customer" name="customer" domain="[]"
+                        context="{'group_by':'customer_id'}" />
+                    <separator />
+                    <filter string="Landlord" name="landlord" domain="[]"
+                        context="{'group_by':'landlord_id'}" />
+                </search>
+            </field>
+        </record>
+
+        <record id="rent_penalty_invoice_action" model="ir.actions.act_window">
+            <field name="name">Penalty Invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">penalty.invoice</field>
+            <field name="view_mode">list,form,activity</field>
+            <field name="domain">[('rent_contract_id', '!=', False)]</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('rent_penalty_invoice_tree_view')})]"/>
+        </record>
+        <record id="sale_penalty_invoice_action" model="ir.actions.act_window">
+            <field name="name">Penalty Invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">penalty.invoice</field>
+            <field name="view_mode">list,form,activity</field>
+            <field name="domain">[('sale_contract_id', '!=', False)]</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('sale_penalty_invoice_tree_view')})]"/>
+        </record>
+    </data>
+</odoo>

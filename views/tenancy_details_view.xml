@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="tenancy_details_form_view" model="ir.ui.view">
+            <field name="name">tenancy.details.form.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <form string="Rent" create="false">
+                    <field name="close_contract_state" invisible="1"/>
+                    <field name="active_contract_state" invisible="1"/>
+                    <field name="is_any_broker" invisible="1"/>
+                    <field name="is_extra_service" invisible="1"/>
+                    <field name="is_extended" invisible="1"/>
+                    <field name="is_contract_period_available" invisible="1"/>
+                    <field name="extended" invisible="1"/>
+                    <header>
+                        <field name="contract_type" widget="statusbar" nolabel="1"
+                               statusbar_visible="new_contract,pending_approval,approved,running_contract"
+                               clickable="0"/>
+                        <button name="action_submit_for_approval"
+                                type="object"
+                                string="Submit for Approval"
+                                id="submit_for_approval"
+                                class="btn btn-primary"
+                                invisible="contract_type != 'new_contract'"
+                                groups="rental_management.property_rental_manager,rental_management.property_rental_officer"/>
+                        <button name="action_approve"
+                                type="object"
+                                string="Approve"
+                                id="approve_contract"
+                                class="btn btn-success"
+                                invisible="contract_type != 'pending_approval'"
+                                groups="rental_management.property_rental_manager"/>
+                        <button name="action_open_reject_wizard"
+                                type="object"
+                                string="Reject"
+                                id="reject_contract"
+                                class="btn btn-outline-danger"
+                                invisible="contract_type != 'pending_approval'"
+                                groups="rental_management.property_rental_manager"/>
+                        <button name='action_active_rent_contract'
+                                type='object'
+                                string="Active"
+                                id="active_contract"
+                                class="btn btn-outline-primary"
+                                invisible="contract_type != 'approved' or close_contract_state"/>
+                        <button name="%(property_payment_wizard_action)d"
+                                type='action'
+                                id="contract_payment"
+                                string="Create Invoice"
+                                context="{'is_invoice': True}"
+                                icon="fa-money"
+                                class="btn btn-primary"
+                                invisible="contract_type == 'new_contract' or not active_contract_state or close_contract_state"/>
+                        <button name="%(property_payment_wizard_action)d"
+                                type='action'
+                                string="Create Bill"
+                                context="{'is_bill': True}"
+                                icon="fa-money"
+                                id="property_payment_bill"
+                                class="btn btn-info"
+                                invisible="contract_type == 'new_contract' or not active_contract_state or close_contract_state"/>
+                        <button name="%(contract_wizard_action)d"
+                                type='action'
+                                string="✔ Extend Contract"
+                                id="extend_contract_button"
+                                class="btn btn-outline-success"
+                                invisible="contract_type != 'expire_contract' or close_contract_state"/>
+                        <button name="%(maintenance_wizard_action)d" type='action'
+                                context="{'is_renting_contract_maintenance': True}"
+                                string="Maintenance Request" class="btn btn-warning"
+                                id="contract_maintenance"
+                                invisible="contract_type != 'running_contract'"/>
+                        <button name='action_close_contract'
+                                type='object'
+                                string="Close Contract"
+                                class="btn btn-outline-danger"
+                                invisible="contract_type == 'new_contract' or close_contract_state"/>
+                        <button name="action_renew_contract"
+                                string="Renew Contract"
+                                type="object"
+                                class="btn btn-primary"
+                                invisible="contract_type != 'running_contract'"
+                                groups="rental_management.property_rental_manager,rental_management.property_rental_officer"/>
+                        <button name='action_cancel_contract'
+                                type='object'
+                                string="Cancel"
+                                confirm="Are you sure you want to cancel this Contract"
+                                class="btn btn-outline-danger"
+                                invisible="contract_type == 'new_contract' or close_contract_state"/>
+                        <button name="action_print_agreement"
+                                type="object"
+                                string="Print Agreement"
+                                class="btn-secondary"
+                                icon="fa-print"
+                                invisible="not agreement_template_id"/>
+                        <button name="action_print_final_statement"
+                                type="object"
+                                string="Print Final Statement"
+                                class="btn-secondary"
+                                icon="fa-print"
+                                invisible="contract_type != 'close_contract'"/>
+                    </header>
+                    <div class="alert alert-warning mb-0 text-center mb-2" role="alert"
+                         invisible="is_contract_period_available or contract_type != 'new_contract'">
+                        Some contracts are active for this time period. Please choose a different
+                        contract period.
+                    </div>
+                    <div class="alert alert-warning mb-0 text-center" role="alert"
+                         invisible="not extended">Contract is extended to new contract (New Contract
+                        Ref
+                        <strong>
+                            <field name="extend_ref" readonly="1"
+                                   force_save="1"/>
+                        </strong>
+                        )
+                    </div>
+                    <div class="alert alert-success mb-0 text-center" role="alert"
+                         invisible="not is_extended">Extended Contract (Extend from :
+                        <strong>
+                            <field name="extend_from" readonly="1" force_save="1"/>
+                        </strong>
+                        )
+                    </div>
+                    <div invisible="remaining_bill_amount == 0">
+                        <div class="alert alert-warning mb-0 text-center" role="alert"
+                             invisible="contract_type != 'close_contract' or not close_contract_state">
+                            Remaining bill amount is:
+                            <field name="remaining_bill_amount"/>
+                        </div>
+                    </div>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_invoices"
+                                    icon="fa-copy">
+                                <field name="invoice_count" string="Invoices" widget="statinfo"/>
+                            </button>
+                            <button type="object" class="oe_stat_button" icon="fa-copy"
+                                    name="action_bills">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="total_bill_amount" widget='monetary'
+                                               options="{'currency_field': 'currency_id'}"/>
+                                    </span>
+                                    <span class="o_stat_text">Bills</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_maintenance_request"
+                                    icon="fa-wrench">
+                                <field name="maintenance_request_count" string="Maintenances"
+                                       widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <h1>
+                                    <field name="tenancy_seq"/>
+                                </h1>
+                            </div>
+                            <div class="col-6 text-end"
+                                 invisible="contract_type != 'running_contract'">
+                                <span class="" invisible="contract_type != 'running_contract'"
+                                      style="font-size: 15px; border: 1px solid black; background: #000; color: #fff; border-radius: 3px; padding: 2px 7px; margin-right: 3px; font-weight: 600;">
+                                    <field name="days_left" class="mb-0"/>
+                                </span>
+                                <strong invisible="contract_type != 'running_contract'">Days Left</strong>
+                            </div>
+                        </div>
+                        <group string="Contract Information">
+                            <group>
+                                <field name="duration_type" widget="radio"
+                                       readonly="contract_type != 'new_contract'" force_save="1"
+                                       options="{'horizontal':True}" required="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="start_date" required="1"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1"/>
+                                <field name="duration_ids" invisible="1"/>
+                                <field name="duration_id" required="duration_type == 'by_duration'"
+                                       invisible="duration_type != 'by_duration'"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1" domain="[('id','in',duration_ids)]"/>
+                                <field name="payment_term" required="1"
+                                       readonly="contract_type != 'new_contract' or rent_unit in ['Year']"
+                                       force_save="1"/>
+                                <field name="month" invisible="1"/>
+                                <field name="type" readonly="1" force_save="1" invisible="1"/>
+                                <field name="invoice_start_date" required="1"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="duration_end_date" string="End Date"
+                                       required="duration_type == 'by_date'"
+                                       invisible="duration_type != 'by_date'"/>
+                                <field name="end_date" invisible="duration_type != 'by_duration'"/>
+                                <label for="total_rent" string="Rent"/>
+                                <div>
+                                    <field name="total_rent" required="1"
+                                           readonly="contract_type != 'new_contract'"
+                                           force_save="1" class="oe_inline"/>
+                                    /
+                                    <field
+                                            name="rent_unit" class="oe_inline"/>
+                                    <field
+                                            name="final_rent_unit" invisible="1"/>
+                                    <div
+                                            class="font-italic text-muted" force_save="1"
+                                            invisible="duration_type != 'by_date'">
+                                        * Rent unit must be a "Day" when the duration type is "By
+                                        Date".
+                                    </div>
+                                </div>
+                                <field name="total_days" invisible="duration_type != 'by_date'"/>
+                                <field name="is_any_deposit" invisible="1"/>
+                                <field name="deposit_amount"
+                                       invisible="not is_any_deposit"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="last_invoice_payment_date" invisible="1"/>
+                                <field name="new_contract_id" readonly="1" force_save="1"
+                                       invisible="not new_contract_id"/>
+                                <field name="terminate_date" readonly="1" force_save="1"
+                                       invisible="not terminate_date"/>
+                            </group>
+                        </group>
+                        <hr class="mb-3 mt-4"/>
+                        <div class="row">
+                            <div class="col-2">
+                                <strong>
+                                    Total Area
+                                </strong>
+                            </div>
+                            <div class="col-4">
+                                <div name="total_area">
+                                    <span>
+                                        <field name="total_area" class="oe_inline"
+                                               force_save="1"/>/
+                                        <field name="measure_unit"
+                                               class="oe_inline"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <strong>
+                                    Usable Area
+                                </strong>
+                            </div>
+                            <div class="col-4">
+                                <div name="usable_area">
+                                    <span>
+                                        <field name="usable_area" class="oe_inline"
+                                               force_save="1"/>/
+                                        <field name="measure_unit"
+                                               class="oe_inline"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-4 mt-3"/>
+                        <group string="Property Details">
+                            <group>
+                                <field name="property_id" required="1" readonly="1" force_save="1"
+                                       options="{'no_quick_create':True,'no_create_edit':True}"/>
+                                <label for="property_type" class="mt-1"/>
+                                <div name="property_type">
+                                    <field name="property_type" class="oe_inline"
+                                           force_save="1"/>
+                                    /
+                                    <field name="property_subtype_id"
+                                           options="{'no_open':True}"
+                                           class="oe_inline"/>
+                                </div>
+                                <span class="o_form_label o_td_label" name="address_name">
+                                    <b>Address</b>
+                                </span>
+                                <div class="o_address_format">
+                                    <field name="street" placeholder="Street..."
+                                           class="o_address_street"/>
+                                    <field name="street2" placeholder="Street 2..."
+                                           class="o_address_street"/>
+                                    <field name="city_id" placeholder="City" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state"
+                                           placeholder="State"
+                                           options="{'no_open': True, 'no_quick_create': True}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="country_id" placeholder="Country"
+                                           class="o_address_country"
+                                           options="{'no_open': True, 'no_quick_create': True}"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="company_id"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="region_id" placeholder="Region"/>
+                                <field name="property_project_id" readonly="1" force_save="1"
+                                       invisible="not property_project_id"/>
+                                <field name="subproject_id" readonly="1" force_save="1"
+                                       invisible="not subproject_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Tenant / Customer">
+                                <field name="tenancy_id" required="1"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1"
+                                       options="{'no_quick_create':True,'no_create_edit':True}"/>
+                                <field name="customer_phone" string="Phone"/>
+                                <field name="customer_email" string="Email"/>
+                            </group>
+                            <group string="Landlord">
+                                <field name="property_landlord_id" force_save="1"/>
+                                <field name="landlord_phone" string="Phone"/>
+                                <field name="landlord_email" string="Email"/>
+                            </group>
+                        </group>
+                        <group string="Broker Details" invisible="not is_any_broker">
+                            <group>
+                                <field name="broker_id"
+                                       options="{'no_quick_create':True,'no_create_edit':True}"
+                                       force_save="1"
+                                       required="is_any_broker"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="commission_from" widget="radio"
+                                       options="{'horizontal': true}"
+                                       force_save="1"
+                                       required="is_any_broker"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="rent_type"
+                                       required="is_any_broker"
+                                       readonly="contract_type != 'new_contract'"
+                                       widget="radio" force_save="1"
+                                       options="{'horizontal': true}"/>
+                            </group>
+                            <group>
+                                <field name="commission_type" force_save="1"
+                                       required="is_any_broker"
+                                       readonly="contract_type != 'new_contract'"
+                                       widget="radio" options="{'horizontal': true}"/>
+                                <field name="broker_commission_percentage" force_save="1"
+                                       invisible="commission_type == 'f'"
+                                       required="commission_type == 'p'"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="broker_commission" widget="monetary" force_save="1"
+                                       invisible="commission_type == 'p'"
+                                       required="commission_type == 'f'"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="commission" string="Payable Commission"/>
+                            </group>
+                        </group>
+                        <group string="Maintenance Details" invisible="not is_maintenance_service">
+                            <group>
+                                <field name="is_maintenance_service" invisible="1"/>
+                                <field name="maintenance_rent_type"/>
+                                <field name="maintenance_type"/>
+                            </group>
+                            <group>
+                                <label for="per_area_maintenance" class="mt-1"
+                                       invisible="maintenance_type == 'fixed'"/>
+                                <div name="per_area_maintenance"
+                                     invisible="maintenance_type == 'fixed'">
+                                    <field name="per_area_maintenance" class="oe_inline"
+                                           force_save="1"/>
+                                    /
+                                    <field name="measure_unit"
+                                           class="oe_inline" readonly="1" force_save="1"/>
+                                </div>
+                                <field name="total_maintenance"/>
+                            </group>
+                        </group>
+                        <group string="Installment Item">
+                            <group>
+                                <field name="installment_item_id" required="1"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1"/>
+                                <field name="broker_item_id" force_save="1"
+                                       invisible="not is_any_broker" required="is_any_broker"
+                                       readonly="contract_type == 'new_contract'"/>
+                            </group>
+                            <group>
+                                <field name="deposit_item_id" force_save="1"
+                                       invisible="not is_any_deposit" required="is_any_deposit"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="maintenance_item_id"
+                                       invisible="not is_maintenance_service" force_save="1"
+                                       required="is_maintenance_service"
+                                       readonly="contract_type != 'new_contract'"/>
+                            </group>
+                        </group>
+                        <group string="Taxes">
+                            <group>
+                                <field name="instalment_tax"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="deposit_tax" readonly="contract_type != 'new_contract'"
+                                       invisible="not is_any_deposit"/>
+                                <field name="service_tax" readonly="contract_type != 'new_contract'"
+                                       invisible="not is_extra_service"/>
+                            </group>
+                            <group
+                                    invisible="not instalment_tax and not deposit_tax and not service_tax">
+                                <field name="tax_ids" widget="many2many_tags"
+                                       readonly="contract_type != 'new_contract'"
+                                       required="instalment_tax or deposit_tax or service_tax"/>
+                            </group>
+                        </group>
+                        <group string="Penalty Details" invisible="not is_penalty_applied">
+                            <group>
+                                <field name="is_penalty_applied"
+                                       readonly="contract_type != 'new_contract'"/>
+                                <field name="penalty_percentage"
+                                       readonly="contract_type != 'new_contract'"/>
+                            </group>
+                            <group>
+                                <field name="penalty_days_after_due"
+                                       readonly="contract_type != 'new_contract'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Agreement">
+                                <field name="file_name" invisible="True"/>
+                                <field name="contract_agreement" filename="file_name"
+                                       widget="binary"
+                                       string="Signed Agreement"
+                                       readonly="contract_type != 'new_contract'"
+                                       force_save="1"/>
+                            </group>
+                            <group string="Responsible">
+                                <field name="responsible_id"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       widget="many2one_avatar_user"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Rent Installments">
+                                <field name="rent_invoice_ids" readonly="1" force_save="1">
+                                    <list>
+                                        <field name="invoice_date"/>
+                                        <field name="type"/>
+                                        <field name="description"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="service_amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"
+                                               column_invisible="parent.type != 'manual'"/>
+                                        <field name="rent_invoice_id" widget="many2one"/>
+                                        <field name="payment_state" widget="badge"
+                                               decoration-success="payment_state=='paid'"
+                                               decoration-danger="payment_state=='not_paid'"
+                                               decoration-info="payment_state=='in_payment'"
+                                               decoration-primary="payment_state=='partial'"
+                                               decoration-warning="payment_state=='reversed'"/>
+                                        <button name="action_create_invoice" type="object"
+                                                string="Create Invoice" icon="fa-money"
+                                                invisible="type == 'automatic' or rent_invoice_id"/>
+                                    </list>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" string="Calculation"
+                                       style="text-align: right">
+                                    <field name="total_tenancy" invisible="tax_ids == []"/>
+                                    <field name="tax_amount" invisible="tax_ids == []"/>
+                                    <field name="total_amount" class="oe_subtotal_footer_separator"/>
+                                    <field name="paid_tenancy"/>
+                                    <field name="remain_tenancy"
+                                           class="oe_subtotal_footer_separator"/>
+                                    <field name="paid_bill_amount" invisible="1"/>
+                                    <field name="remaining_bill_amount" invisible="1"/>
+                                </group>
+                            </page>
+                            <page string="Rent Bills" name="rent_bills">
+                                <field name="rent_bill_ids" readonly="1">
+                                    <list>
+                                        <field name="invoice_date"/>
+                                        <field name="bill_type"/>
+                                        <field name="description"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="service_amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"
+                                               column_invisible="parent.type != 'manual'"/>
+                                        <field name="rent_bill_id" widget="many2one"/>
+                                        <field name="payment_state" widget="badge"
+                                               decoration-success="payment_state=='paid'"
+                                               decoration-danger="payment_state=='not_paid'"
+                                               decoration-info="payment_state=='in_payment'"
+                                               decoration-primary="payment_state=='partial'"
+                                               decoration-warning="payment_state=='reversed'"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Penalty Invoices" name="penalty_invoices"
+                                  invisible="not penalty_invoice_ids">
+                                <field name="penalty_invoice_ids" readonly="1">
+                                    <list>
+                                        <field name="invoice_date"/>
+                                        <field name="description"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="penalty_invoice_id" widget="many2one"/>
+                                        <field name="payment_state" widget="badge"
+                                               decoration-success="payment_state=='paid'"
+                                               decoration-danger="payment_state=='not_paid'"
+                                               decoration-info="payment_state=='in_payment'"
+                                               decoration-primary="payment_state=='partial'"
+                                               decoration-warning="payment_state=='reversed'"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Utility Services" invisible="not is_extra_service">
+                                <field name="extra_services_ids"
+                                       readonly="contract_type in ['new_contract','cancel_contract','close_contract','expire_contract']"
+                                       force_save="1">
+                                    <list editable="bottom">
+                                        <field name="service_id"
+                                               options="{'no_open': True, 'no_quick_create': True}"
+                                               required="1"/>
+                                        <field name="service_type" required="1"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="price" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="from_contract" column_invisible="1"/>
+                                        <button name="action_create_service_invoice" type="object"
+                                                invisible="service_type == 'monthly' or from_contract"
+                                                string="Create Invoice"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Extra Services" name="extra_services"
+                                  invisible="not is_added_services">
+                                <field name="is_added_services" invisible="1"/>
+                                <group invisible="contract_type != 'new_contract'">
+                                    <group>
+                                        <field name="added_service_invoice"
+                                               widget="radio"/>
+                                    </group>
+                                </group>
+
+                                <field name="added_service_ids" readonly="1" force_save="1">
+                                    <list>
+                                        <field name="service_id"/>
+                                        <field name="price"/>
+                                        <field name="company_id" column_invisible="1"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="invoice_id" invisible="not invoice_id"
+                                               readonly="1" force_save="1" widget="many2one"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <field name="service_id"/>
+                                            <field name="invoice_id" readonly="1" force_save="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="company_id" invisible="1"/>
+                                            <field name="currency_id" invisible="1"/>
+                                            <field name="price"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Contract Agreement">
+                                <group>
+                                    <group>
+                                        <field name="agreement_template_id"
+                                               options="{'no_quick_create':True,'no_create_edit':True}"/>
+                                    </group>
+                                </group>
+                                <field name="agreement" placeholder="Rental Agreement."/>
+                            </page>
+                            <page string="Terms &amp; Conditions">
+                                <field name="term_condition" widget="html" nolabel="1"
+                                       placeholder="Terms &amp; Conditions.."/>
+                            </page>
+                            <page string="P/L">
+                                <field name="margin_percentage" invisible="1"/>
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-12" style="text-align:center;">
+                                        <strong>
+                                            Total Profit Amount
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <th scope="col">#</th>
+                                            <th scope="col" class="table-active">Expected Amount</th>
+                                            <th scope="col" class="table-active">Paid Amount</th>
+                                            <th scope="col" class="table-active">Due Amount</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row" class="table-active">Invoices</th>
+                                                <td>
+                                                    <field name="total_invoiced" class="float-end"/>
+                                                </td>
+                                                <td class="table-success">
+                                                    <field name="invoice_paid_amount"
+                                                           class="float-end"/>
+                                                </td>
+                                                <td class="table-danger">
+                                                    <field name="invoice_residual" class="float-end"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="table-active" scope="row">Bills</th>
+                                                <td>
+                                                    <field name="total_bills" class="float-end"/>
+                                                </td>
+                                                <td class="table-success">
+                                                    <field name="bill_paid_amount" class="float-end"/>
+                                                </td>
+                                                <td class="table-danger">
+                                                    <field name="bill_residual" class="float-end"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <th scope="row" class="table-active">Margin</th>
+                                            <td>
+                                                <field name="margin" class="float-end"/>
+                                            </td>
+                                            <td>
+                                                <field name="actual_margin" class="float-end"/>
+                                            </td>
+                                            <td>
+                                                #
+                                            </td>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </page>
+                            <page string="Final Statement" name="final_statement"
+                                  invisible="contract_type != 'close_contract'">
+                                <group string="Move Out">
+                                    <group>
+                                        <field name="termination_type" readonly="1" force_save="1"/>
+                                        <field name="move_out_date" readonly="1" force_save="1"/>
+                                        <field name="key_handover_date" readonly="1" force_save="1"/>
+                                    </group>
+                                </group>
+                                <group string="Maintenance / Repair Charges">
+                                    <field name="final_maintenance_line_ids" nolabel="1" colspan="2" readonly="1">
+                                        <list>
+                                            <field name="product_id"/>
+                                            <field name="description"/>
+                                            <field name="amount"/>
+                                        </list>
+                                    </field>
+                                    <group class="oe_subtotal_footer oe_right" style="text-align: right">
+                                        <field name="final_maintenance_amount" readonly="1" force_save="1"/>
+                                    </group>
+                                </group>
+                                <group string="Utility Charges">
+                                    <field name="final_utility_line_ids" nolabel="1" colspan="2" readonly="1">
+                                        <list>
+                                            <field name="utility_type"/>
+                                            <field name="meter_no"/>
+                                            <field name="closing_reading"/>
+                                            <field name="closing_date"/>
+                                            <field name="amount"/>
+                                        </list>
+                                    </field>
+                                    <group class="oe_subtotal_footer oe_right" style="text-align: right">
+                                        <field name="final_utility_amount" readonly="1" force_save="1"/>
+                                    </group>
+                                </group>
+                                <group string="Rent Settlement">
+                                    <group>
+                                        <field name="rent_paid_upto" readonly="1" force_save="1"/>
+                                        <field name="rent_due_amount" readonly="1" force_save="1"/>
+                                    </group>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right" string="Final Payment"
+                                       style="text-align: right">
+                                    <field name="deposit_amount" readonly="1" force_save="1"/>
+                                    <field name="payment_due_to_tenant" class="oe_subtotal_footer_separator"
+                                           readonly="1" force_save="1"/>
+                                </group>
+                            </page>
+                            <page string="Approval Information"
+                                  invisible="contract_type not in ['pending_approval', 'approved', 'running_contract']"
+                                  groups="rental_management.property_rental_manager,rental_management.property_rental_officer">
+                                <group>
+                                    <field name="submitted_by"
+                                           readonly="1" force_save="1"
+                                           widget="many2one_avatar_user"/>
+                                    <field name="submitted_date"
+                                           readonly="1" force_save="1"/>
+                                    <field name="approved_by"
+                                           readonly="1" force_save="1"
+                                           widget="many2one_avatar_user"/>
+                                    <field name="approved_date"
+                                           readonly="1" force_save="1"/>
+                                </group>
+                                <group>
+                                    <field name="rejected_by"
+                                           readonly="1" force_save="1"
+                                           widget="many2one_avatar_user"/>
+                                    <field name="rejected_date"
+                                           readonly="1" force_save="1"/>
+                                    <field name="rejection_reason"
+                                           readonly="1" force_save="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record id="tenancy_details_list_view" model="ir.ui.view">
+            <field name="name">tenancy.details.list.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <list string="Rent" js_class="rental_contract_dashboard_list">
+                    <field name="tenancy_seq"/>
+                    <field name="property_id"/>
+                    <field name="property_type"/>
+                    <field name="property_subtype_id"/>
+                    <field name="tenancy_id" string="Customer"/>
+                    <field name="property_landlord_id"/>
+                    <field name="total_area"/>
+                    <field name="measure_unit" nolabel="1"/>
+                    <field name="total_rent"/>
+                    <field name="duration_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="responsible_id" widget="many2one_avatar_user"/>
+                    <field name="activity_ids" widget="list_activity"/>
+                    <field name="contract_type" widget="badge" string="Status"
+                           decoration-danger="contract_type in ['close_contract','cancel_contract']"
+                           decoration-warning="contract_type =='expire_contract'"
+                           decoration-success="contract_type =='running_contract'"
+                           decoration-primary="contract_type == 'new_contract'"
+                           decoration-info="contract_type in ['pending_approval', 'approved']"/>
+                </list>
+            </field>
+        </record>
+        <record id="tenancy_details_calendar_view" model="ir.ui.view">
+            <field name="name">tenancy.details.calendar.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <calendar date_start="start_date"
+                          mode="month"
+                          quick_create="False"
+                          hide_time="True"
+                          create="false"
+                          event_open_popup="True">
+                    <field name="tenancy_seq"/>
+                    <field name="tenancy_id"/>
+                    <field name="property_id"/>
+                    <field name="duration_id"/>
+                </calendar>
+            </field>
+        </record>
+        <record id="tenancy_details_kanban_view" model="ir.ui.view">
+            <field name="name">tenancy.details.kanban.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1"
+                        create="false">
+                    <field name="tenancy_seq"/>
+                    <field name="tenancy_id"/>
+                    <field name="property_id"/>
+                    <field name="duration_id"/>
+                    <field name="property_type"/>
+                    <field name="contract_type"/>
+                    <field name="total_rent"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <strong>
+                                        <span>
+                                            <field name="tenancy_seq"/>
+                                        </span>
+                                    </strong>
+                                    <strong>
+                                        <span>
+                                            <field name="tenancy_id"/>
+                                        </span>
+                                    </strong>
+                                    <span>
+                                        <field name="property_type"/>,
+                                        <field name="property_id"/>
+                                    </span>
+                                    <span>
+                                        <field name="total_rent" widget="monetary"/>
+                                    </span>
+                                    <span>
+                                        <field name="currency_id" invisible="1"/>
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-column justify-content-between">
+                                    <strong>
+                                        <i class="fa fa-clock-o" aria-label="Duration"
+                                           role="img" title="Duration"/>
+                                        <t t-esc="record.duration_id.value"/>
+                                    </strong>
+                                    <span>
+                                        <field name="contract_type" widget="label_selection"
+                                               options="{'classes': {'cancel_contract': 'info', 'running_contract': 'success','close_contract': 'danger'}}"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="tenancy_details_search_view" model="ir.ui.view">
+            <field name="name">tenancy.details.search.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="tenancy_seq"/>
+                    <field name="tenancy_id"/>
+                    <field name="broker_id"/>
+                    <field name="property_id"/>
+                    <field name="property_type"/>
+                    <field name="property_subtype_id"/>
+                    <field name="property_project_id"/>
+                    <field name="subproject_id"/>
+                    <field name="property_landlord_id"/>
+                    <field name="total_rent"/>
+                    <field name="total_area"/>
+                    <field name="end_date"/>
+                    <filter string="Extended Contract" name="filter_extended_contract"
+                            domain="[('is_extended','=',True)]"/>
+                    <separator/>
+                    <filter string="Company" name="group_by_company" domain="[]"
+                            context="{'group_by':'company_id'}"/>
+                    <filter string="Property" name="property" domain="[]"
+                            context="{'group_by':'property_id'}"/>
+                    <filter string="Property Type" name="property_type" domain="[]"
+                            context="{'group_by':'property_type'}"/>
+                    <filter string="Property Sub Type" name="property_sub_type" domain="[]"
+                            context="{'group_by':'property_subtype_id'}"/>
+                    <separator/>
+                    <filter string="Tenant" name="customer" domain="[]"
+                            context="{'group_by':'tenancy_id'}"/>
+                    <filter string="Landlord" name="landlord" domain="[]"
+                            context="{'group_by':'property_landlord_id'}"/>
+                    <separator/>
+                    <filter string="Broker" name="broker" domain="[]"
+                            context="{'group_by':'broker_id'}"/>
+                    <separator/>
+                    <filter string="Duration" name="duration" domain="[]"
+                            context="{'group_by':'duration_id'}"/>
+                    <separator/>
+                    <filter string="Status" name="group_by_status" domain="[]"
+                            context="{'group_by':'contract_type'}"/>
+                    <searchpanel>
+                        <field name="contract_type" string="Status" select="multi"
+                               enable_counters="1"/>
+                        <field name="payment_term" string="Payment Terms" select="multi"
+                               enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+        <record id="tenancy_details_pivot_view" model="ir.ui.view">
+            <field name="name">tenancy.details.pivot.view</field>
+            <field name="model">tenancy.details</field>
+            <field name="arch" type="xml">
+                <pivot string="Statistic">
+                    <field name="total_rent" type="measure"/>
+                    <field name="tenancy_seq" type="row"/>
+                    <field name="payment_term" type="col"/>
+                    <field name="duration_id" type="col"/>
+                </pivot>
+            </field>
+        </record>
+        <record id="tenancy_details_action" model="ir.actions.act_window">
+            <field name="name">Contracts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tenancy.details</field>
+            <field name="view_mode">list,kanban,form,search,calendar,pivot,activity</field>
+        </record>
+
+        <!-- Tenancy Service Line -->
+        <record id="tenancy_service_line_view_form" model="ir.ui.view">
+            <field name="name">tenancy.service.line.view.form</field>
+            <field name="model">tenancy.service.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="service_id"/>
+                                <field name="price"/>
+                            </group>
+                            <group>
+                                <field name="service_type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

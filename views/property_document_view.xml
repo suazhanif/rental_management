@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_document_list_view" model="ir.ui.view">
+            <field name="name">property.document.list.view</field>
+            <field name="model">property.documents</field>
+            <field name="arch" type="xml">
+                <list string="Document" editable="bottom">
+                    <field name="property_id"/>
+                    <field name="document_date"/>
+                    <field name="doc_type"/>
+                    <field name="file_name" column_invisible="1"/>
+                    <field name="document" filename="file_name" widget="binary"/>
+                </list>
+            </field>
+        </record>
+        <record id="property_document_form_view" model="ir.ui.view">
+            <field name="name">property.document.form.view</field>
+            <field name="model">property.documents</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="doc_type" required="1"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="document" required="1"
+                                       filename="file_name"/>
+                            </group>
+                            <group>
+                                <field name="document_date" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="property_document_action" model="ir.actions.act_window">
+            <field name="name">Document</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.documents</field>
+            <field name="view_mode">kanban,list</field>
+        </record>
+    </data>
+</odoo>
