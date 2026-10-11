@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="property_sold_qweb_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2 style="border-bottom:1px solid black;padding-bottom:10px;">
+                                Property Selling Details
+                            </h2>
+                            <br/>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:33.33%;">Ref.
+                                        <br/>
+                                        <h5>
+                                            <strong>
+                                                <span t-field="o.sold_seq"/>
+                                            </strong>
+                                        </h5>
+                                    </td>
+
+                                    <td style="width:33.33%;">Date
+                                        <br/>
+                                        <h5>
+                                            <strong>
+                                                <span t-field="o.date"/>
+                                            </strong>
+                                        </h5>
+                                    </td>
+                                    <td style="width:33.33%;">Company
+                                        <br/>
+                                        <h5>
+                                            <strong>
+                                                <span t-field="o.company_id"/>
+                                            </strong>
+                                        </h5>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Property Details
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Property
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.property_id.name"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Price
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.price"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Property Type
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.type"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Sub Type
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.property_subtype_id"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Total Area
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.total_area"/>
+                                                        <span t-field="o.measure_unit"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Region
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.region_id"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Address
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span>
+                                                            <span t-field="o.street"/>
+                                                            <br/>
+                                                            <span
+                                                                    t-field="o.street2"/>
+                                                            <br/>
+                                                            <t t-if="o.city_id">
+                                                                <span t-field="o.city_id.name"/>
+                                                                <t t-if="o.city_id and o.zip">,</t>
+                                                                <span t-field="o.zip"/>
+                                                            </t>
+                                                            <br/>
+                                                            <span t-field="o.state_id.name"/>
+                                                            <t t-if="o.state_id and o.country_id">,</t>
+                                                            <span t-field="o.country_id.name"/>
+                                                        </span>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="o.property_project_id">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Project
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.property_project_id"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.subproject_id">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Sub Project
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.subproject_id"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Buyer &amp; Seller
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td colspan="3" style="width:100%;">
+                                                    <span style="border-bottom:1px solid black;">
+                                                        Buyer / Customer
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Customer
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.customer_id.name"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="o.customer_phone">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Phone
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.customer_phone"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.customer_email">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Email
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.customer_email"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td colspan="3" style="width:100%;">
+                                                    <span style="border-bottom:1px solid black;">
+                                                        Seller / Landlord
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Landlord
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="o.landlord_id.name"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="o.landlord_phone">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Phone
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.landlord_phone"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.landlord_email">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Email
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.landlord_email"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <t t-if="o.is_any_broker">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Broker Details
+                                </h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Broker
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="o.broker_id.name"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Commission From
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="o.commission_from"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Commission Type
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="o.commission_type"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Commission
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <t t-if="o.commission_type == 'f'">
+                                                                <span t-field="o.broker_commission"/>
+                                                            </t>
+                                                            <t t-if="o.commission_type == 'p'">
+                                                                <span
+                                                                        t-field="o.broker_commission_percentage"/>
+                                                                % -
+                                                                <span
+                                                                        t-field="o.broker_final_commission"/>
+                                                            </t>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Bill Ref.
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.broker_bill_id.name"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Invoice Ref.
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="o.broker_invoice_id.name"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Payment Details
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Payment Term
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:60%;">
+                                                    <strong>
+                                                        <span t-field="o.payment_term"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Customer Ask Price
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:60%;">
+                                                    <strong>
+                                                        <span t-field="o.ask_price"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Confirmed Sale Price
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:60%;">
+                                                    <strong>
+                                                        <span t-field="o.sale_price"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="o.is_any_maintenance">
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Total Maintainance
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="o.total_maintenance"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.is_utility_service">
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Utility Cost
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="o.total_maintenance"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td colspan="3">
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Total Amount
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:40%;">
+                                                    <strong>
+                                                        <span t-field="o.total_sell_amount"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Book Price
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:60%;">
+                                                    <strong>
+                                                        <span t-field="o.book_price"/>
+                                                    </strong>
+                                                    <br/>
+                                                    Invoice Ref.
+                                                    <span
+                                                            t-field="o.book_invoice_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:38%;">
+                                                    Payable Amount
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:60%;">
+                                                    <strong>
+                                                        <span t-field="o.payable_amount"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Invoices &amp; Installments
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            Title
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            Date
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            Invoice Ref.
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            Taxes
+                                        </strong>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <strong>
+                                            Tax Amount
+                                        </strong>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <strong>
+                                            Amount
+                                        </strong>
+                                    </td>
+
+                                </tr>
+                                <t t-foreach="o.sale_invoice_ids" t-as="s">
+                                    <tr style="border-bottom: 1px solid #cdc2c2;font-size:14px;">
+                                        <td>
+                                            <span t-field="s.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="s.invoice_date"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="s.invoice_id.state=='posted'">
+                                                <span t-field="s.invoice_id.name"/>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <span
+                                                    t-esc="', '.join(map(lambda x: (x.name), s.tax_ids))"
+                                                    id="line_tax_ids"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                <span t-field="s.tax_amount"/>
+                                            </strong>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                <span t-field="s.amount"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="2">
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        Untaxed Amount
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        <span t-field="o.total_untaxed_amount"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:1px;">
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        Tax Amount
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        <span t-field="o.tax_amount"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:1px;">
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        <strong>Total Amount</strong>
+                                    </td>
+                                    <td colspan="2"
+                                        style="text-align:right;border-top: 1px solid #cdc2c2;padding:1px;">
+                                        <strong>
+                                            <span t-field="o.total_amount"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:1px;">
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        Paid
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        <span t-field="o.paid_amount"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:1px;">
+                                    </td>
+                                    <td colspan="2" style="text-align:right;padding:1px;">
+                                        <strong>Remaining Amount</strong>
+                                    </td>
+                                    <td colspan="2"
+                                        style="text-align:right;border-top: 1px solid #cdc2c2;padding:1px;">
+                                        <strong>
+                                            <span t-field="o.remaining_amount"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="page-break-before:always;"/>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Terms &amp; Conditions
+                            </h6>
+                            <p>
+                                <span t-field="o.term_condition"/>
+                            </p>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <record id="property_sold_report_template_id" model="ir.actions.report">
+            <field name="name">Sold Contract</field>
+            <field name="model">property.vendor</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">rental_management.property_sold_qweb_report_template</field>
+            <field name="report_file">rental_management.property_sold_qweb_report_template</field>
+            <field name="binding_model_id" ref="model_property_vendor"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Sold Information'</field>
+        </record>
+    </data>
+</odoo>

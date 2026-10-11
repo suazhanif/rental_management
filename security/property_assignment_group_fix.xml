@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        3.4.0 — Property Assignment: group-structure fix.
+
+        Overrides the existing ``property_rental_manager`` group record
+        (same XML ID as in ``security/groups.xml``) to clear its
+        ``implied_ids``.  This is a NEW file that updates the existing
+        record via the standard Odoo ``<record id="..." model="...">``
+        update mechanism — no direct edit of ``groups.xml`` required.
+
+        Why: the manager-bypass requirement for the
+        Property Assignment record rules means the manager group
+        must NOT be a kind of officer group.  Mirrors Odoo's CRM
+        pattern (``group_sales_manager`` implies
+        ``group_sales_salesman_all_leads``, NOT
+        ``group_sales_salesman``).
+
+        Order of evaluation: this file is loaded AFTER
+        ``security/groups.xml`` (via the manifest's data list), so
+        the override takes effect.
+    -->
+    <data noupdate="0">
+        <record id="rental_management.property_rental_manager" model="res.groups">
+            <field name="implied_ids" eval="[(6, 0, [])]"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="rental_company_restricted_property" model="ir.rule">
+            <field name="name">Rental Management : Company Property Only</field>
+            <field name="model_id" ref="rental_management.model_property_details"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_company_restricted_tenancy" model="ir.rule">
+            <field name="name">Rental Management : Company Tenancy Only</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_company_restricted_selling" model="ir.rule">
+            <field name="name">Rental Management : Company Selling Only</field>
+            <field name="model_id" ref="rental_management.model_property_vendor"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_company_restricted_rent_invoice" model="ir.rule">
+            <field name="name">Rental Management : Company Rent Invoice Only</field>
+            <field name="model_id" ref="rental_management.model_rent_invoice"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_company_restricted_rent_bill" model="ir.rule">
+            <field name="name">Rental Management : Company Rent Invoice Only</field>
+            <field name="model_id" ref="rental_management.model_rent_bill"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_company_restricted_agreement_template" model="ir.rule">
+            <field name="name">Rental Management : Company Rental Agreement Template</field>
+            <field name="model_id" ref="rental_management.model_agreement_template"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <!-- Project-->
+        <record id="rental_company_restricted_project" model="ir.rule">
+            <field name="name">Rental Management : Company Project Only</field>
+            <field name="model_id" ref="rental_management.model_property_project"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <!-- Sub Project-->
+        <record id="rental_company_restricted_sub_project" model="ir.rule">
+            <field name="name">Rental Management : Company Sub Project Only</field>
+            <field name="model_id" ref="rental_management.model_property_sub_project"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rental_dashboard_owner_rule" model="ir.rule">
+            <field name="name">Rental Management : Owner Dashboard Read Only</field>
+            <field name="model_id" ref="rental_management.model_owner_property_dashboard"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4, ref('rental_management.property_rental_owner'))]"/>
+        </record>
+    </data>
+</odoo>

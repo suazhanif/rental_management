@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="property_sold_mail_template" model="mail.template">
+            <field name="name">Property Sold Mail Template</field>
+            <field name="model_id" ref="rental_management.model_property_vendor" />
+            <field name="subject">Property Sold Information</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="partner_to">{{ object.customer_id.id }}</field>
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td> Dear Buyer
+                            <h4>
+                                <strong>
+                                    <t t-out="object.customer_id.name" />
+                                </strong>
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p> We are delighted to inform you that your property purchase has been successfully
+                    completed. Congratulations on becoming the owner of <strong>
+                        <span t-field="object.property_id.name" />
+                    </strong>
+                    property! </p>
+
+                <h5>
+                    Payment Information
+                </h5>
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="width:25%;">Advance</td>
+                        <td style="width:25%;">
+                            <strong>
+                                <span t-field="object.book_price" />
+                            </strong>
+                            Invoice Ref. <span t-field="object.book_invoice_id" />
+                        </td>
+                        <td style="width:25%;">Sale Price</td>
+                        <td style="width:25%;">
+                            <strong>
+                                <span t-field="object.sale_price" />
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:25%;">Payment Term</td>
+                        <td style="width:25%;">
+                            <strong>
+                                <span t-field="object.payment_term" />
+                            </strong>
+                        </td>
+                        <td style="width:25%;">Reference</td>
+                        <td style="width:25%;">
+                            <strong>
+                                <span t-field="object.sold_seq" />
+                            </strong>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    <strong>
+                        Please Refer Attachment for more Details.
+                    </strong>
+                </p>
+                <h6>
+                    Best regards
+                </h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+                <hr />
+                <span>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+            </field>
+            <field name="report_template_ids"
+                eval="[(4, ref('rental_management.property_sold_report_template_id'))]" />
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>

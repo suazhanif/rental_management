@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="dual_accommodation_expiry_reminder_template" model="mail.template">
+            <field name="name">Dual Accommodation Expiry Reminder</field>
+            <field name="model_id" ref="rental_management.model_occupy_details" />
+            <field name="subject">Dual Accommodation Contract Expiring - Bed {{ object.bed_id.name or '-' }} - {{ object.occupant_id.name }}</field>
+            <field name="email_from">{{ object.company_id.email or object.responsible_id.email }}</field>
+            <field name="partner_to">{{ object.responsible_id.partner_id.id }}</field>
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td> Dear
+                            <h4>
+                                <strong>
+                                    <t t-out="object.responsible_id.name" />
+                                </strong>
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p>
+                    This is a reminder that the <strong>Dual Accommodation</strong> contract for
+                    bed <strong>
+                        <t t-out="object.bed_id.name or '-'" />
+                    </strong> occupied by <strong>
+                        <t t-out="object.occupant_id.name" />
+                    </strong> is set to expire in <strong>one month</strong>, on
+                    <strong>
+                        <t t-out="format_date(object.expected_end_date)" />
+                    </strong>.
+                </p>
+                <h5 style="text-align:center;">
+                    Contract Information
+                </h5>
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Chairman Approval No.</th>
+                            <th scope="col">Property</th>
+                            <th scope="col">Bed</th>
+                            <th scope="col">Occupant</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">Expected End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span t-field="object.occupy_seq" />
+                            </td>
+                            <td>
+                                <span t-field="object.dual_accommodation_approval_number" />
+                            </td>
+                            <td>
+                                <span t-field="object.property_id.name" />
+                            </td>
+                            <td>
+                                <span t-field="object.bed_id.name" />
+                            </td>
+                            <td>
+                                <span t-field="object.occupant_id.name" />
+                            </td>
+                            <td>
+                                <span t-field="object.start_date" />
+                            </td>
+                            <td>
+                                <span t-field="object.expected_end_date" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    Please review this dual-accommodation approval and take the required action
+                    (renewal, vacate, or shift) before the expiry date.
+                </p>
+                <hr />
+                <span>
+                    <h6>
+                        <t t-out="object.company_id.name" />
+                    </h6>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>

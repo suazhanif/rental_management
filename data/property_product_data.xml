@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Payment Product-->
+    <data noupdate="1">
+        <record id="product_category_property" model="product.category">
+            <field name="parent_id" ref="product.product_category_goods"/>
+            <field name="name">Property</field>
+        </record>
+        <record id="property_product_1" model="product.product">
+            <field name="name">Property Payment</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_product_2" model="product.product">
+            <field name="name">Property Deposit</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_product_3" model="product.product">
+            <field name="name">Broker Commission</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_product_4" model="product.product">
+            <field name="name">Property Maintenance</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_product_5" model="product.product">
+            <field name="name">Contract Penalty</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <!--Maintenance
+        Product-->
+        <record id="property_maintenance_product_1" model="product.product">
+            <field name="name">Electrical System Repairs</field>
+            <field name="type">service</field>
+            <field name="description">Only Stock Electrical item will be covered</field>
+            <field name="is_maintenance">True</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_maintenance_product_2" model="product.product">
+            <field name="name">Structural Repairs</field>
+            <field name="type">service</field>
+            <field name="description">including severe damage to walls, ceiling, or floors, or Paint
+                related Work
+            </field>
+            <field name="is_maintenance">True</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_maintenance_product_3" model="product.product">
+            <field name="name">Plumbing System Repairs</field>
+            <field name="type">service</field>
+            <field name="description">plumbing related Services will be covered</field>
+            <field name="is_maintenance">True</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_maintenance_product_4" model="product.product">
+            <field name="name">Mold Found</field>
+            <field name="type">service</field>
+            <field name="description">Mold Related all Service</field>
+            <field name="is_maintenance">True</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <record id="property_maintenance_product_5" model="product.product">
+            <field name="name">Other</field>
+            <field name="type">service</field>
+            <field name="description">Any Other Maintenance</field>
+            <field name="is_maintenance">True</field>
+            <field name="categ_id" ref="rental_management.product_category_property"/>
+        </record>
+        <!--Maintenance
+        Record-->
+        <record id="maintenance_team_product_1" model="maintenance.team">
+            <field name="name">Electrical team</field>
+        </record>
+        <record id="maintenance_team_product_2" model="maintenance.team">
+            <field name="name">Structural Repair team</field>
+        </record>
+        <record id="maintenance_team_product_3" model="maintenance.team">
+            <field name="name">Mold Remediation team</field>
+        </record>
+        <record id="maintenance_team_product_4" model="maintenance.team">
+            <field name="name">Plumbing team</field>
+        </record>
+        <record id="maintenance_team_product_5" model="maintenance.team">
+            <field name="name">Other team</field>
+        </record>
+        <!--Nearby
+        Connectivity-->
+        <record id="property_connectivity_1" model="property.connectivity">
+            <field name="name">Airport</field>
+            <field name="distance">10 KM</field>
+            <field name="image" type="base64" file="rental_management/static/src/img/airport.svg"/>
+        </record>
+        <record id="property_connectivity_2" model="property.connectivity">
+            <field name="name">Hospital</field>
+            <field name="distance">3 KM</field>
+            <field name="image" type="base64"
+                   file="rental_management/static/src/img/hospital-building.svg"/>
+        </record>
+        <record id="property_connectivity_3" model="property.connectivity">
+            <field name="name">Shopping Mall</field>
+            <field name="distance">5 KM</field>
+            <field name="image" type="base64" file="rental_management/static/src/img/mall.svg"/>
+        </record>
+        <record id="property_connectivity_4" model="property.connectivity">
+            <field name="name">Park</field>
+            <field name="distance">1 KM</field>
+            <field name="image" type="base64" file="rental_management/static/src/img/park.svg"/>
+        </record>
+        <record id="property_connectivity_5" model="property.connectivity">
+            <field name="name">School</field>
+            <field name="distance">4 KM</field>
+            <field name="image" type="base64" file="rental_management/static/src/img/school.svg"/>
+        </record>
+        <record id="property_connectivity_6" model="property.connectivity">
+            <field name="name">Metro Station</field>
+            <field name="distance">7 KM</field>
+            <field name="image" type="base64"
+                   file="rental_management/static/src/img/train-station.svg"/>
+        </record>
+
+        <!-- Property Sub Type -->
+        <record id="property_type_1" model="property.sub.type">
+            <field name="name">Apartment</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_2" model="property.sub.type">
+            <field name="name">Bungalow</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_3" model="property.sub.type">
+            <field name="name">Vila</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_4" model="property.sub.type">
+            <field name="name">Raw House</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_5" model="property.sub.type">
+            <field name="name">Duplex House</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_6" model="property.sub.type">
+            <field name="name">Single Studio</field>
+            <field name="type">residential</field>
+        </record>
+
+        <record id="property_type_7" model="property.sub.type">
+            <field name="name">Land</field>
+            <field name="type">land</field>
+        </record>
+
+        <record id="property_type_8" model="property.sub.type">
+            <field name="name">Warehouses</field>
+            <field name="type">industrial</field>
+        </record>
+
+        <record id="property_type_9" model="property.sub.type">
+            <field name="name">Factories</field>
+            <field name="type">industrial</field>
+        </record>
+
+        <record id="property_type_10" model="property.sub.type">
+            <field name="name">Other</field>
+            <field name="type">industrial</field>
+        </record>
+
+        <record id="property_type_11" model="property.sub.type">
+            <field name="name">Offices</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_12" model="property.sub.type">
+            <field name="name">Retail Stores</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_13" model="property.sub.type">
+            <field name="name">Hotels</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_14" model="property.sub.type">
+            <field name="name">Restaurants</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_15" model="property.sub.type">
+            <field name="name">Pubs</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_16" model="property.sub.type">
+            <field name="name">Cafes</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_17" model="property.sub.type">
+            <field name="name">Sport Facilities</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_18" model="property.sub.type">
+            <field name="name">Medical Centres</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_19" model="property.sub.type">
+            <field name="name">Hospitals</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_20" model="property.sub.type">
+            <field name="name">Nursing Homes</field>
+            <field name="type">commercial</field>
+        </record>
+
+        <record id="property_type_21" model="property.sub.type">
+            <field name="name">Other Use</field>
+            <field name="type">commercial</field>
+        </record>
+    </data>
+</odoo>

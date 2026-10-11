@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="property_sequence" model="ir.sequence">
+            <field name="name">Property Sequence Number</field>
+            <field name="code">property.details</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">PI/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <record id="tenancy_sequence" model="ir.sequence">
+            <field name="name">Tenancy Sequence Number</field>
+            <field name="code">tenancy.details</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">T/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <record id="sold_sequence" model="ir.sequence">
+            <field name="name">Sold Sequence Number</field>
+            <field name="code">property.vendor</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">PS/%(year)s/%(month)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <record id="seq_occupy_details" model="ir.sequence">
+            <field name="name">Occupy Details Sequence</field>
+            <field name="code">occupy.details</field>
+            <field name="prefix">OCC/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <record id="seq_shift_occupy" model="ir.sequence">
+            <field name="name">Shift Occupy</field>
+            <field name="code">shift.occupy</field>
+            <field name="prefix">SHIFT/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False" />
+        </record>
+    </data>
+</odoo>

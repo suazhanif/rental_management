@@ -1,0 +1,398 @@
+<odoo>
+    <record id="action_report_loi" model="ir.actions.report">
+        <field name="name">Letter of Intent - Palm Gardens</field>
+        <field name="model">tenancy.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rental_management.report_loi_document</field>
+        <field name="report_file">rental_management.report_loi_document</field>
+        <field name="binding_model_id" ref="model_tenancy_details"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Letter of Intent - %s' % (object.tenancy_seq)</field>
+    </record>
+
+    <record id="agreement_template_loi" model="agreement.template">
+        <field name="name">Palm Gardens Villa</field>
+        <field name="template_type">printable</field>
+        <field name="report_id" ref="rental_management.action_report_loi"/>
+        <field name="model">tenancy.details</field>
+    </record>
+
+    <template id="report_loi_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page"
+                         style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10.5px;color:#2b2f38;line-height:1.5;">
+
+                        <!-- ============ HEADER BAND ============ -->
+                       <table style="width:100%;margin-bottom:6px;">
+                            <tr>
+                                <td style="vertical-align:bottom;">
+                                    <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;
+                                                color:#17c1f3;font-weight:700;margin-bottom:4px;">
+                                        Letter of Intent
+                                    </div>
+                                    <div style="font-size:22px;font-weight:700;letter-spacing:0.2px;color:#0c4ca3;">
+                                        <span t-field="o.property_id.name"/>
+                                    </div>
+                                </td>
+                                <td style="text-align:right;vertical-align:bottom;">
+                                    <div style="font-size:8.5px;text-transform:uppercase;letter-spacing:1.2px;
+                                                color:#8891a0;margin-bottom:3px;">
+                                        Date
+                                    </div>
+                                    <div style="font-size:14px;font-weight:700;color:#0c4ca3;">
+                                        <span t-field="o.start_date" t-options="{'widget':'date'}"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="font-size:9.5px;color:#5a6270;">
+                            <span t-esc="o.company_id.partner_id.contact_address"/>
+                            <span t-if="o.company_id.email"> · <span t-esc="o.company_id.email"/></span>
+                            <span t-if="o.company_id.website"> · <span t-esc="o.company_id.website"/></span>
+                        </div>
+                        <div style="height:3px;background:linear-gradient(90deg,#0c4ca3 0%,#17c1f3 100%);
+                                    border-radius:2px;margin-top:10px;margin-bottom:18px;"/>
+                        <p style="text-align:center;font-style:italic;color:#0c4ca3;font-size:10px;
+                                  margin-top:-8px;margin-bottom:14px;">
+                            "Subject to Tenancy Agreement"
+                        </p>
+
+                        <p style="margin-bottom:14px;">
+                            We write to confirm an offer to lease has been submitted to
+                            <b><span t-field="o.property_id.name"/></b>
+                            on the following terms &amp; conditions:
+                        </p>
+
+                        <!-- ============ PROPERTY / TENANT DETAILS ============ -->
+                        <table style="width:100%;border-collapse:collapse;border:1px solid #e3e9f2;
+                                      border-radius:8px;overflow:hidden;">
+                            <t t-foreach="[
+                            ('Property Name', o.property_id.name),
+                            ('Property Location', (o.street or '') + ', ' + (o.city_id.name or '')),
+                            ('Unit Type', o.property_subtype_id.name),
+                            ('Unit Number', o.property_id.building_no),
+                            ('Landlord', o.property_landlord_id.name),
+                            ('Tenant Name', o.tenancy_id.name),
+                            ('CR No.', o.cr_no if 'cr_no' in o._fields else ''),
+                            ('Occupant Name / Sponsor', o.occupant_sponsor if 'occupant_sponsor' in o._fields else ''),
+                            ('Tenant Address', o.tenant_address if 'tenant_address' in o._fields else ''),
+                            ('Tel / Mobile', o.tenancy_id.phone or o.tenancy_id.mobile or ''),
+                            ('Email ID', o.tenancy_id.email or ''),
+                            ('Flat Usage', o.flat_usage if 'flat_usage' in o._fields else 'Residential for family purpose only'),
+                        ]" t-as="row">
+                                <tr>
+                                    <td style="width:190px;padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                               border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;
+                                               color:#0c4ca3;">
+                                        <t t-esc="row[0]"/>
+                                    </td>
+                                    <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                        <t t-esc="row[1]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Lease Period
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-field="o.duration_id.duration"/>, FROM
+                                    <span t-field="o.start_date"/>
+                                    TO
+                                    <span t-field="o.end_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Furnish Type
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-esc="o.furnish_type if 'furnish_type' in o._fields else 'Un-Furnished (Kitchen Appliances as mentioned in Fixtures)'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Rental Amount
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;
+                                           color:#0c4ca3;font-weight:700;">
+                                    <span t-field="o.currency_id.symbol"/>
+                                    <span t-field="o.total_rent"/>
+                                    per
+                                    <t t-esc="{
+                                           'monthly': 'Month',
+                                             'full_payment': 'Full Payment',
+                                             'quarterly': 'Quarter',
+                                             'half_year': 'Half Year',
+                                             'year': 'Year',
+                                             'daily': 'Day',
+                                             'bi_monthly': 'Two Months',
+                                         }.get(o.payment_term, o.rent_unit)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Club Membership
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-esc="o.club_membership if 'club_membership' in o._fields else 'Free membership for family at Villa Clubhouse (subject to Clubhouse rules and regulations)'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Payment Terms
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-esc="o.payment_term if 'payment_term' in o._fields else ''"/>
+                                    in advance, in favour of '<span t-esc="o.property_landlord_id.name"/>'
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Refundable Deposit
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-field="o.currency_id.symbol"/>
+                                    <span t-field="o.deposit_amount"/>
+                                    (amount will be en-cashed)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Car Parking
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-esc="o.car_parking if 'car_parking' in o._fields else 'Reserved car parking for one vehicle per unit. Vehicle to be registered at the management office; any change of vehicle must be reported.'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-bottom:1px solid #e3e9f2;border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Gym Membership Fee
+                                </td>
+                                <td style="padding:7px 12px;border-bottom:1px solid #e3e9f2;">
+                                    <span t-esc="o.gym_fee if 'gym_fee' in o._fields else 'Included'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px 12px;background:#f4f8fd;font-weight:600;
+                                           border-left:3px solid #17c1f3;color:#0c4ca3;">
+                                    Clubhouse / Multipurpose Hall
+                                </td>
+                                <td style="padding:7px 12px;">
+                                    Booking based on availability, additional charges apply. Contact the clubhouse
+                                    supervisor for bookings (online payment only, no cash accepted).
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:14px;">
+                            A charge will be levied for any cheque returned from the bank due to insufficient funds;
+                            suitable action will be taken to recover this outstanding sum or deduct the charge from the
+                            security deposit. Failure to pay rent within 45 days of the rental due date, the matter will be
+                            immediately referred to the Landlord's legal department for further action.
+                        </p>
+                        <p>
+                            <b>Utilities</b>: Tenant undertakes to pay the monthly Electricity &amp; Water bills payment
+                            to the service provider, and shall share a copy of the receipt with the landlord's relevant
+                            department monthly as per consumption.
+                        </p>
+
+                        <!-- ============ TENANT UNDERTAKING ============ -->
+                        <div style="background:#17c1f3;color:#fffff;font-weight:700;font-size:12px;
+                                    letter-spacing:0.5px;padding:6px 12px;border-radius:6px;margin-top:18px;">
+                            TENANT UNDERTAKING
+                        </div>
+
+                        <div style="margin-top:10px;">
+                            <p><b>To Renew / Terminate</b>: 3 months' advance notice to be provided prior to the lease
+                                expiry, in writing, in the event the tenant wishes to renew or terminate the property.
+                                Less than three (3) months' notice period, tenant must pay the proportionate rent to cover
+                                the notice period.
+                            </p>
+                            <p><b>Pre-termination</b>: Pre-termination of a lease before the expiry date is not applicable
+                                for corporate tenants. However, leases in a personal name may be terminated by providing one
+                                (1) month's notice, but only if the tenant has resigned or been terminated by their
+                                employer. Proof (resignation acceptance letter or termination letter) must be provided. If
+                                the one (1) month notice is not adhered to, the tenant must pay the proportionate rent to
+                                cover the notice period, plus the proportionate municipality registration fee for
+                                expatriates.
+                            </p>
+                            <p><b>Reinstatement</b>: Upon vacating, the tenant shall return the property in the same
+                                condition it was received, to the landlord's satisfaction — including internal
+                                redecoration and repainting — or bear the cost as determined by the management office
+                                after evaluating necessary maintenance and replacement of fixtures, fittings, and
+                                furniture, where applicable.
+                            </p>
+                            <p><b>Internal Shifting</b>: Generally not allowed. On a case-by-case basis the Management
+                                Office may consider a request, subject to the tenant's agreement; shifting charges apply.
+                            </p>
+                            <p><b>Subletting</b>: Not Allowed</p>
+                            <p><b>Confidentiality</b>: Confirms that neither party will disclose the letter of intent
+                                terms and rental rate.
+                            </p>
+                            <p><b>Real Estate Commission</b>: No charges are payable by the tenant.</p>
+                            <p><b>Landlord Maintenance</b>: Includes preventative maintenance of landlord-supplied
+                                air-conditioning, cold &amp; hot water system, waste water/sewage system, firefighting
+                                system, electrical cabling and switches, and rectification of structural defects, if any.
+                            </p>
+                            <p><b>Fixtures</b>:
+                                <span t-esc="o.fixtures if 'fixtures' in o._fields else 'Air-conditioning and built-in wardrobes, 2 hanging lights in each room and 2 chandeliers in the living area, cooker hood, oven, dishwasher and cabinetry in kitchen, electrical and plumbing fixtures.'"/>
+                            </p>
+                            <p><b>Documents Required</b>: Company — copies of Commercial Registration Certificate,
+                                computer sheets with activity, authorised signatory. Individual — copies of Resident Card
+                                and Passport.
+                            </p>
+                            <p><b>Validity of the intent</b>: 7 days</p>
+                        </div>
+
+                        <p style="margin-top:12px;">
+                            Please sign or initial to signify that you, the tenant, have read and are aware of the above
+                            terms and conditions.
+                        </p>
+
+                        <table style="width:100%;margin-top:34px;">
+                            <tr>
+                                <td style="border-top:2px solid #0c4ca3;padding-top:6px;width:50%;">
+                                    For and behalf of the Landlord
+                                </td>
+                                <td style="border-top:2px solid #0c4ca3;padding-top:6px;text-align:right;width:50%;">
+                                    Tenant
+                                </td>
+                            </tr>
+                        </table>
+                        <p style="margin-top:40px;">Signature ………………………….…………………</p>
+                        <p style="margin-top:20px;">Company Stamp ….…………………………………</p>
+
+                        <!-- ============ ADDENDUM TO TENANCY AGREEMENT ============ -->
+                        <div style="page-break-before:always;"/>
+
+                        <div style="background:linear-gradient(135deg,#0c4ca3 0%,#17c1f3 100%);
+                                    border-radius:10px;padding:14px 20px;margin-bottom:16px;
+                                    color:#0c4ca3;text-align:center;">
+                            <div style="font-size:15px;font-weight:700;letter-spacing:0.5px;">
+                                ADDENDUM TO TENANCY AGREEMENT
+                                <t t-if="o.tenancy_seq"> NO. <span t-esc="o.tenancy_seq"/></t>
+                            </div>
+                            <div dir="rtl" style="font-size:13px;font-weight:700;margin-top:4px;opacity:0.95;">
+                                مـلحق لاتفاقية الإيجار رقم <t t-esc="o.tenancy_seq or ''"/>
+                            </div>
+                        </div>
+
+                        <p style="margin-bottom:4px;">
+                            Amendment to the form of the Real Estate Tenancy Agreement as provided for under
+                            Clause 11. It is further hereby agreed as follows:
+                        </p>
+                        <p dir="rtl" style="text-align:right;color:#5a6270;font-size:10px;margin-top:0;margin-bottom:14px;">
+                            تعديل على استمارة اتفاقية إيجار عقار كما نصت عليه الفقرة 11. لقد تم بموجب هذا الملحق الاتفاق أيضاً على ما يلي:
+                        </p>
+
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr>
+                                <td style="width:50%;vertical-align:top;padding:10px 14px 10px 0;
+                                           border-right:2px solid #17c1f3;">
+                                    <ol style="padding-left:16px;margin:0;">
+                                        <li style="margin-bottom:10px;">
+                                            On vacating the demised premises the tenant will leave the property in a
+                                            state of condition that is satisfactory to the landlord. This will include
+                                            internal redecoration and repainting.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            The tenant is to pay
+                                            <b><span t-field="o.currency_id.symbol"/> <span t-field="o.deposit_amount"/></b>,
+                                            which is to be returned to the tenant at the expiry of the tenancy hereby
+                                            created after any deductions have been made for the damage or loss caused
+                                            to the premises by the tenant within the term of the agreement.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            The lease contract shall be effective until the end of the period specified
+                                            therein. It shall be renewed for a similar period or agreed periods, unless
+                                            either party notifies the other party of its willingness to vacate the
+                                            property at least three months before the conclusion of the period in
+                                            force, or half the period of the contract, if such a period is less than
+                                            that.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            The tenant is respectfully reminded that the lease agreement is binding on
+                                            both parties for the duration of the term.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            The tenant handbook should be read and understood. All regulations and
+                                            policies should be accepted, and signing this addendum confirms the same.
+                                            The landlord / managing agent have the right to terminate the agreement of
+                                            any tenant with immediate effect if they are found to violate the rules.
+                                        </li>
+                                    </ol>
+                                </td>
+                                <td dir="rtl" style="width:50%;vertical-align:top;text-align:right;padding:10px 0 10px 14px;">
+                                    <ol dir="rtl" style="padding-right:16px;margin:0;list-style-position:inside;">
+                                        <li style="margin-bottom:10px;">
+                                            عند إخلاء العقار المستأجر، يقوم المستأجر بترك العقار في حالة مرضية بالنسبة
+                                            للمالك، ويشمل ذلك إعادة الديكور الداخلي وإعادة الطلاء.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            يقوم المستأجر بدفع مبلغ
+                                            <b><span t-field="o.deposit_amount"/> <span t-field="o.currency_id.symbol"/></b>
+                                            للمالك، والذي سيُرد إلى المستأجر عند انتهاء فترة الإيجار المنصوص عليها في
+                                            هذه الاتفاقية، وذلك بعد خصم أي أضرار أو خسائر تلحق بالعقار من قِبل المستأجر
+                                            خلال فترة الاتفاقية.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            يبقى عقد الإيجار سارياً حتى نهاية الفترة المحددة به، ويُجدد لفترة مماثلة أو
+                                            لفترات أخرى يُتفق عليها، ما لم يقم أحد الطرفين بإخطار الطرف الآخر برغبته في
+                                            إخلاء العقار قبل ثلاثة أشهر على الأقل من نهاية الفترة السارية، أو نصف مدة
+                                            العقد إذا كانت هذه الفترة أقل من ذلك.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            يُذكَّر المستأجر بأن اتفاقية الإيجار ملزمة لكلا الطرفين خلال فترة سريان
+                                            العقد.
+                                        </li>
+                                        <li style="margin-bottom:10px;">
+                                            يجب قراءة كتيب المستأجر وفهمه جيداً، ويجب قبول جميع الأنظمة والسياسات
+                                            الواردة فيه، والتوقيع على هذا الملحق يُعد تأكيداً على ذلك القبول. ويحق
+                                            للمالك أو وكيله الإداري إنهاء عقد أي مستأجر فوراً في حال مخالفته للقوانين
+                                            والأنظمة.
+                                        </li>
+                                    </ol>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%;margin-top:40px;">
+                            <tr>
+                                <td style="width:50%;border-top:2px solid #0c4ca3;padding-top:6px;">
+                                    <b>Landlord</b><br/>
+                                    Signed: ……………………………………………
+                                </td>
+                                <td dir="rtl" style="width:50%;text-align:right;border-top:2px solid #0c4ca3;padding-top:6px;">
+                                    <b>توقيع المالك</b><br/>
+                                    ……………………………………………
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top:26px;">
+                                    <b>Tenant</b><br/>
+                                    Signed: ……………………………………………
+                                </td>
+                                <td dir="rtl" style="text-align:right;padding-top:26px;">
+                                    <b>توقيع المستأجر</b><br/>
+                                    ……………………………………………
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

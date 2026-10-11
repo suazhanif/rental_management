@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!--  Approval Decision — Approved                                -->
+        <!--  Sent to the submitter when a manager approves the contract.  -->
+        <!-- ============================================================ -->
+        <record id="tenancy_approval_approved_mail_template" model="mail.template">
+            <field name="name">Rent Contract Approved</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details" />
+            <field name="subject">Contract {{ object.tenancy_seq }} Approved</field>
+            <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+            <field name="email_to"></field>
+            <field name="partner_to" eval="False" />
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <h4 style="color:#28a745;">
+                                <strong>✓ Rent Contract Approved</strong>
+                            </h4>
+                            <p>
+                                Hello <t t-out="object.submitted_by.name" />,
+                            </p>
+                            <p>
+                                Your rent contract
+                                <strong>
+                                    <t t-out="object.tenancy_seq" />
+                                </strong>
+                                for the property
+                                <strong>
+                                    <t t-out="object.property_id.name" />
+                                </strong>
+                                has been
+                                <strong style="color:#28a745;">approved</strong>
+                                and is ready to be activated.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table style="width:100%;">
+                    <tr>
+                        <td>
+                            <strong>Approved by:</strong>
+                            <t t-out="object.approved_by.name" />
+                            <br />
+                            <strong>Approved on:</strong>
+                            <t t-out="object.approved_date"
+                               t-options='{"widget": "datetime"}' />
+                        </td>
+                        <td>
+                            <strong>Tenant:</strong>
+                            <t t-out="object.tenancy_id.name" />
+                            <br />
+                            <strong>Property:</strong>
+                            <t t-out="object.property_id.name" />
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p>
+                    Please open the contract in Odoo and click the
+                    <strong>Active</strong> button in the header to begin
+                    invoicing.
+                </p>
+                <p>
+                    <a t-attf-href="/web#id={{ object.id }}&amp;model=tenancy.details&amp;view_type=form"
+                       style="background:#28a745;color:#fff;padding:8px 14px;border-radius:4px;text-decoration:none;">
+                        Open Contract
+                    </a>
+                </p>
+                <h6>Best regards</h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+
+        <!-- ============================================================ -->
+        <!--  Approval Decision — Rejected                                -->
+        <!--  Sent to the submitter when a manager rejects the contract.  -->
+        <!--  Renders the rejection reason as a blockquote.               -->
+        <!-- ============================================================ -->
+        <record id="tenancy_approval_rejected_mail_template" model="mail.template">
+            <field name="name">Rent Contract Rejected</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details" />
+            <field name="subject">Contract {{ object.tenancy_seq }} Rejected — Action Required</field>
+            <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+            <field name="email_to"></field>
+            <field name="partner_to" eval="False" />
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <h4 style="color:#dc3545;">
+                                <strong>✗ Rent Contract Rejected</strong>
+                            </h4>
+                            <p>
+                                Hello <t t-out="object.submitted_by.name" />,
+                            </p>
+                            <p>
+                                Your rent contract
+                                <strong>
+                                    <t t-out="object.tenancy_seq" />
+                                </strong>
+                                for the property
+                                <strong>
+                                    <t t-out="object.property_id.name" />
+                                </strong>
+                                has been
+                                <strong style="color:#dc3545;">rejected</strong>
+                                and returned to Draft.  Please review the
+                                reason below, make any required changes, and
+                                resubmit for approval.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table style="width:100%;">
+                    <tr>
+                        <td>
+                            <strong>Rejected by:</strong>
+                            <t t-out="object.rejected_by.name" />
+                            <br />
+                            <strong>Rejected on:</strong>
+                            <t t-out="object.rejected_date"
+                               t-options='{"widget": "datetime"}' />
+                        </td>
+                        <td>
+                            <strong>Tenant:</strong>
+                            <t t-out="object.tenancy_id.name" />
+                            <br />
+                            <strong>Property:</strong>
+                            <t t-out="object.property_id.name" />
+                        </td>
+                    </tr>
+                </table>
+                <h5 style="margin-top:18px;">
+                    <strong>Rejection Reason</strong>
+                </h5>
+                <blockquote
+                    style="border-left: 4px solid #dc3545; padding: 10px 14px; background: #fff5f5; color: #555;">
+                    <t t-out="object.rejection_reason" />
+                </blockquote>
+                <p>
+                    <a t-attf-href="/web#id={{ object.id }}&amp;model=tenancy.details&amp;view_type=form"
+                       style="background:#7c7bad;color:#fff;padding:8px 14px;border-radius:4px;text-decoration:none;">
+                        Open Contract
+                    </a>
+                </p>
+                <h6>Best regards</h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+
+    </data>
+</odoo>

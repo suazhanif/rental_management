@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 90 Days Contract Expiry Reminder Email Template -->
+        <record id="tenancy_90_days_expiry_reminder_template" model="mail.template">
+            <field name="name">Tenancy: 90 Days Expiry Reminder</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details" />
+            <field name="subject">⚠️ Contract {{object.tenancy_seq}} Expiring in
+                {{object.days_left}} Days</field>
+            <field name="email_from">{{object.property_landlord_id.email}}</field>
+            <field name="partner_to">{{ object.tenancy_id.id }}</field>
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <h2 style="color: #d9534f; text-align: center;">⏰ CONTRACT EXPIRY
+                                REMINDER</h2>
+                            <h3 style="text-align: center; color: #d9534f;">
+                                <strong><t t-out="object.days_left" /> Days Remaining</strong>
+                            </h3>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p>Dear <strong>
+                        <t t-out="object.tenancy_id.name or 'Valued Customer'" />
+                    </strong>
+                    ,</p>
+
+                <p>This is an important reminder that your rental contract is approaching its expiry
+                    date. Please review the details below and take necessary action.</p>
+
+                <h5 style="text-align:center; color: #856404;">📋 Contract Details</h5>
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Detail</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Contract Reference</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <t t-out="object.tenancy_seq" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Property</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <t t-out="object.property_id.name or 'N/A'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Property Address</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <t t-out="object.street or ''" /> <t t-out="object.street2 or ''" />, <t
+                                    t-out="object.city_id.name or ''" />, <t
+                                    t-out="object.state_id.name or ''" />, <t
+                                    t-out="object.country_id.name or ''" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Start Date</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <t t-out="object.start_date or 'N/A'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>End Date</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <span style="color: #d9534f; font-weight: bold;">
+                                    <t t-out="object.end_date or 'N/A'" />
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Days Remaining</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <span style="color: #d9534f; font-weight: bold; font-size: 16px;"><t
+                                        t-out="object.days_left" /> Days</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <strong>Rent Amount</strong>
+                            </td>
+                            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                                <t t-out="object.currency_id.symbol or ''" /> <t
+                                    t-out="object.total_rent or '0.00'" /> / <t
+                                    t-out="object.rent_unit or 'Month'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">
+                                <strong>Outstanding Balance</strong>
+                            </td>
+                            <td style="padding: 8px;">
+                                <span
+                                    t-att-style="'color: #d9534f; font-weight: bold;' if object.remain_tenancy > 0 else 'color: #5cb85c; font-weight: bold;'">
+                                    <t t-out="object.currency_id.symbol or ''" />
+                                    <t t-out="object.remain_tenancy or '0.00'" />
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5 style="text-align:center; color: #31708f;">📌 Action Required</h5>
+                <div
+                    style="background-color: #d9edf7; border-left: 4px solid #31708f; padding: 15px; margin: 15px 0;">
+                    <ul>
+                        <li><strong>Extend Contract:</strong> Contact us to renew/extend your
+                            contract before expiry.</li>
+                        <li><strong>Vacate Notice:</strong> Provide written notice if you plan to
+                            vacate as per contract terms.</li>
+                        <li><strong>Clear Dues:</strong> Ensure all outstanding rent and utility
+                            payments are settled.</li>
+                        <li><strong>Property Inspection:</strong> Schedule a pre-exit inspection if
+                            vacating.</li>
+                    </ul>
+                </div>
+
+                <h5 style="text-align:center;">📞 Your Property Manager</h5>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Name:</strong>
+                            </td>
+                            <td>
+                                <t t-out="object.responsible_id.name or 'N/A'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Email:</strong>
+                            </td>
+                            <td>
+                                <t t-out="object.responsible_id.email or 'N/A'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Phone:</strong>
+                            </td>
+                            <td>
+                                <t t-out="object.responsible_id.phone or 'N/A'" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr />
+                <h6>Best regards,</h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name or 'Property Management Team'" />
+                    </strong>
+                </h5>
+                <span>
+                    <h6>
+                        <t t-out="object.company_id.phone or ''" />
+                    </h6>
+                    <t t-out="object.company_id.email or ''" />
+                    <br />
+                    <t t-out="object.company_id.website or ''" />
+                </span>
+                <p style="font-size: 11px; color: #999; font-style: italic; margin-top: 20px;">
+                    This is an automated reminder. Please do not reply to this email.
+                    For urgent matters, contact your property manager directly.
+                </p>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>

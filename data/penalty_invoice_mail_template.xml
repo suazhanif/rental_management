@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="penalty_invoice_mail_template_for_rent_contract" model="mail.template">
+            <field name="name">Penalty Invoice Mail Template For Rent Contract</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details" />
+            <field name="subject">Penalty Invoice for Overdue Payment – {{object.env.context.get('penalty_rec').rent_contract_invoice_id.rent_invoice_id.name if ctx.get('penalty_rec') else ''}}</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="partner_to">{{ object.tenancy_id.id }}</field>
+            <field name="body_html" type="html">
+                <span>
+                    Dear <strong t-esc="object.tenancy_id.name" />,
+                </span>
+
+                <p>
+                    We hope this message finds you well. Our records indicate that your invoice <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').rent_contract_invoice_id.rent_invoice_id.name" /> linked to <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').rent_contract_id.tenancy_seq" /> was due on <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').rent_contract_invoice_id.rent_invoice_id.invoice_date_due" />. As the payment has not been received within the grace period of <t t-esc="object.penalty_days_after_due" /> days, a penalty has now been applied in accordance with our payment policy.
+                </p>
+
+                <p>
+                    A new penalty invoice <t t-if="ctx.get('penalty_rec') and object.env.context.get('penalty_rec').penalty_invoice_id.state == 'posted'">(<t t-esc="object.env.context.get('penalty_rec').penalty_invoice_id.name" />)</t> has been generated for the overdue amount. Please find the details below:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Original Invoice:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').rent_contract_invoice_id.rent_invoice_id.name" />
+                    </li>
+                    <li>
+                        <strong>Due Date:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').rent_contract_invoice_id.rent_invoice_id.invoice_date_due" />
+                    </li>
+                    <li>
+                        <strong>Days Overdue:</strong>
+                        <span t-esc="object.penalty_days_after_due" />
+                    </li>
+                    <li>
+                        <strong>Penalty Amount:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-field="object.env.context.get('penalty_rec').amount" />
+                    </li>
+                </ul>
+
+                <p>
+                    We kindly request you to settle the outstanding balance at the earliest to avoid further penalties.
+                </p>
+
+                <p>
+                    Thank you for your prompt attention.
+                </p>
+
+                <h6>
+                    Best regards
+                </h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+                <hr />
+                <span>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+
+        <record id="penalty_invoice_mail_template_for_sale_contract" model="mail.template">
+            <field name="name">Penalty Invoice Mail Template For Sale Contract</field>
+            <field name="model_id" ref="rental_management.model_property_vendor" />
+            <field name="subject">Penalty Invoice for Overdue Payment – {{object.env.context.get('penalty_rec').sale_contract_invoice_id.invoice_id.name if ctx.get('penalty_rec') else ''}}</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="partner_to">{{ object.customer_id.id }}</field>
+            <field name="body_html" type="html">
+                <span>
+                    Dear <strong t-esc="object.customer_id.name" />,
+                </span>
+
+                <p>
+                    We hope this message finds you well. Our records indicate that your invoice <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').sale_contract_invoice_id.invoice_id.name" /> linked to <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').sale_contract_id.sold_seq" /> was due on <t t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').sale_contract_invoice_id.invoice_id.invoice_date_due" />. As the payment has not been received within the grace period of <t t-esc="object.penalty_days_after_due" /> days, a penalty has now been applied in accordance with our payment policy.
+                </p>
+
+                <p>
+                    A new penalty invoice <t t-if="ctx.get('penalty_rec') and object.env.context.get('penalty_rec').penalty_invoice_id.state == 'posted'">(<t t-esc="object.env.context.get('penalty_rec').penalty_invoice_id.name" />)</t> has been generated for the overdue amount. Please find the details below:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Original Invoice:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').sale_contract_invoice_id.invoice_id.name" />
+                    </li>
+                    <li>
+                        <strong>Due Date:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-esc="object.env.context.get('penalty_rec').sale_contract_invoice_id.invoice_id.invoice_date_due" />
+                    </li>
+                    <li>
+                        <strong>Days Overdue:</strong>
+                        <span t-esc="object.penalty_days_after_due" />
+                    </li>
+                    <li>
+                        <strong>Penalty Amount:</strong>
+                        <span t-if="ctx.get('penalty_rec')" t-field="object.env.context.get('penalty_rec').amount" />
+                    </li>
+                </ul>
+
+                <p>
+                    We kindly request you to settle the outstanding balance at the earliest to avoid further penalties.
+                </p>
+
+                <p>
+                    Thank you for your prompt attention.
+                </p>
+
+                <h6>
+                    Best regards
+                </h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+                <hr />
+                <span>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>

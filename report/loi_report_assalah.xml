@@ -1,0 +1,469 @@
+<odoo>
+    <record id="action_report_loi_commercial" model="ir.actions.report">
+        <field name="name">Lease Agreement (Commercial)</field>
+        <field name="model">tenancy.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rental_management.report_loi_commercial_document</field>
+        <field name="report_file">rental_management.report_loi_commercial_document</field>
+        <field name="binding_model_id" ref="model_tenancy_details"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Lease Agreement - %s' % (object.tenancy_seq)</field>
+    </record>
+
+    <record id="agreement_template_commercial_lease" model="agreement.template">
+        <field name="name">Assalah Commercial</field>
+        <field name="template_type">printable</field>
+        <field name="report_id" ref="rental_management.action_report_loi_commercial"/>
+        <field name="model">tenancy.details</field>
+    </record>
+
+    <template id="report_loi_commercial_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page"
+                         style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10.5px;color:#2b2f38;line-height:1.55;">
+                        <style>
+                            .section-head {
+                                border-left: 4px solid #17c1f3;
+                                padding: 3px 0 3px 12px;
+                                margin: 20px 0 10px 0;
+                                color: #0c4ca3;
+                                font-size: 12.5px;
+                                font-weight: 700;
+                                letter-spacing: 0.2px;
+                            }
+                        </style>
+
+                        <!-- ============ COVER PAGE ============ -->
+                        <div style="text-align:center;min-height:900px;display:flex;flex-direction:column;
+                                    justify-content:center;align-items:center;">
+                            <div style="font-size:9px;text-transform:uppercase;letter-spacing:3px;
+                                        color:#17c1f3;font-weight:700;margin-bottom:8px;">
+                                Prestige Properties Management Services
+                            </div>
+                            <h1 style="color:#0c4ca3;font-size:32px;margin:0;letter-spacing:1.5px;font-weight:700;">
+                                LEASE AGREEMENT
+                            </h1>
+                            <div style="width:90px;height:3px;background:linear-gradient(90deg,#0c4ca3,#17c1f3);
+                                        border-radius:2px;margin:16px 0 30px 0;"/>
+
+                            <p style="font-size:12px;color:#8891a0;margin:4px 0;text-transform:uppercase;
+                                      letter-spacing:1px;">Dated</p>
+                            <p style="font-size:17px;color:#0c4ca3;font-weight:700;margin:0 0 40px 0;">
+                                <b><span t-field="o.start_date"/></b>
+                            </p>
+
+                            <table style="width:66%;border-collapse:separate;border-spacing:0 14px;margin:0 auto;">
+                                <tr>
+                                    <td style="padding:20px;text-align:center;background:#f4f8fd;
+                                               border-radius:8px;border-top:3px solid #17c1f3;">
+                                        <p style="font-size:19px;color:#0c4ca3;font-weight:700;margin:0 0 6px 0;">
+                                            <b><span t-field="o.property_landlord_id.name"/></b>
+                                        </p>
+                                        <p style="font-size:11px;color:#8891a0;margin:0;letter-spacing:1.5px;">
+                                            LANDLORD
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0;text-align:center;">
+                                        <p style="font-size:13px;color:#17c1f3;font-weight:700;margin:0;
+                                                  letter-spacing:3px;">AND</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:20px;text-align:center;background:#f4f8fd;
+                                               border-radius:8px;border-top:3px solid #0c4ca3;">
+                                        <p style="font-size:19px;color:#0c4ca3;font-weight:700;margin:0 0 6px 0;">
+                                            <b><span t-field="o.tenancy_id.name"/></b>
+                                        </p>
+                                        <p style="font-size:11px;color:#8891a0;margin:0;letter-spacing:1.5px;">
+                                            TENANT
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="page-break-before:always;"></div>
+
+                        <!-- ============ PREAMBLE ============ -->
+                        <p>
+                            This lease agreement (hereinafter referred to as the "Agreement") is entered into on this
+                            <b><span t-field="o.start_date"/></b>
+                            by and between
+                            <b><span t-field="o.property_landlord_id.name"/></b>
+                            <t t-if="o.property_landlord_id.company_registry">
+                                (Commercial Registration No <b><span t-esc="o.property_landlord_id.company_registry"/></b>)
+                            </t>
+                            ,
+                            represented by <b><span t-esc="o.company_id.name"/></b>, company incorporated and existing under the
+                            laws of the Sultanate of Oman having its registered office at
+                            <b><span t-esc="o.company_id.partner_id.contact_address"/></b>,
+                            (hereinafter referred to as the "Landlord") and <b><span t-field="o.tenancy_id.name"/></b>, an
+                            Individual Firm incorporated and existing under the laws of the Sultanate of Oman
+                            <t t-if="o.tenancy_id.company_registry">
+                                (Commercial Registration No <b><span t-esc="o.tenancy_id.company_registry"/></b>)
+                            </t>
+                            having
+                            registered office at
+                            <b><span t-field="o.tenancy_id.contact_address"/></b>
+                            (hereinafter referred to as "Tenant").
+                        </p>
+
+                        <div class="section-head">RECITALS</div>
+                        <p>
+                            WHEREAS the Landlord is the owner of <b><span t-field="o.property_id.name"/></b>, Building no
+                            <b><span t-field="o.property_id.building_no"/></b>
+                            at
+                            <b><span t-field="o.property_id.city_id.name"/></b>
+                            (the "Building")
+                            <t t-if="'krooki_no' in o.property_id._fields and o.property_id.krooki_no">
+                                , described in the Krooki number
+                                <b><span t-esc="o.property_id.krooki_no"/></b>
+                            </t>
+                            <t t-if="'mulkiya_no' in o.property_id._fields and o.property_id.mulkiya_no">
+                                and Mulkiya number
+                                <b><span t-esc="o.property_id.mulkiya_no"/></b>
+                            </t>
+                            , having a combined leasable area of
+                            <b><span t-field="o.property_id.total_area"/> <span t-field="o.property_id.measure_unit"/></b>
+                            - include the following Unit No.
+                            <b><span t-field="o.property_id.building_no"/></b>
+                            located at Ground (G) floor outlets as shown in
+                            Schedule 2, hereafter referred to as the "Premises").
+                        </p>
+                        <p>
+                            AND WHEREAS the Tenant has submitted a request to the Landlord for taking on lease the
+                            Premises in order to establish the Project (as hereinafter defined) and the Landlord has
+                            accepted such request and is willing to lease out the Premises to the Tenant.
+                        </p>
+                        <p>
+                            NOW THEREFORE, in consideration of the premises and the mutual covenants hereinafter
+                            contained, the Parties agree as follows:
+                        </p>
+
+                        <div class="section-head">1. Definitions and interpretation</div>
+                        <p><b>1.1 Definitions</b></p>
+                        <p>In this Agreement, unless the context otherwise requires, the following words shall bear the
+                            meanings respectively set opposite them:
+                        </p>
+                        <p><b>Effective Date:</b> means the date set forth above;</p>
+                        <p><b>Party or Parties:</b> Party means the Landlord or Tenant (or their respective successors or
+                            assigns in interest under this Agreement) individually and Parties means both the Landlord
+                            and Tenant collectively.
+                        </p>
+                        <p><b>Premises:</b> The detail of which is laid out and depicted at Schedule 2</p>
+                        <p><b>1.2 Interpretation</b></p>
+                        <p>In this Agreement, unless otherwise specified:</p>
+                        <p>the list of contents and headings are for ease of reference only and shall not be taken into
+                            account in construing this Agreement;
+                        </p>
+                        <p>references to any recital, Article, paragraph or Schedule are to those contained in this
+                            Agreement and/or in any Annexure to this Agreement and are an integral part of this
+                            Agreement;
+                        </p>
+                        <p>reference to an Article shall, unless a specific Sub-Article is referred to, be deemed to
+                            refer to the whole article;
+                        </p>
+
+                        <div class="section-head">2. Duration of the contract</div>
+                        <p>
+                            Unless terminated earlier in accordance with the provisions of this Agreement, this
+                            Agreement shall become effective in full force for an initial term of
+                            <b><span t-field="o.duration_id.duration"/></b>
+                            from
+                            <b><span t-field="o.start_date"/></b>
+                            until
+                            <b><span t-field="o.end_date"/></b>
+                            (the "Initial Lease Term") and will be registered by Landlord
+                            at its cost with the relevant Municipality in Sultanate of Oman for
+                            <b><span t-field="o.duration_id.duration"/></b>.
+                        </p>
+                        <p>
+                            Upon a written agreement of the Parties including the consideration to be paid by the
+                            Tenant, the lease term may be renewed for a further period of one (1) year beyond
+                            <b><span t-field="o.end_date"/></b>.
+                        </p>
+                        <p>
+                            The Tenant shall carry out required partitions and fit out work, including interiors, to
+                            make it fit for its official use and purpose, such as work shall be carried out at its own
+                            expenses. In the event any such modification requires any permission, inspection of and/or
+                            compliance to any regulations including but not limited to those of Municipality and Civil
+                            Defense, then such formalities shall be completed by the Tenant at its own cost, and the
+                            Tenant shall provide to the Landlord a copy of such permits, approvals and/or compliance
+                            certificates, as the case may be, and to submit the copy of the layout drawings to Landlord
+                            for review and consent if any required.
+                        </p>
+
+                        <div class="section-head">3. Consideration</div>
+                        <p>
+                            Tenant shall be obliged to pay monthly rental of
+                            <b>OMR <span t-field="o.total_rent"/></b>
+                            per
+                            <b><span t-field="o.property_id.measure_unit"/></b>
+                            usable area per month (the "Monthly Rent") during the
+                            Initial Lease Term the payment of the rent is stated under Schedule-1 of this Agreement. As
+                            on the date of this Agreement, Landlord has agreed to rent out
+                            <b><span t-field="o.property_id.usable_area"/> <span t-field="o.property_id.measure_unit"/></b>
+                            usable area with overall
+                            monthly rental of <b>RO <span t-field="o.total_rent"/></b>.
+                        </p>
+                        <p>The Monthly Rent mentioned herein is excluding any taxes, taxes like Value Added Tax shall
+                            be extra provided that Landlord submit the invoice in compliance with applicable Oman tax
+                            laws.
+                        </p>
+                        <p>The Landlord shall be responsible for the payment of the Municipality taxes for the Initial
+                            Lease Term.
+                        </p>
+                        <p>The Tenant shall pay one (1) month rent as security deposit on signing of this agreement,
+                            along with Post-dated cheques for the whole term,
+                        </p>
+
+                        <div class="section-head">4. Landlord's Obligations</div>
+                        <p>The Landlord state and affirms, that the Premises is free from any encumbrance of any kind
+                            and there shall not be any legal hindrance or otherwise as regard to the use of the
+                            Premises for the purpose of the Project.
+                        </p>
+                        <p>The Tenant or its associate/group companies shall not sub-lease the leased premises to any
+                            external or third parties.
+                        </p>
+                        <p>Routine housekeeping/cleaning activities such as – garbage disposal, cleaning of the frontal
+                            external area, corridors, elevators, toilets, pantries, staircases, and replacement to
+                            lighting fixtures in common areas shall be carried out by Landlord including utilities
+                            charges attributable to such common areas.
+                        </p>
+                        <p>The Landlord to return /refund the security deposit at the end of this Agreement or at its
+                            termination whichever is earlier, after deducting any amounts for damages and/or painting
+                            incurred during reinstatement works or pending utilities, if applicable.
+                        </p>
+
+                        <div class="section-head">5. Tenant's obligations</div>
+                        <p>Tenant is to undertake any masonry/ MEP / False ceiling works modification within the
+                            leased Premises with prior consent from the Landlord.
+                        </p>
+                        <p>Tenant shall be responsible to obtain and keep valid any permission, license, authority,
+                            approval, registration or consent of whatsoever nature required by it, for the
+                            implementation and execution of the Project within the Premises, from the Government of
+                            the Sultanate of Oman.
+                        </p>
+                        <p>The Tenant shall also be liable and responsible for the following within the leased
+                            Premises:
+                        </p>
+                        <p>Timely payment of utility bills post usage for the respective leased premises and meter
+                            numbers provided in Schedule 2.
+                        </p>
+                        <p>Tenant will be liable to pay water charges and for any additional connection required for
+                            internal pantry and toilets billed through sub meters.
+                        </p>
+                        <p>Tenant shall also ensure Insurance coverage of their business assets inside the Premises
+                            and other business activities;
+                        </p>
+                        <p>Repair and maintenance of any damage caused by the Tenant to the Premises and/or the
+                            fittings therein;
+                        </p>
+                        <p>Routine cleanliness such as – garbage disposal, cleaning rented premises, replacement to
+                            lighting fixtures installed by the Tenant.
+                        </p>
+
+                        <div class="section-head">6. Maintenance</div>
+                        <p>Regular maintenance shall be carried out by the Landlord, at its cost, from time to time as
+                            required of the utility equipment(s) and assets of the Premises (like air conditioning
+                            /HVAC system, water pumps and regular plumbing).
+                        </p>
+
+                        <div class="section-head">7. Surrender</div>
+                        <p>The Tenant shall be obligated to surrender the Premises in the same condition as it
+                            received, at the (a) expiry of the Initial Lease Term or the subsequent renewal terms or
+                            (b) time of termination of this Agreement, Landlord reserves the right to inspect the
+                            Premises and arrange the necessary repair works at the cost of the Tenant.
+                        </p>
+
+                        <div class="section-head">8. Notices</div>
+                        <p>A notice or other information required or authorized by this Agreement to be given by
+                            either Party to the other Party by hand or sent (by registered post, facsimiles
+                            transmission or comparable means of communication excluding electronic mail) to the other
+                            Party at the address referred to in Sub-Article 9.5.
+                        </p>
+                        <p>Notice or other information given by post which is not returned to the sender as
+                            undelivered shall be deemed to have been given on the second working day after the
+                            envelope containing it was so posted; and the proof that the envelope containing any such
+                            notice or information was properly addressed and sent using registered post, and that it
+                            has not been so returned to the sender, shall be evidence that such notice or information
+                            has been duly given. A copy of such notice shall be sent vide electronic mail to the id as
+                            stated in Sub-Article 9.5.
+                        </p>
+                        <p>A notice or other information sent by facsimile transmission or comparable means of
+                            communication (excluding electronic mail) shall be deemed to have been duly sent on the
+                            date of transmission.
+                        </p>
+                        <p>Either Party may change its address (or facsimile number) for such notice from time to time
+                            by giving the other Party written notice of the same in the manner provided above. Each
+                            Party agrees to notify the other as promptly as reasonably possible of any damage to the
+                            other caused by its operations.
+                        </p>
+                        <p><b>Addresses for Notices</b></p>
+
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;border:1px solid #e3e9f2;
+                                      border-radius:8px;overflow:hidden;">
+                            <tr>
+                                <td style="width:50%;padding:12px;vertical-align:top;border-right:1px solid #e3e9f2;
+                                           border-left:3px solid #17c1f3;background:#f4f8fd;">
+                                    <b style="color:#0c4ca3;">Landlord</b>
+                                    <br/><br/>
+                                    <b><span t-esc="o.company_id.partner_id.contact_address"/></b>
+                                    <br/><br/>
+                                    Attention: <b><span t-esc="o.company_id.name"/></b>
+                                    <br/>
+                                    <t t-if="'fax' in o.company_id.partner_id._fields and o.company_id.partner_id.fax">
+                                        Fax: <b><span t-esc="o.company_id.partner_id.fax"/></b>
+                                        <br/>
+                                    </t>
+                                    Email: <b><span t-esc="o.company_id.email"/></b>
+                                </td>
+                                <td style="width:50%;padding:12px;vertical-align:top;border-left:3px solid #0c4ca3;">
+                                    <b style="color:#0c4ca3;">Tenant</b>
+                                    <br/><br/>
+                                    <b><span t-field="o.tenancy_id.contact_address"/></b>
+                                    <br/><br/>
+                                    Attention: <b><span t-field="o.tenancy_id.name"/></b>
+                                    <br/>
+                                    <t t-if="'fax' in o.tenancy_id._fields and o.tenancy_id.fax">
+                                        Fax: <b><span t-esc="o.tenancy_id.fax"/></b>
+                                        <br/>
+                                    </t>
+                                    Email: <b><span t-esc="o.tenancy_id.email"/></b>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="section-head">9. Entire Agreement</div>
+                        <p>This Agreement contains the entire agreement between the Parties with respect to the
+                            subject matter of this Agreement, supersedes all previous agreement and understandings
+                            between the parties with respect to its subject matter, and may not be modified except by
+                            an instrument in writing signed by the duly authorized representative of each Party.
+                        </p>
+
+                        <div class="section-head">10. Termination</div>
+                        <p>This Agreement is valid for an initial term of one (1) years and cannot be terminated by
+                            either Party without any valid reasons including but not limited to breach of terms and
+                            conditions of this Agreement.
+                        </p>
+
+                        <div class="section-head">11. Compliance with the Law</div>
+                        <p>The Landlord and the Tenant shall comply with all laws and regulations in force in the
+                            Sultanate of Oman.
+                        </p>
+
+                        <div class="section-head">12. Governing Law and Dispute Resolution</div>
+                        <p>This Agreement shall in all respects be construed in accordance with and governed by the
+                            laws of Oman. Any dispute arising out of or relating to this Agreement not amenable to an
+                            amicable settlement and remaining unsettled shall be referred to appropriate
+                            court/authority as per the laws of Oman and the Parties irrevocably submit to the
+                            jurisdiction of the said courts. The courts of Muscat will have exclusive jurisdiction to
+                            adjudicate any dispute arising under or in connection with this Agreement.
+                        </p>
+
+                        <div class="section-head">13. Miscellaneous</div>
+                        <p>This Agreement has been executed in the English language, which shall be the binding and
+                            controlling language for all matters relating to the meaning and/or interpretation of this
+                            Agreement. The official text of this Agreement and any notices given hereunder shall be in
+                            English alone. In the event of any dispute concerning the construction or interpretation of
+                            this Agreement, reference shall be made only to this Agreement as written in English and
+                            not to any translation into any other language. All documents, notices, demands and any
+                            financial statements of whatsoever nature pursuant to this Agreement shall be in English
+                            language only.
+                        </p>
+                        <p>If any provision of this Agreement is determined to be invalid, illegal or incapable of
+                            being enforced by any rule or law, or public policy, all other conditions and provisions of
+                            this Agreement shall nevertheless remain in full force and effect so long as the economic
+                            or legal substance of the transactions contemplated hereby is not affected in any manner
+                            materially adverse to either Party. Upon such determination that any term or other
+                            provision is invalid, illegal or incapable of being enforced, the Parties shall negotiate in
+                            good faith to amend this Agreement so as to effect the original intent of the Parties as
+                            closely as possible in a mutually acceptable manner.
+                        </p>
+                        <p>Any delay or failure in the performance by either Party hereunder shall be excused if and to
+                            the extent caused by the occurrence of a Force Majeure. For purposes of this Agreement,
+                            Force Majeure shall mean an event beyond the reasonable control of a party (the "Affected
+                            Party") which does not relate to its fault or negligence or that of its employees,
+                            contractors, sub-contractors and suppliers. Force Majeure shall include acts of God, fires,
+                            floods, explosions, riots, wars, hurricane, sabotage terrorism, vandalism, accident,
+                            restraint of government, governmental acts, injunctions, labour strikes, other than those
+                            of the Affected Party despite such Party's reasonable efforts to prevent, avoid, delay, or
+                            mitigate the effect of such acts, events or occurrences, and which events or the effects
+                            thereof are not attributable to a Party's failure to perform its obligations under this
+                            Agreement. For avoidance of doubt, nothing in the Sub-Article 14.3 shall be deemed to mean
+                            that a Force Majeure event absolves either Party from any obligation to make payments for
+                            amounts due or becoming due hereunder in respect of matters arising prior to the occurrence
+                            of a Force Majeure event.
+                        </p>
+                        <p>Each Party shall defend indemnify and hold harmless the other Party, including Affiliates
+                            and each of their respective officers, directors, shareholders, employees, representatives,
+                            agents, successors and assigns from and against all claims, including that of third
+                            parties, and all associated costs, to the extent arising out of (a) a Party's gross
+                            negligence or wilful misconduct in performing any of its obligations under this Agreement,
+                            or (b) a material breach by a Party of any of its representations, warranties, covenants or
+                            agreements under this Agreement.
+                        </p>
+
+                        <div class="section-head">14. Agreement copies</div>
+                        <p>This Agreement has been drawn up in two (2) originals, (1) to be retained by the Landlord,
+                            (1) by the Tenant.
+                        </p>
+
+                        <table style="width:100%;margin-top:44px;">
+                            <tr>
+                                <td style="width:50%;border-top:2px solid #0c4ca3;padding-top:8px;">
+                                    SIGNED for and on behalf of the <b>Landlord</b>
+                                </td>
+                                <td style="width:50%;border-top:2px solid #0c4ca3;padding-top:8px;">
+                                    SIGNED for and on behalf of the <b>Tenant</b>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="page-break-before:always;"></div>
+
+                        <!-- ============ SCHEDULE 2 ============ -->
+                        <div style="background:linear-gradient(135deg,#0c4ca3 0%,#17c1f3 100%);
+                                    border-radius:10px;padding:12px 20px;margin-bottom:16px;
+                                    color:#17c1f3;text-align:center;">
+                            <div style="font-size:15px;font-weight:700;letter-spacing:1px;">SCHEDULE — 2</div>
+                            <div style="font-size:10px;opacity:0.9;margin-top:2px;">
+                                <b><span t-field="o.property_id.name"/>, <span t-field="o.property_id.city_id.name"/></b>
+                                (the "Building")
+                            </div>
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;text-align:center;border:1px solid #e3e9f2;
+                                      border-radius:8px;overflow:hidden;">
+                            <tr style="background:#0c4ca3;color:#ffffff;">
+                                <th style="padding:7px;font-weight:600;">Unit No.</th>
+                                <th style="padding:7px;font-weight:600;">Area (SQ M)</th>
+                                <th style="padding:7px;font-weight:600;">Electricity Account No.</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px;border-bottom:1px solid #e3e9f2;">
+                                    <b><span t-field="o.property_id.building_no"/></b>
+                                </td>
+                                <td style="padding:6px;border-bottom:1px solid #e3e9f2;">
+                                    <b><span t-field="o.property_id.total_area"/></b>
+                                </td>
+                                <td style="padding:6px;border-bottom:1px solid #e3e9f2;">
+                                    <b><span t-field="o.property_id.utility_electricity_account_no"/></b>
+                                </td>
+                            </tr>
+                            <tr style="background:#f4f8fd;font-weight:700;color:#0c4ca3;">
+                                <td style="padding:6px;">Total area</td>
+                                <td style="padding:6px;">
+                                    <span t-field="o.property_id.total_area"/>
+                                </td>
+                                <td style="padding:6px;"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

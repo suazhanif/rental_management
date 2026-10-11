@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Property Assignment record rules — added in 3.4.0.
+
+        Officers see only records they are assigned to (with
+        parent→child access for buildings and properties).  Managers
+        bypass every rule here because ``property_rental_manager`` no
+        longer implies ``property_rental_officer`` (see
+        ``security/property_assignment_group_fix.xml``).
+
+        Unassigned records (empty ``user_ids``) match NO officer domain
+        below, so officers cannot see them.  Managers see them because
+        the rule does not apply to managers.
+    -->
+    <data noupdate="1">
+        <!-- Compound -->
+        <record id="rule_property_project_assigned" model="ir.rule">
+            <field name="name">Property Assignment: Compound — Officer Sees Assigned Only</field>
+            <field name="model_id" ref="rental_management.model_property_project"/>
+            <field name="domain_force">[('user_ids', 'in', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('rental_management.property_rental_officer'))]"/>
+        </record>
+
+        <!-- Building — own assignment OR inherited from parent Compound -->
+        <record id="rule_property_sub_project_assigned" model="ir.rule">
+            <field name="name">Property Assignment: Building — Officer Sees Assigned (own or via Compound)</field>
+            <field name="model_id" ref="rental_management.model_property_sub_project"/>
+            <field name="domain_force">[
+                '|',
+                ('user_ids', 'in', user.id),
+                ('property_project_id.user_ids', 'in', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('rental_management.property_rental_officer'))]"/>
+        </record>
+
+        <!-- Property — own assignment OR inherited from Building OR from Compound -->
+        <record id="rule_property_details_assigned" model="ir.rule">
+            <field name="name">Property Assignment: Property — Officer Sees Assigned (own, via Building, or via Compound)</field>
+            <field name="model_id" ref="rental_management.model_property_details"/>
+            <field name="domain_force">[
+                '|', '|', '|',
+                ('user_ids', 'in', user.id),
+                ('subproject_id.user_ids', 'in', user.id),
+                ('subproject_id.property_project_id.user_ids', 'in', user.id),
+                ('property_project_id.user_ids', 'in', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('rental_management.property_rental_officer'))]"/>
+        </record>
+    </data>
+</odoo>

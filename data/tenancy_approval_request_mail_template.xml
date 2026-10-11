@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!--  Approval Request — sent to all managers when an Officer      -->
+        <!--  submits a draft rent contract.                              -->
+        <!--  Recipients are passed in ``email_values['recipient_ids']``  -->
+        <!--  by ``tenancy.details.action_submit_for_approval``.           -->
+        <!-- ============================================================ -->
+        <record id="tenancy_approval_request_mail_template" model="mail.template">
+            <field name="name">Rent Contract Approval Request</field>
+            <field name="model_id" ref="rental_management.model_tenancy_details" />
+            <field name="subject">Approval Requested: Contract {{ object.tenancy_seq }}</field>
+            <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+            <field name="email_to"></field>
+            <field name="partner_to" eval="False" />
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <h4>
+                                <strong>Rent Contract Approval Requested</strong>
+                            </h4>
+                            <p>
+                                A rent contract has been submitted for your
+                                approval.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table style="width:100%;">
+                    <tr>
+                        <td colspan="2">
+                            <span style="font-size:18px;">
+                                <strong>
+                                    <t t-out="object.property_id.name" />
+                                </strong>
+                            </span>
+                            <br />
+                            <span class="text-muted">
+                                Contract:
+                                <strong>
+                                    <t t-out="object.tenancy_seq" />
+                                </strong>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:50%; vertical-align: top;">
+                            <span>
+                                <strong>Submitted by:</strong>
+                                <t t-out="object.submitted_by.name" />
+                                <br />
+                                <strong>Submitted on:</strong>
+                                <t t-out="object.submitted_date"
+                                   t-options='{"widget": "datetime"}' />
+                                <br />
+                                <strong>Tenant:</strong>
+                                <t t-out="object.tenancy_id.name" />
+                                <br />
+                                <strong>Landlord:</strong>
+                                <t t-out="object.property_landlord_id.name" />
+                            </span>
+                        </td>
+                        <td style="width:50%; vertical-align: top;">
+                            <span>
+                                <strong>Start Date:</strong>
+                                <t t-out="object.start_date" />
+                                <br />
+                                <strong>End Date:</strong>
+                                <t t-out="object.end_date" />
+                                <br />
+                                <strong>Payment Term:</strong>
+                                <t t-out="object.payment_term" />
+                                <br />
+                                <strong>Rent:</strong>
+                                <span t-field="object.total_rent" />
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p>
+                    Please open the contract in Odoo and use the
+                    <strong>Approve</strong> or <strong>Reject</strong>
+                    buttons in the header.  Both actions will notify the
+                    submitter by email.
+                </p>
+                <p>
+                    <a t-attf-href="/web#id={{ object.id }}&amp;model=tenancy.details&amp;view_type=form"
+                       style="background:#7c7bad;color:#fff;padding:8px 14px;border-radius:4px;text-decoration:none;">
+                        Open Contract
+                    </a>
+                </p>
+                <h6>Best regards</h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+
+    </data>
+</odoo>

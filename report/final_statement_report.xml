@@ -1,0 +1,214 @@
+<odoo>
+    <record id="action_report_final_statement" model="ir.actions.report">
+        <field name="name">Final Settlement Statement</field>
+        <field name="model">tenancy.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rental_management.report_final_statement_document</field>
+        <field name="report_file">rental_management.report_final_statement_document</field>
+        <field name="print_report_name">'Final Statement - %s' % (object.tenancy_seq)</field>
+    </record>
+
+    <template id="report_final_statement_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family:Arial,sans-serif;font-size:11.5px;color:#222;">
+
+                        <div style="text-align:center;background:#714B67;color:#fff;padding:14px;border-radius:6px;margin-bottom:14px;">
+                            <h2 style="margin:0;color:#fff;">
+                                <span t-esc="o.property_id.property_project_id.name or o.property_id.name"/>
+                            </h2>
+                            <div style="font-size:13px;">Final Statement</div>
+                        </div>
+
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                            <tr>
+                                <td style="width:25%;padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Ref
+                                </td>
+                                <td style="width:25%;padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.tenancy_seq"/>
+                                </td>
+                                <td style="width:25%;padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Tenant name
+                                </td>
+                                <td style="width:25%;padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.tenancy_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Unit
+                                    no.
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.property_id.building_no"/>
+                                </td>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Move in
+                                    dt
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.start_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Move out
+                                    dt
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.move_out_date"/>
+                                </td>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Key
+                                    handover
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.key_handover_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Lease
+                                    period
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.start_date"/>
+                                    to
+                                    <span t-field="o.end_date"/>
+                                </td>
+                                <td style="padding:4px 8px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Termination type
+                                </td>
+                                <td style="padding:4px 8px;border:1px solid #eee;">
+                                    <span t-field="o.termination_type"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="background:#714B67;color:#fff;">
+                                <th style="padding:5px;border:1px solid #714B67;">Description</th>
+                                <th style="padding:5px;border:1px solid #714B67;">Details</th>
+                                <th style="padding:5px;border:1px solid #714B67;">Amount (<span
+                                        t-esc="o.currency_id.symbol"/>)
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3"
+                                    style="padding:4px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Maintenance / Repair Charges (Debit)
+                                </td>
+                            </tr>
+                            <t t-foreach="o.final_maintenance_line_ids" t-as="line">
+                                <tr>
+                                    <td style="padding:4px;border:1px solid #eee;">
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td style="padding:4px;border:1px solid #eee;">
+                                        <span t-field="line.description"/>
+                                    </td>
+                                    <td style="padding:4px;border:1px solid #eee;">
+                                        <span t-field="line.amount"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr style="font-weight:bold;">
+                                <td colspan="2" style="padding:4px;border:1px solid #eee;text-align:right;">Sub-Total
+                                </td>
+                                <td style="padding:4px;border:1px solid #eee;">
+                                    <span t-field="o.final_maintenance_amount"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3"
+                                    style="padding:4px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Utility Charges (Debit)
+                                </td>
+                            </tr>
+                            <t t-foreach="o.final_utility_line_ids" t-as="u">
+                                <tr>
+                                    <td style="padding:4px;border:1px solid #eee;"><span t-field="u.utility_type"/>:
+                                        <span t-field="u.meter_no"/>
+                                    </td>
+                                    <td style="padding:4px;border:1px solid #eee;">Closing Reading:
+                                        <span t-field="u.closing_reading"/>
+                                        (<span t-field="u.closing_date"/>)
+                                    </td>
+                                    <td style="padding:4px;border:1px solid #eee;">
+                                        <span t-field="u.amount"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr style="font-weight:bold;">
+                                <td colspan="2" style="padding:4px;border:1px solid #eee;text-align:right;">Sub-Total
+                                </td>
+                                <td style="padding:4px;border:1px solid #eee;">
+                                    <span t-field="o.final_utility_amount"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3"
+                                    style="padding:4px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">Rent
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px;border:1px solid #eee;">Rent paid upto</td>
+                                <td style="border:1px solid #eee;"></td>
+                                <td style="padding:4px;border:1px solid #eee;">
+                                    <span t-field="o.rent_paid_upto"/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.rent_due_amount">
+                                <td style="padding:4px;border:1px solid #eee;">Rent Due (Debit)</td>
+                                <td style="border:1px solid #eee;"></td>
+                                <td style="padding:4px;border:1px solid #eee;">
+                                    <span t-field="o.rent_due_amount"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3"
+                                    style="padding:4px;background:#faf8fa;font-weight:bold;border:1px solid #eee;">
+                                    Security Deposit (Credit)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px;border:1px solid #eee;">Security deposit held</td>
+                                <td style="border:1px solid #eee;"></td>
+                                <td style="padding:4px;border:1px solid #eee;">
+                                    <span t-field="o.deposit_amount"/>
+                                </td>
+                            </tr>
+
+                            <tr style="font-weight:bold;background:#f0ecef;">
+                                <td colspan="2" style="padding:6px;border:1px solid #eee;">Payment Due to Tenant</td>
+                                <td style="padding:6px;border:1px solid #eee;color:#714B67;">
+                                    <span t-field="o.payment_due_to_tenant"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%;margin-top:60px;text-align:center;">
+                            <tr>
+                                <td>_________________________</td>
+                                <td>______________________________</td>
+                                <td>____________________________</td>
+                            </tr>
+                            <tr>
+                                <td>Leasing/Admin</td>
+                                <td>Maintenance In charge</td>
+                                <td>Accounts</td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

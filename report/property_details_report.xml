@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="property_details_qweb_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h1 class="text-end">
+                                Property Brochure
+                            </h1>
+                            <hr/>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="text-align:center;">
+                                        <t t-if="doc.image">
+                                            <img t-att-src="image_data_uri(doc.image)" class="mt-2"
+                                                 style="width: 54rem; height: 27rem; border: 4px solid #5f6364; border-radius: 5px;"
+                                                 alt="Image"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h2 class="text-center">
+                                <span t-field="doc.name"/>
+                            </h2>
+                            <hr/>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Property Details
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Type
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.type"/>
+                                                        /
+                                                        <span
+                                                                t-field="doc.property_subtype_id"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Property For
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.sale_lease"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Code
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.property_seq"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    <t t-if="doc.sale_lease== 'for_sale'">
+                                                        Sale Price
+                                                    </t>
+                                                    <t t-if="doc.sale_lease== 'for_tenancy'">
+                                                        Rent
+                                                    </t>
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <t t-if="doc.sale_lease== 'for_sale'">
+                                                            <span t-field="doc.price"/>
+                                                        </t>
+                                                        <t t-if="doc.sale_lease== 'for_tenancy'">
+                                                            <span t-field="doc.price"/>
+                                                            /
+                                                            <span
+                                                                    t-field="doc.rent_unit"/>
+                                                        </t>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <t t-if="doc.property_project_id">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Region
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.region_id"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Address
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span>
+                                                            <span t-field="doc.street"/>
+                                                            <br/>
+                                                            <span t-field="doc.street2"/>
+                                                            <br/>
+                                                            <t t-if="doc.city_id">
+                                                                <span t-field="doc.city_id.name"/>
+                                                                <t t-if="doc.city_id and doc.zip">,</t>
+                                                                <span t-field="doc.zip"/>
+                                                            </t>
+                                                            <br/>
+                                                            <span t-field="doc.state_id.name"/>
+                                                            <t t-if="doc.state_id and doc.country_id">,</t>
+                                                            <span t-field="doc.country_id.name"/>
+                                                        </span>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="page-break-before:always;"/>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Owner Details
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Landlord
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.landlord_id"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="doc.website">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Website
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.website"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <t t-if="doc.landlord_phone">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Phone
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.landlord_phone"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.landlord_email">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Email
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.landlord_email"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Area Measurements
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Total Area
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.total_area"/>
+                                                        <span t-field="doc.measure_unit"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Usable Area
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.usable_area"/>
+                                                        <span t-field="doc.measure_unit"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <t t-if="doc.is_section_measurement">
+                                <table class="table table-borderless">
+                                    <tr style="border-bottom:1px solid black;">
+                                        <td>
+                                            <strong>
+                                                Section
+                                            </strong>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                No of Unit
+                                            </strong>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                Length
+                                            </strong>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                Width
+                                            </strong>
+                                        </td>
+                                        <t t-if="doc.measure_unit in ['cu_m','cu_ft']">
+                                            <td style="text-align:right;">
+                                                <strong>
+                                                    Height
+                                                </strong>
+                                            </td>
+                                        </t>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                Total Area
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <t t-foreach="doc.room_measurement_ids" t-as="s">
+                                        <tr style="border-bottom: 1px solid #cdc2c2;font-size:14px;">
+                                            <td>
+                                                <span t-field="s.section_id.name"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-field="s.no_of_unit"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-field="s.length"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-field="s.width"/>
+                                            </td>
+                                            <t t-if="doc.measure_unit in ['cu_m','cu_ft']">
+                                                <td style="text-align:right;">
+                                                    <span t-field="s.height"/>
+                                                </td>
+                                            </t>
+                                            <td style="text-align:right;">
+                                                <span t-field="s.carpet_area"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </t>
+                            <t t-if="doc.type in ['residential','commercial','industrial']">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    <t t-if="doc.type == 'residential'">
+                                        Residential Details
+                                    </t>
+                                    <t t-if="doc.type == 'commercial'">
+                                        Commercial Details
+                                    </t>
+                                    <t t-if="doc.type == 'industrial'">
+                                        Industrial Details
+                                    </t>
+                                </h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        No of Floors
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.total_floor"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <t t-if="doc.type in ['residential','commercial']">
+                                                    <tr>
+                                                        <td style="width:28%;">
+                                                            Floor
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:70%;">
+                                                            <strong>
+                                                                <span t-field="doc.floor"/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Parking
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.parking"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:28%;">
+                                                        Facing
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.facing"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <t t-if="doc.type == 'residential'">
+                                                    <tr>
+                                                        <td style="width:28%;">
+                                                            BHK
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:70%;">
+                                                            <strong>
+                                                                <span t-field="doc.unit_type"/>
+                                                                BHK
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:28%;">
+                                                            Rooms
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:70%;">
+                                                            <strong>
+                                                                <span t-field="doc.bed"/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="doc.type in ['residential','commercial']">
+                                                    <tr>
+                                                        <td style="width:28%;">
+                                                            Bathrooms
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:70%;">
+                                                            <strong>
+                                                                <span t-field="doc.bathroom"/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    <t t-if="doc.furnishing_id">
+                                                        <tr>
+                                                            <td style="width:28%;">
+                                                                Furnishing
+                                                            </td>
+                                                            <td style="width:2%;">
+                                                                :
+                                                            </td>
+                                                            <td style="width:70%;">
+                                                                <strong>
+                                                                    <span
+                                                                            t-field="doc.furnishing_id"/>
+                                                                </strong>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </t>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <h6
+                                    style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                              rx="1" transform="rotate(-180 18 13)"
+                                              fill="currentColor"/>
+                                        <path
+                                                d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                Pricing Details
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    Pricing Type
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <span t-field="doc.pricing_type"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <t t-if="doc.pricing_type == 'area_wise'">
+                                                <tr>
+                                                    <td style="width:28%;">Price /
+                                                        <span
+                                                                t-field="doc.measure_unit"/>
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:70%;">
+                                                        <strong>
+                                                            <span t-field="doc.price_per_area"/>
+                                                            /
+                                                            <span
+                                                                    t-field="doc.measure_unit"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;padding:0px;">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="width:28%;">
+                                                    <t t-if="doc.sale_lease== 'for_sale'">
+                                                        Sale Price
+                                                    </t>
+                                                    <t t-if="doc.sale_lease== 'for_tenancy'">
+                                                        Rent
+                                                    </t>
+                                                </td>
+                                                <td style="width:2%;">
+                                                    :
+                                                </td>
+                                                <td style="width:70%;">
+                                                    <strong>
+                                                        <t t-if="doc.sale_lease== 'for_sale'">
+                                                            <span t-field="doc.price"/>
+                                                        </t>
+                                                        <t t-if="doc.sale_lease== 'for_tenancy'">
+                                                            <span t-field="doc.price"/>
+                                                            /
+                                                            <span
+                                                                    t-field="doc.rent_unit"/>
+                                                        </t>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <t t-if="doc.is_maintenance_service">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Maintenance Details
+                                </h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <t t-if="doc.sale_lease == 'for_tenancy'">
+                                                    <tr>
+                                                        <td style="width:38%;">
+                                                            Maintenance Type
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:60%;">
+                                                            <strong>
+                                                                <span
+                                                                        t-field="doc.maintenance_rent_type"/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Charge Type
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="doc.maintenance_type"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:50%;padding:0px;">
+                                            <table class="table table-borderless">
+                                                <t t-if="doc.maintenance_type == 'area_wise'">
+                                                    <tr>
+                                                        <td style="width:38%;">
+                                                            Maintenance / Area
+                                                        </td>
+                                                        <td style="width:2%;">
+                                                            :
+                                                        </td>
+                                                        <td style="width:60%;">
+                                                            <strong>
+                                                                <span
+                                                                        t-field="doc.per_area_maintenance"/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td style="width:38%;">
+                                                        Total Maintenance
+                                                    </td>
+                                                    <td style="width:2%;">
+                                                        :
+                                                    </td>
+                                                    <td style="width:60%;">
+                                                        <strong>
+                                                            <span t-field="doc.total_maintenance"/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <t t-if="doc.is_extra_service">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Utility Services
+                                </h6>
+                                <table class="table table-borderless">
+                                    <tr style="border-bottom:1px solid black;">
+                                        <td>
+                                            <strong>
+                                                Service
+                                            </strong>
+                                        </td>
+                                        <t t-if="doc.sale_lease=='for_tenancy'">
+                                            <td>
+                                                <strong>
+                                                    Type
+                                                </strong>
+                                            </td>
+                                        </t>
+                                        <td style="text-align:right;">
+                                            <strong>
+                                                Cost
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <t t-foreach="doc.extra_service_ids" t-as="s">
+                                        <tr style="border-bottom: 1px solid #cdc2c2;font-size:14px;">
+                                            <td>
+                                                <span t-field="s.service_id.name"/>
+                                            </td>
+                                            <t t-if="doc.sale_lease=='for_tenancy'">
+                                                <td>
+                                                    <span t-field="s.service_type"/>
+                                                </td>
+                                            </t>
+                                            <td style="text-align:right;">
+                                                <span t-field="s.price"
+                                                      t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <t t-if="doc.amenities and doc.amenities_ids">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Amenities
+                                </h6>
+                                <table class="table table-borderless">
+                                    <t t-set="ap_tag"
+                                       t-value="str('&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td ') + str('style=text-align:center;') + str('&gt;')"/>
+                                    <t t-set="img_count" t-value="0"/>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <t t-foreach="doc.amenities_ids" t-as="img">
+                                                <t t-set="img_count" t-value="img_count + 1"/>
+                                                <div
+                                                        style="width:12.5rem;display: inline-block;text-align:center;">
+                                                    <t t-if="img.image">
+                                                        <img t-att-src="image_data_uri(img.image)"
+                                                             style="width: 5rem; height: 5rem; border-radius: 40px;"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <img
+                                                                src="/rental_management/static/src/img/amenity.jpeg"
+                                                                style="width: 5rem; height: 5rem; border-radius: 40px;"/>
+                                                    </t>
+                                                    <br/>
+                                                    <h6>
+                                                        <span t-field="img.title"/>
+                                                    </h6>
+                                                </div>
+                                                <t t-if="img_count % 4 == 0">
+                                                    <t t-raw="ap_tag"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <t t-if="doc.is_facilities and doc.property_specification_ids">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Specifications
+                                </h6>
+                                <table class="table table-borderless">
+                                    <t t-foreach="doc.property_specification_ids" t-as="ps">
+                                        <tr style="border-bottom: 1px solid #cdc2c2;">
+                                            <td
+                                                    style="width:10%;vertical-align:middle;text-align:center;">
+                                                <t t-if="ps.image">
+                                                    <img t-att-src="image_data_uri(ps.image)"
+                                                         style="width: 6rem; height: 6rem; object-fit: cover;"
+                                                         alt="Image"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <img
+                                                            src="/rental_management/static/src/img/specifications.jpeg"
+                                                            style="width: 5rem; height: 5rem; border-radius: 40px;"/>
+                                                </t>
+                                            </td>
+                                            <td style="width:90%;vertical-align:top;">
+                                                <h5>
+                                                    <strong>
+                                                        <span t-field="ps.title"/>
+                                                    </strong>
+                                                </h5>
+                                                <hr
+                                                        style="margin-top:0.25rem;margin-bottom:0.25rem;"/>
+                                                <span t-field="ps.description"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <t t-if="doc.nearby_connectivity and doc.connectivity_ids">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Nearby Connectivities
+                                </h6>
+                                <table class="table table-borderless">
+                                    <t t-set="ap_tag"
+                                       t-value="str('&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td ') + str('style=text-align:center;') + str('&gt;')"/>
+                                    <t t-set="img_count" t-value="0"/>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <t t-foreach="doc.connectivity_ids" t-as="img">
+                                                <t t-set="img_count" t-value="img_count + 1"/>
+                                                <div
+                                                        style="width:12.5rem;display: inline-block;text-align:center;padding:3px;">
+                                                    <t t-if="img.image">
+                                                        <img t-att-src="image_data_uri(img.image)"
+                                                             style="width:50px;height:50px;"/>
+                                                    </t>
+                                                    <br/>
+                                                    <h6>
+                                                        <span t-field="img.connectivity_id"/>
+                                                    </h6>
+                                                    <h5 style="color:#00A09D;">
+                                                        <span t-field="img.name"/>
+                                                    </h5>
+                                                    <h5 style="color:#00A09D;">
+                                                        <strong>
+                                                            <span t-field="img.distance"/>
+                                                        </strong>
+                                                    </h5>
+                                                </div>
+                                                <t t-if="img_count % 4 == 0">
+                                                    <t t-raw="ap_tag"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <t t-if="doc.is_floor_plan and doc.floreplan_ids">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Floor Plans
+                                </h6>
+                                <t t-foreach="doc.floreplan_ids" t-as="i">
+                                    <div style="width:100%">
+                                        <t t-if="i.image">
+                                            <strong>
+                                                <span t-field="i.title"/>
+                                            </strong>
+                                            <hr style="margin-top:0.25rem;margin-bottom:0.25rem;"/>
+                                            <img t-att-src="image_data_uri(i.image)" class="mt-2"
+                                                 style="width:inherit;margin: 1px;"
+                                                 alt="Image"/>
+                                        </t>
+                                    </div>
+                                    <p style="page-break-before:always;"/>
+                                </t>
+                            </t>
+                            <p style="page-break-before:always;"/>
+                            <t t-if="doc.is_images and doc.property_images_ids">
+                                <h6
+                                        style="padding-bottom:10px;padding-top:10px;background-color:#e9ecef;">
+                                    <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="18" y="13" width="13" height="2"
+                                                  rx="1" transform="rotate(-180 18 13)"
+                                                  fill="currentColor"/>
+                                            <path
+                                                    d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
+                                                    fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    Images
+                                </h6>
+                                <t t-foreach="doc.property_images_ids" t-as="i">
+                                    <div style="width:100%">
+                                        <t t-if="i.image">
+                                            <strong>
+                                                <span t-field="i.title"/>
+                                            </strong>
+                                            <hr style="margin-top:0.25rem;margin-bottom:0.25rem;"/>
+                                            <img t-att-src="image_data_uri(i.image)" class="mt-2"
+                                                 style="width:inherit;margin: 1px;"
+                                                 alt="Image"/>
+                                        </t>
+                                    </div>
+                                    <p style="page-break-before:always;"/>
+                                </t>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <record id="property_details_report_id" model="ir.actions.report">
+            <field name="name">Property Brochure</field>
+            <field name="model">property.details</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">rental_management.property_details_qweb_report_template</field>
+            <field name="report_file">rental_management.property_details_qweb_report_template</field>
+            <field name="binding_model_id" ref="model_property_details"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Property Details'</field>
+        </record>
+    </data>
+</odoo>
